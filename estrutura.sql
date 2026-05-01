@@ -32,10 +32,9 @@ CREATE TABLE Fornecedor(
     cnpj VARCHAR(255) NOT NULL,
     email VARCHAR(255) NOT NULL,
     razao_social VARCHAR(255) NOT NULL,
-    categoria BIGINT NOT NULL
 );
 
-CREATE TABLE Categoria_Produto(
+CREATE TABLE Categoria(
     id_categoria BIGINT NOT NULL IDENTITY(1,1) PRIMARY KEY,
     nome_categoria VARCHAR(255) NOT NULL
 );
@@ -92,7 +91,7 @@ ALTER TABLE Endereco_Fornecedor ADD CONSTRAINT FK_Endereco_Fornecedor FOREIGN KE
 
 ALTER TABLE Endereco_Funcionario ADD CONSTRAINT FK_Endereco_Funcionario FOREIGN KEY (fkfuncionario) REFERENCES Funcionario(id_funcionario);
 
-ALTER TABLE Produto ADD CONSTRAINT FK_Produto_Categoria FOREIGN KEY (fkcategoria) REFERENCES Categoria_Produto(id_categoria);
+ALTER TABLE Produto ADD CONSTRAINT FK_Produto_Categoria FOREIGN KEY (fkcategoria) REFERENCES Categoria(id_categoria);
 
 ALTER TABLE Funcionario ADD CONSTRAINT FK_Funcionario_Setor FOREIGN KEY (fksetor) REFERENCES Setor(id_setor);
 
@@ -103,7 +102,7 @@ ALTER TABLE Entrada ADD CONSTRAINT FK_Compras_Produto FOREIGN KEY (fkproduto) RE
 ALTER TABLE Entrada ADD CONSTRAINT FK_Compras_Fornecedor FOREIGN KEY (fkfornecedor) REFERENCES Fornecedor(id_fornecedor);
 
 ALTER TABLE Categoria_prod_set ADD CONSTRAINT FK_Categoria_prod_set_Setor FOREIGN KEY (fksetor) REFERENCES Setor(id_setor);
-ALTER TABLE Categoria_prod_set ADD CONSTRAINT FK_Categoria_prod_set_Categoria FOREIGN KEY (fkcategoria) REFERENCES Categoria_Produto(id_categoria);
+ALTER TABLE Categoria_prod_set ADD CONSTRAINT FK_Categoria_prod_set_Categoria FOREIGN KEY (fkcategoria) REFERENCES Categoria(id_categoria);
 
 ALTER TABLE Telefone ADD CONSTRAINT FK_Telefone_Funcionario FOREIGN KEY (fkfuncionario) REFERENCES Funcionario(id_funcionario);
 ALTER TABLE Telefone ADD CONSTRAINT FK_Telefone_Fornecedor FOREIGN KEY (fkfornecedor) REFERENCES Fornecedor(id_fornecedor);
