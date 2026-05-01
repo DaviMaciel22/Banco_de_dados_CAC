@@ -1,13 +1,15 @@
-CREATE TABLE Consumidor(
-    id_consumidor BIGINT NOT NULL IDENTITY(1,1) PRIMARY KEY,
-    nome VARCHAR(255) NOT NULL
+CREATE TABLE Endereco_Fornecedor(
+    id_end_forn BIGINT NOT NULL IDENTITY(1,1) PRIMARY KEY,
+    fkfornecedor BIGINT NOT NULL,
+    rua VARCHAR(255) NOT NULL,
+    cep VARCHAR(255) NOT NULL,
+    cidade VARCHAR(255) NOT NULL,
+    numero INT NOT NULL
 );
 
-CREATE TABLE Endereco(
-    id_endereco BIGINT NOT NULL IDENTITY(1,1) PRIMARY KEY,
-    fkfornecedor BIGINT NOT NULL,
+CREATE TABLE Endereco_Funcionario(
+    id_end_fun BIGINT NOT NULL IDENTITY(1,1) PRIMARY KEY,
     fkfuncionario BIGINT NOT NULL,
-    fkconsumidor BIGINT NOT NULL,
     rua VARCHAR(255) NOT NULL,
     cep VARCHAR(255) NOT NULL,
     cidade VARCHAR(255) NOT NULL,
@@ -51,16 +53,16 @@ CREATE TABLE Funcionario(
     tipo_funcionario VARCHAR(255) NOT NULL
 );
 
-CREATE TABLE Vendas(
+CREATE TABLE Saida(
     fkproduto BIGINT NOT NULL,
-    fkconsumidor BIGINT NOT NULL,
+    fksetor BIGINT NOT NULL,
     data_vendas DATETIME NOT NULL,
     valor_vendas numeric(18,2) NOT NULL,
     quantidade_venda INT NOT NULL,
-    PRIMARY KEY(fkconsumidor)
+    PRIMARY KEY(fksetor, fkproduto)
 );
 
-CREATE TABLE  Compras(
+CREATE TABLE  Entrada(
     fkproduto BIGINT NOT NULL,
     fkfornecedor BIGINT NOT NULL,
     data_compra DATETIME NOT NULL,
