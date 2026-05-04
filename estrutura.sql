@@ -20,7 +20,7 @@ CREATE TABLE Produto(
     id_produto BIGINT NOT NULL IDENTITY(1,1) PRIMARY KEY,
     fkcategoria BIGINT NOT NULL,
     status1 VARCHAR(255) NOT NULL,
-    quantidade_estoque BIGINT NOT NULL,
+    quantidade_estoque INT NOT NULL,
     preco_compra numeric(18,2) NOT NULL,
     descricao VARCHAR(255) NOT NULL,
     nome VARCHAR(255) NOT NULL
@@ -30,18 +30,17 @@ CREATE TABLE Fornecedor(
     id_fornecedor BIGINT NOT NULL IDENTITY(1,1) PRIMARY KEY,
     cnpj VARCHAR(255) NOT NULL,
     email VARCHAR(255) NOT NULL,
-    razao_social VARCHAR(255) NOT NULL,
-    categoria BIGINT NOT NULL
+    razao_social VARCHAR(255) NOT NULL
 );
 
-CREATE TABLE Categoria_Produto(
+CREATE TABLE Categoria(
     id_categoria BIGINT NOT NULL IDENTITY(1,1) PRIMARY KEY,
     nome_categoria VARCHAR(255) NOT NULL
 );
 
 CREATE TABLE Setor(
     id_setor BIGINT NOT NULL IDENTITY(1,1) PRIMARY KEY,
-    nome_setor BIGINT NOT NULL,
+    nome_setor VARCHAR(20) NOT NULL,
     numero_funcionarios BIGINT NOT NULL
 );
 
@@ -53,21 +52,21 @@ CREATE TABLE Funcionario(
 );
 
 CREATE TABLE Saida(
+    id_saida BIGINT NOT NULL IDENTITY(1,1) PRIMARY KEY,
     fkproduto BIGINT NOT NULL,
     fksetor BIGINT NOT NULL,
-    data_vendas DATETIME NOT NULL,
-    valor_vendas numeric(18,2) NOT NULL,
+    data_saida DATETIME NOT NULL,
+    valor_saida numeric(18,2) NOT NULL,
     quantidade_venda INT NOT NULL,
-    PRIMARY KEY(fksetor, fkproduto)
 );
 
 CREATE TABLE  Entrada(
+    id_entrada BIGINT NOT NULL IDENTITY(1,1) PRIMARY KEY,
     fkproduto BIGINT NOT NULL,
     fkfornecedor BIGINT NOT NULL,
     data_compra DATETIME NOT NULL,
     valor_compra numeric(18,2) NOT NULL,
     quantidade_compra BIGINT NOT NULL,
-    PRIMARY KEY(fkfornecedor, fkproduto)
 );
 
 CREATE TABLE Categoria_prod_set(
@@ -76,13 +75,18 @@ CREATE TABLE Categoria_prod_set(
     PRIMARY KEY(fkcategoria, fksetor)
 );
 
-CREATE TABLE Telefone(
+CREATE TABLE Telefone_Fornecedor(
     id_telefone BIGINT NOT NULL,
-    fkfuncionario BIGINT NOT NULL,
     fkfornecedor BIGINT NOT NULL,
-    fkconsumidor BIGINT NOT NULL,
     PRIMARY KEY(id_telefone)
 );
+
+CREATE TABLE Telefone_Funcionario(
+    id_telefone BIGINT NOT NULL,
+    fkfuncionario BIGINT NOT NULL,
+    PRIMARY KEY(id_telefone)
+);
+
 
 
 
@@ -91,7 +95,7 @@ ALTER TABLE Endereco_Fornecedor ADD CONSTRAINT FK_Endereco_Fornecedor FOREIGN KE
 
 ALTER TABLE Endereco_Funcionario ADD CONSTRAINT FK_Endereco_Funcionario FOREIGN KEY (fkfuncionario) REFERENCES Funcionario(id_funcionario);
 
-ALTER TABLE Produto ADD CONSTRAINT FK_Produto_Categoria FOREIGN KEY (fkcategoria) REFERENCES Categoria_Produto(id_categoria);
+ALTER TABLE Produto ADD CONSTRAINT FK_Produto_Categoria FOREIGN KEY (fkcategoria) REFERENCES Categoria(id_categoria);
 
 ALTER TABLE Funcionario ADD CONSTRAINT FK_Funcionario_Setor FOREIGN KEY (fksetor) REFERENCES Setor(id_setor);
 
@@ -102,7 +106,8 @@ ALTER TABLE Entrada ADD CONSTRAINT FK_Compras_Produto FOREIGN KEY (fkproduto) RE
 ALTER TABLE Entrada ADD CONSTRAINT FK_Compras_Fornecedor FOREIGN KEY (fkfornecedor) REFERENCES Fornecedor(id_fornecedor);
 
 ALTER TABLE Categoria_prod_set ADD CONSTRAINT FK_Categoria_prod_set_Setor FOREIGN KEY (fksetor) REFERENCES Setor(id_setor);
-ALTER TABLE Categoria_prod_set ADD CONSTRAINT FK_Categoria_prod_set_Categoria FOREIGN KEY (fkcategoria) REFERENCES Categoria_Produto(id_categoria);
+ALTER TABLE Categoria_prod_set ADD CONSTRAINT FK_Categoria_prod_set_Categoria FOREIGN KEY (fkcategoria) REFERENCES Categoria(id_categoria);
 
-ALTER TABLE Telefone ADD CONSTRAINT FK_Telefone_Funcionario FOREIGN KEY (fkfuncionario) REFERENCES Funcionario(id_funcionario);
-ALTER TABLE Telefone ADD CONSTRAINT FK_Telefone_Fornecedor FOREIGN KEY (fkfornecedor) REFERENCES Fornecedor(id_fornecedor);
+ALTER TABLE Telefone_Funcionario ADD CONSTRAINT FK_Telefone_Funcionario FOREIGN KEY (fkfuncionario) REFERENCES Funcionario(id_funcionario);
+
+ALTER TABLE Telefone_Fornecedor ADD CONSTRAINT FK_Telefone_Fornecedor FOREIGN KEY (fkfornecedor) REFERENCES Fornecedor(id_fornecedor);
