@@ -32,3 +32,39 @@ create proc sp_deletar_produto
 as
 delete from Produto 
 where id_produto = @id_produto
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* ALAN *********************************************************/
+
+CREATE PROCEDURE stp_CalcularPrecoMedioProduto
+    @id_prod BIGINT
+AS
+BEGIN
+
+    IF NOT EXISTS (SELECT 1 FROM Entrada WHERE fkproduto = @id_prod)
+    BEGIN
+        SELECT 'Este produto ainda não possui registros de entrada para cálculo.' AS Mensagem;
+    END
+
+
+    SELECT AVG(valor_unitario)
+    from Entrada
+    WHERE fkproduto = @id_prod
+END;
