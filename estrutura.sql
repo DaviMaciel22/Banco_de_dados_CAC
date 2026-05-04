@@ -22,7 +22,6 @@ CREATE TABLE Produto(
     status1 VARCHAR(255) NOT NULL,
     quantidade_estoque BIGINT NOT NULL,
     preco_compra numeric(18,2) NOT NULL,
-    preco_venda numeric(18,2) NOT NULL,
     descricao VARCHAR(255) NOT NULL,
     nome VARCHAR(255) NOT NULL
 );
