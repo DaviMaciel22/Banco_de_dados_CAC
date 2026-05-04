@@ -67,6 +67,7 @@ CREATE TABLE  Entrada(
     data_compra DATETIME NOT NULL,
     valor_compra numeric(18,2) NOT NULL,
     quantidade_compra BIGINT NOT NULL,
+    valor_unitario numeric(18,2) NOT NULL
 );
 
 CREATE TABLE Categoria_prod_set(
