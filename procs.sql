@@ -1,3 +1,4 @@
+-- Davi
 alter proc sp_insert_update_produto
 (@id_produto bigint,
 @fkcategoria bigint,
@@ -33,6 +34,41 @@ as
 delete from Produto 
 where id_produto = @id_produto
 
+/***************************************/
+
+create proc sp_inserir_atualizar_fornecedor
+(@id_fornecedor bigint,
+@cnpj varchar(14),
+@email varchar(100),
+@razao_social varchar(100),
+@fkcategoria bigint 
+)
+as
+if @id_fornecedor not in (select id_fornecedor from Fornecedor)
+begin
+insert into Fornecedor (id_fornecedor, cnpj, email, razao_social, fkcategoria)
+values (@id_fornecedor, @cnpj, @email, @razao_social, @fkcategoria)
+end
+
+else if @id_fornecedor in (select id_fornecedor from Fornecedor)
+begin
+update Fornecedor
+set cnpj = @cnpj,
+email = @email,
+razao_social = @razao_social,
+fkcategoria = @fkcategoria
+where id_fornecedor = @id_fornecedor
+end
+
+/***************************************************/
+
+create proc sp_deletar_fornecedor
+(
+@id_fornecedor bigint
+)
+as
+delete from Fornecedor
+where id_fornecedor = @id_fornecedor
 
 
 
@@ -68,3 +104,5 @@ BEGIN
     from Entrada
     WHERE fkproduto = @id_prod
 END;
+/************************************************/
+
