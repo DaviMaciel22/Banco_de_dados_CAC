@@ -41,7 +41,7 @@ CREATE TABLE Categoria(
 CREATE TABLE Setor(
     id_setor BIGINT NOT NULL IDENTITY(1,1) PRIMARY KEY,
     nome_setor VARCHAR(20) NOT NULL,
-    numero_funcionarios BIGINT NOT NULL
+    numero_funcionarios INT NOT NULL
 );
 
 CREATE TABLE Funcionario(

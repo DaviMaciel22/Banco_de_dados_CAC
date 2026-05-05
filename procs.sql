@@ -71,6 +71,71 @@ delete from Fornecedor
 where id_fornecedor = @id_fornecedor
 
 
+/********************************/
+create proc sp_inserir_atualizar_categoria
+( @id_categoria bigint,
+@nome_categoria varchar(50)
+)
+as
+if @id_categoria not in (Select id_categoria from Categoria_Produto)
+begin
+insert into Categoria_Produto (id_categoria, nome_categoria)
+values (@id_categoria, @nome_categoria)
+end
+
+else if @id_categoria in (Select id_categoria from Categoria_Produto)
+begin
+update Categoria_Produto 
+set nome_categoria = @nome_categoria
+where id_categoria = @id_categoria
+end
+
+/************************************************/
+
+create proc sp_deletar_categoria
+(@id_categoria bigint)
+as
+delete from Categoria_Produto
+where id_categoria = @id_categoria
+
+/************************************************/
+
+create proc sp_inserir_atualizar_setor
+( @id_setor bigint,
+@nome_sertor varchar(20),
+@numero_funcionarios int)
+as
+if @id_setor not in (select id_setor from Setor)
+begin
+insert into Setor (id_setor, nome_setor, numero_funcionarios)
+values (@id_setor, @nome_sertor, @numero_funcionarios)
+end
+
+else if @id_setor in (select id_setor from Setor)
+begin
+update Setor
+set nome_setor = @nome_sertor,
+numero_funcionarios = @numero_funcionarios
+where id_setor = @id_setor
+end
+
+/***********************************************/
+
+create proc sp_deletar_setor
+(@id_setor bigint)
+as
+delete from Setor
+where id_setor = @id_setor
+
+
+
+
+
+
+
+
+
+
 
 
 
