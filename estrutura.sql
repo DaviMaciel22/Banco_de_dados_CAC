@@ -2,7 +2,7 @@ CREATE TABLE Endereco_Fornecedor(
     id_end_forn BIGINT NOT NULL IDENTITY(1,1) PRIMARY KEY,
     fkfornecedor BIGINT NOT NULL,
     rua VARCHAR(255) NOT NULL,
-    cep VARCHAR(255) NOT NULL,
+    cep VARCHAR(9) NOT NULL,
     cidade VARCHAR(255) NOT NULL,
     numero INT NOT NULL
 );
@@ -11,7 +11,7 @@ CREATE TABLE Endereco_Funcionario(
     id_end_fun BIGINT NOT NULL IDENTITY(1,1) PRIMARY KEY,
     fkfuncionario BIGINT NOT NULL,
     rua VARCHAR(255) NOT NULL,
-    cep VARCHAR(255) NOT NULL,
+    cep VARCHAR(9) NOT NULL,
     cidade VARCHAR(255) NOT NULL,
     numero INT NOT NULL
 );

@@ -26,7 +26,7 @@ insert into Produto (id_produto, fkcategoria, status1, quantidade_estoque, preco
 values (@id_produto, @fkcategoria, @status1, @quantidade_estoque, @preco_compra, @descricao, @nome)
 end
 
-/***********************************************/
+/************************************************************/
 
 create proc sp_deletar_produto
 ( @id_produto bigint )
@@ -34,7 +34,7 @@ as
 delete from Produto 
 where id_produto = @id_produto
 
-/***************************************/
+/************************************************************/
 
 create proc sp_inserir_atualizar_fornecedor
 (@id_fornecedor bigint,
@@ -60,7 +60,7 @@ fkcategoria = @fkcategoria
 where id_fornecedor = @id_fornecedor
 end
 
-/***************************************************/
+/************************************************************/
 
 create proc sp_deletar_fornecedor
 (
@@ -71,7 +71,8 @@ delete from Fornecedor
 where id_fornecedor = @id_fornecedor
 
 
-/********************************/
+/************************************************************/
+
 create proc sp_inserir_atualizar_categoria
 ( @id_categoria bigint,
 @nome_categoria varchar(50)
@@ -90,7 +91,7 @@ set nome_categoria = @nome_categoria
 where id_categoria = @id_categoria
 end
 
-/************************************************/
+/************************************************************/
 
 create proc sp_deletar_categoria
 (@id_categoria bigint)
@@ -98,7 +99,7 @@ as
 delete from Categoria_Produto
 where id_categoria = @id_categoria
 
-/************************************************/
+/************************************************************/
 
 create proc sp_inserir_atualizar_setor
 ( @id_setor bigint,
@@ -119,7 +120,7 @@ numero_funcionarios = @numero_funcionarios
 where id_setor = @id_setor
 end
 
-/***********************************************/
+/************************************************************/
 
 create proc sp_deletar_setor
 (@id_setor bigint)
@@ -127,7 +128,7 @@ as
 delete from Setor
 where id_setor = @id_setor
 
-/*********************************************/
+/************************************************************/
 
 create proc sp_inserir_atualizar_funcionario
 ( @idfuncionario bigint,
@@ -150,7 +151,7 @@ tipo_funcionario = @tipo_funcionario
 where id_funcionario = @idfuncionario
 end
 
-/********************************************************************/
+/************************************************************/
 
 create proc sp_deletar_funcionario
 ( @id_funcionario bigint)
@@ -158,9 +159,9 @@ as
 delete from Funcionario
 where id_funcionario = @id_funcionario
 
-/**********************************************************/
+/************************************************************/
 
-create proc sp_inserir_atualizar_saida --Esta errada ainda
+create proc sp_inserir_atualizar_saida 
 (@id_saida bigint,
 @fkproduto bigint,
 @fksetor bigint,
@@ -194,6 +195,113 @@ delete from Saida
 where id_saida = @id_saida
 
 
+/************************************************************/
+
+create proc sp_inserir_atualizar_entrada 
+(@id_entrada bigint,
+@fkproduto bigint,
+@fkfornecedor bigint,
+@data_compra datetime,
+@valor_compra numeric(18,2),
+@valor_unitario numeric(18,2))
+as
+if @id_entrada not in (select id_entrada from Entrada)
+begin
+insert into Entrada(id_entrada, fkproduto, fkfornecedor, data_compra, valor_compra, valor_unitario)
+values (@id_entrada, @fkproduto, @fkfornecedor, @data_compra, @valor_compra, @valor_unitario)
+end
+
+else if @id_entrada in (Select id_entrada from Entrada)
+begin
+update Entrada
+set fkproduto = @fkproduto,
+fkfornecedor = @fkfornecedor,
+data_compra = @data_compra,
+valor_compra = @valor_compra,
+valor_unitario = @valor_unitario
+where id_entrada = @id_entrada
+end
+
+/************************************************************/
+
+create proc sp_deletar_entrada
+( @id_entrada bigint)
+as
+delete from Entrada
+where id_entrada = @id_entrada
+
+/************************************************************/
+
+
+create proc sp_inserir_atualizar_endereco_fornecedor
+(@id_end_forn bigint,
+@fkfornecedor bigint,
+@rua varchar(100),
+@cep varchar(9),
+@cidade varchar(20),
+@numero int)
+as
+if @id_end_forn not in (select id_end_forn from Endereco_Fornecedor)
+begin
+insert into Endereco_Fornecedor (id_end_forn, fkfornecedor, rua, cep, cidade, numero)
+values (@id_end_forn, @fkfornecedor, @rua, @cep, @cidade, @numero)
+end
+
+else if @id_end_forn in (select id_end_forn from Endereco_Fornecedor)
+begin
+update Endereco_Fornecedor
+set fkfornecedor = @fkfornecedor,
+rua = @rua,
+cep = @cep,
+cidade = @cidade,
+numero = @numero
+where id_end_forn = @id_end_forn
+end
+
+/************************************************************/
+
+create proc deletar_endereco_fornecedor
+(@id_end_forn bigint)
+as
+delete from Endereco_Fornecedor
+where id_end_forn = @id_end_forn
+
+/************************************************************/
+
+create proc sp_inserir_atualizar_endereco_funcionario
+(@id_end_fun bigint,
+@fkfuncionario bigint,
+@rua varchar(100),
+@cep varchar(9),
+@cidade varchar(20),
+@numero int)
+as
+if @id_end_fun not in (select id_end_fun from Endereco_Funcionario)
+begin
+insert into Endereco_Funcionario(id_end_fun, fkfuncionario, rua, cep, cidade, numero)
+values (@id_end_fun, @fkfuncionario, @rua, @cep, @cidade, @numero)
+end
+
+else if @id_end_fun in (select id_end_fun from Endereco_Funcionario)
+begin
+update Endereco_Funcionario
+set fkfuncionario = @fkfuncionario,
+rua = @rua,
+cep = @cep,
+cidade = @cidade,
+numero = @numero
+where @id_end_fun = @id_end_fun
+end
+
+/************************************************************/
+
+create proc deletar_endereco_funcionario
+(@id_end_fun bigint)
+as
+delete from Endereco_Funcionario
+where id_end_fun = @id_end_fun
+
+/************************************************************/
 
 
 
@@ -211,8 +319,7 @@ where id_saida = @id_saida
 
 
 
-
-/* ALAN *********************************************************/
+/* ALAN *********************************************************/ 
 
 CREATE PROCEDURE stp_CalcularPrecoMedioProduto
     @id_prod BIGINT
@@ -229,5 +336,5 @@ BEGIN
     from Entrada
     WHERE fkproduto = @id_prod
 END;
-/************************************************/
+/************************************************/ -- Ver questão dos IDs, fala comigo para eu lembrar
 
