@@ -127,11 +127,71 @@ as
 delete from Setor
 where id_setor = @id_setor
 
+/*********************************************/
 
+create proc sp_inserir_atualizar_funcionario
+( @idfuncionario bigint,
+@fksetor bigint,
+@nome_funcionario varchar(50),
+@tipo_funcionario varchar(50)
+) as
+if @idfuncionario not in (Select id_funcionario from Funcionario)
+begin
+insert into Funcionario (id_funcionario, fksetor, nome_funcionario, tipo_funcionario)
+values (@idfuncionario, @fksetor, @nome_funcionario, @tipo_funcionario)
+end
 
+else if @idfuncionario in (Select id_funcionario from Funcionario)
+begin
+update Funcionario
+set fksetor = @fksetor,
+nome_funcionario = @nome_funcionario,
+tipo_funcionario = @tipo_funcionario
+where id_funcionario = @idfuncionario
+end
 
+/********************************************************************/
 
+create proc sp_deletar_funcionario
+( @id_funcionario bigint)
+as
+delete from Funcionario
+where id_funcionario = @id_funcionario
 
+/**********************************************************/
+
+create proc sp_inserir_atualizar_saida --Esta errada ainda
+(@id_saida bigint,
+@fkproduto bigint,
+@fksetor bigint,
+@data_saida datetime,
+@valor_saida numeric(18,2),
+@quantidade_produto int)
+as
+if @id_saida not in (select id_saida from Saida)
+begin
+insert into Saida (id_saida, fkproduto, fksetor, data_saida, valor_saida, quantidade_venda)
+values (@id_saida, @fkproduto, @fksetor, @data_saida, @valor_saida, @quantidade_produto)
+end
+
+else if @id_saida in (Select id_saida from Saida)
+begin
+update Saida
+set fkproduto = @fkproduto,
+fksetor = @fksetor,
+data_saida = @data_saida,
+valor_saida = @valor_saida,
+quantidade_venda = @quantidade_produto
+where id_saida = @id_saida
+end
+
+/************************************************************/
+
+create proc sp_deletar_saida
+( @id_saida bigint)
+as
+delete from Saida
+where id_saida = @id_saida
 
 
 

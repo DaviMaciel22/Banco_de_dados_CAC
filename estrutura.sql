@@ -57,7 +57,7 @@ CREATE TABLE Saida(
     fksetor BIGINT NOT NULL,
     data_saida DATETIME NOT NULL,
     valor_saida numeric(18,2) NOT NULL,
-    quantidade_venda INT NOT NULL,
+    quantidade_venda INT NOT NULL, --Tem que ver isso aqui
 );
 
 CREATE TABLE  Entrada(
