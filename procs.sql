@@ -333,7 +333,7 @@ delete from Telefone_Fornecedor
 where id_telefone_for = @id_telefone
 
 
-/*************************************/
+/*********************************************************/
 create proc sp_insert_update_telefone_fun
 (@id_telefone bigint,
 @fkfuncionario bigint,
@@ -354,7 +354,7 @@ telefone_fun = @telefone_fun
 where id_telefone = @id_telefone
 end
 
-
+/*********************************************************/
 
 
 
