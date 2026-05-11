@@ -333,7 +333,26 @@ delete from Telefone_Fornecedor
 where id_telefone_for = @id_telefone
 
 
+/*************************************/
+create proc sp_insert_update_telefone_fun
+(@id_telefone bigint,
+@fkfuncionario bigint,
+@telefone_fun varchar(15)
+)
+as
+if @id_telefone not in (select id_telefone from Telefone_Funcionario)
+begin
+insert into Telefone_Funcionario(fkfuncionario, telefone_fun)
+values(@fkfuncionario, @telefone_fun)
+end
 
+else if @id_telefone in (select id_telefone from Telefone_Funcionario)
+begin
+update Telefone_Funcionario
+set fkfuncionario = @fkfuncionario,
+telefone_fun = @telefone_fun
+where id_telefone = @id_telefone
+end
 
 
 
