@@ -378,7 +378,7 @@ create procedure sp_preco_medio
 as
 begin
 
-    if not exists (SELECT * FROM Entrada WHERE fkproduto = @id_prod)
+    if not exists (select * from Entrada where fkproduto = @id_prod)
     begin
         select 'Este produto ainda não possui registros de entrada para cálculo.' as Mensagem;
     end
