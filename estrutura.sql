@@ -80,14 +80,14 @@ CREATE TABLE Telefone_Fornecedor(
     id_telefone_for BIGINT NOT NULL,
     fkfornecedor BIGINT NOT NULL,
     telefone VARCHAR(15) NOT NULL,
-    PRIMARY KEY(id_telefone)
+    PRIMARY KEY(id_telefone_for)
 );
 
 CREATE TABLE Telefone_Funcionario(
     id_telefone_fun BIGINT NOT NULL,
     fkfuncionario BIGINT NOT NULL,
     telefone VARCHAR(15) NOT NULL,
-    PRIMARY KEY(id_telefone)
+    PRIMARY KEY(id_telefone_fun)
 );
 
 
