@@ -355,10 +355,14 @@ where id_telefone = @id_telefone
 end
 
 /*********************************************************/
+create proc sp_deletar_telefone_fun
+(@id_telefone bigint)
+as
+delete from Telefone_Funcionario
+where id_telefone_fun = @id_telefone
 
 
-
-
+/*********************************************************/
 
 
 
