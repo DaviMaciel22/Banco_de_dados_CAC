@@ -373,7 +373,7 @@ where id_telefone_fun = @id_telefone
 
 /* ALAN *********************************************************/ 
 
-CREATE PROCEDURE stp_CalcularPrecoMedioProduto
+CREATE PROCEDURE sp_preco_medio
     @id_prod BIGINT
 AS
 BEGIN
@@ -388,5 +388,109 @@ BEGIN
     from Entrada
     WHERE fkproduto = @id_prod
 END;
-/************************************************/ -- Ver questão dos IDs, fala comigo para eu lembrar
+
+/************************************************/
+
+create procedure sp_em_falta
+as
+begin
+
+    select nome, id_produto, quantidade_estoque
+    from Produto
+    where quantidade_estoque = 0
+
+end;
+
+/************************************************/
+
+create procedure sp_consumo_por_setor_30
+@id_prod bigint
+as
+begin
+
+    select fksetor as 'Setor', sum(quantidade_venda) as 'Quantidade', sum(valor_saida) as 'Valor', fkproduto as 'Produto'
+    from Saida
+    where datediff(day, data_saida, getdate()) <= 30
+    and datediff(day, data_saida, getdate()) >= 0
+    and fkproduto = @id_prod
+    group by fksetor, fkproduto
+
+end;
+
+/************************************************/
+
+create procedure sp_consumo_por_setor_180
+@id_prod bigint
+as
+begin
+
+    select fksetor as 'Setor', sum(quantidade_venda) as 'Quantidade', sum(valor_saida) as 'Valor', fkproduto as 'Produto'
+    from Saida
+    where datediff(day, data_saida, getdate()) <= 180
+    and datediff(day, data_saida, getdate()) >= 0
+    and fkproduto = @id_prod
+    group by fksetor, fkproduto
+
+end;
+
+/************************************************/
+
+create procedure sp_consumo_por_setor_365
+@id_prod bigint
+as
+begin
+
+    select fksetor as 'Setor', sum(quantidade_venda) as 'Quantidade', sum(valor_saida) as 'Valor', fkproduto as 'Produto'
+    from Saida
+    where datediff(day, data_saida, getdate()) <= 365
+    and datediff(day, data_saida, getdate()) >= 0
+    and fkproduto = @id_prod
+    group by fksetor, fkproduto
+
+end;
+
+/************************************************/
+
+create procedure sp_consumo_por_setor
+@id_prod bigint
+as
+begin
+
+    select fksetor as 'Setor', sum(quantidade_venda) as 'Quantidade', sum(valor_saida) as 'Valor', fkproduto as 'Produto'
+    from Saida
+    where fkproduto = @id_prod
+    group by fksetor, fkproduto
+
+end;
+
+/************************************************/
+
+create procedure sp_ficha_produto
+@id_prod bigint
+as
+begin
+
+    select id_produto, c.nome_categoria as 'categoria', status1 as 'status', quantidade_estoque, preco_compra, descricao, nome
+    from Produto p, Categoria c
+    where id_produto = @id_prod
+   
+end;
+
+/************************************************/
+
+create procedure sp_melhor_fornecedor
+@id_prod bigint
+as
+begin
+
+    select f.razao_social, e.fkfornecedor, e.valor_unitario, e.data_compra, e.id_entrada
+    from Entrada e, Fornecedor f
+    where e.fkfornecedor = f.id_fornecedor
+    and e.fkproduto = @id_prod
+    order by e.valor_unitario asc
+   
+
+end;
+
+/************************************************/
 
