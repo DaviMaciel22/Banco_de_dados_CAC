@@ -22,8 +22,8 @@ end
 
 else if @id_produto not in(select id_produto from Produto)
 begin
-insert into Produto (id_produto, fkcategoria, status1, quantidade_estoque, preco_compra, descricao, nome)
-values (@id_produto, @fkcategoria, @status1, @quantidade_estoque, @preco_compra, @descricao, @nome)
+insert into Produto (fkcategoria, status1, quantidade_estoque, preco_compra, descricao, nome)
+values (@fkcategoria, @status1, @quantidade_estoque, @preco_compra, @descricao, @nome)
 end
 
 /************************************************************/
@@ -46,8 +46,8 @@ create proc sp_inserir_atualizar_fornecedor
 as
 if @id_fornecedor not in (select id_fornecedor from Fornecedor)
 begin
-insert into Fornecedor (id_fornecedor, cnpj, email, razao_social, fkcategoria)
-values (@id_fornecedor, @cnpj, @email, @razao_social, @fkcategoria)
+insert into Fornecedor (cnpj, email, razao_social, fkcategoria)
+values (@cnpj, @email, @razao_social, @fkcategoria)
 end
 
 else if @id_fornecedor in (select id_fornecedor from Fornecedor)
@@ -80,8 +80,8 @@ create proc sp_inserir_atualizar_categoria
 as
 if @id_categoria not in (Select id_categoria from Categoria_Produto)
 begin
-insert into Categoria_Produto (id_categoria, nome_categoria)
-values (@id_categoria, @nome_categoria)
+insert into Categoria_Produto (nome_categoria)
+values (@nome_categoria)
 end
 
 else if @id_categoria in (Select id_categoria from Categoria_Produto)
@@ -108,8 +108,8 @@ create proc sp_inserir_atualizar_setor
 as
 if @id_setor not in (select id_setor from Setor)
 begin
-insert into Setor (id_setor, nome_setor, numero_funcionarios)
-values (@id_setor, @nome_sertor, @numero_funcionarios)
+insert into Setor (nome_setor, numero_funcionarios)
+values (@nome_sertor, @numero_funcionarios)
 end
 
 else if @id_setor in (select id_setor from Setor)
@@ -138,8 +138,8 @@ create proc sp_inserir_atualizar_funcionario
 ) as
 if @idfuncionario not in (Select id_funcionario from Funcionario)
 begin
-insert into Funcionario (id_funcionario, fksetor, nome_funcionario, tipo_funcionario)
-values (@idfuncionario, @fksetor, @nome_funcionario, @tipo_funcionario)
+insert into Funcionario (fksetor, nome_funcionario, tipo_funcionario)
+values (@fksetor, @nome_funcionario, @tipo_funcionario)
 end
 
 else if @idfuncionario in (Select id_funcionario from Funcionario)
@@ -171,8 +171,8 @@ create proc sp_inserir_atualizar_saida
 as
 if @id_saida not in (select id_saida from Saida)
 begin
-insert into Saida (id_saida, fkproduto, fksetor, data_saida, valor_saida, quantidade_venda)
-values (@id_saida, @fkproduto, @fksetor, @data_saida, @valor_saida, @quantidade_produto)
+insert into Saida (fkproduto, fksetor, data_saida, valor_saida, quantidade_venda)
+values (@fkproduto, @fksetor, @data_saida, @valor_saida, @quantidade_produto)
 end
 
 else if @id_saida in (Select id_saida from Saida)
@@ -207,8 +207,8 @@ create proc sp_inserir_atualizar_entrada
 as
 if @id_entrada not in (select id_entrada from Entrada)
 begin
-insert into Entrada(id_entrada, fkproduto, fkfornecedor, data_compra, valor_compra, valor_unitario)
-values (@id_entrada, @fkproduto, @fkfornecedor, @data_compra, @valor_compra, @valor_unitario)
+insert into Entrada(fkproduto, fkfornecedor, data_compra, valor_compra, valor_unitario)
+values (@fkproduto, @fkfornecedor, @data_compra, @valor_compra, @valor_unitario)
 end
 
 else if @id_entrada in (Select id_entrada from Entrada)
@@ -243,8 +243,8 @@ create proc sp_inserir_atualizar_endereco_fornecedor
 as
 if @id_end_forn not in (select id_end_forn from Endereco_Fornecedor)
 begin
-insert into Endereco_Fornecedor (id_end_forn, fkfornecedor, rua, cep, cidade, numero)
-values (@id_end_forn, @fkfornecedor, @rua, @cep, @cidade, @numero)
+insert into Endereco_Fornecedor (fkfornecedor, rua, cep, cidade, numero)
+values (@fkfornecedor, @rua, @cep, @cidade, @numero)
 end
 
 else if @id_end_forn in (select id_end_forn from Endereco_Fornecedor)
@@ -278,8 +278,8 @@ create proc sp_inserir_atualizar_endereco_funcionario
 as
 if @id_end_fun not in (select id_end_fun from Endereco_Funcionario)
 begin
-insert into Endereco_Funcionario(id_end_fun, fkfuncionario, rua, cep, cidade, numero)
-values (@id_end_fun, @fkfuncionario, @rua, @cep, @cidade, @numero)
+insert into Endereco_Funcionario(fkfuncionario, rua, cep, cidade, numero)
+values (@fkfuncionario, @rua, @cep, @cidade, @numero)
 end
 
 else if @id_end_fun in (select id_end_fun from Endereco_Funcionario)
@@ -302,6 +302,35 @@ delete from Endereco_Funcionario
 where id_end_fun = @id_end_fun
 
 /************************************************************/
+
+create proc sp_insert_update_telefone_for
+(@id_telefone bigint,
+@fkfornecedor bigint,
+@telefone_for varchar(15)
+)
+as
+if @id_telefone not in (select id_telefone from Telefone_Fornecedor)
+begin
+insert into Telefone_Fornecedor (fkfornecedor, telefone_for)
+values(@fkfornecedor, @telefone_for)
+end
+
+else if @id_telefone in (select id_telefone from Telefone_Fornecedor)
+begin
+update Telefone_Fornecedor
+set fkfornecedor = @fkfornecedor,
+telefone_for = @telefone_for
+where id_telefone = @id_telefone
+end
+
+
+/*********************************************************/
+
+create proc sp_deletar_telefone_for
+(@id_telefone bigint)
+as
+delete from Telefone_Fornecedor
+where id_telefone_for = @id_telefone
 
 
 
