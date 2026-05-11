@@ -373,21 +373,22 @@ where id_telefone_fun = @id_telefone
 
 /* ALAN *********************************************************/ 
 
-CREATE PROCEDURE sp_preco_medio
-    @id_prod BIGINT
-AS
-BEGIN
+create procedure sp_preco_medio
+    @id_prod bigint
+as
+begin
 
-    IF NOT EXISTS (SELECT 1 FROM Entrada WHERE fkproduto = @id_prod)
-    BEGIN
-        SELECT 'Este produto ainda não possui registros de entrada para cálculo.' AS Mensagem;
-    END
-
-
-    SELECT AVG(valor_unitario)
+    if not exists (SELECT * FROM Entrada WHERE fkproduto = @id_prod)
+    begin
+        select 'Este produto ainda não possui registros de entrada para cálculo.' as Mensagem;
+    end
+    else 
+    begin
+    select AVG(valor_unitario)
     from Entrada
-    WHERE fkproduto = @id_prod
-END;
+    where fkproduto = @id_prod
+    end
+end;
 
 /************************************************/
 
