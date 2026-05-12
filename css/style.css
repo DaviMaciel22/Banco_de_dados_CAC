@@ -91,25 +91,28 @@ body{
     transition: all 0.3s ease;
 }
 
+
+
+/* ITEM ATIVO */
+
+.sidebar ul li a.active{
+    background: linear-gradient(135deg, #2563eb, #1d4ed8);
+    color: white;
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+}
+
+.sidebar ul li a.active i{
+    color: white;
+}
+
 /* HOVER */
 
 .sidebar ul li a:hover{
-    background-color: rgba(37, 99, 235, 0.15);
+    background-color: rgba(37, 99, 235, 0.25);
     color: white;
 }
 
 .sidebar ul li a:hover i{
-    color: white;
-}
-
-/* ITEM ATIVO */
-
-.sidebar ul li:first-child a{
-    background-color: #2563eb;
-    color: white;
-}
-
-.sidebar ul li:first-child a i{
     color: white;
 }
 
@@ -186,13 +189,19 @@ body{
     gap: 20px;
     position: fixed;
     top: 0;
-    left: 0;
+    left: 250px; /* Começa após a sidebar */
     right: 0;
     height: 70px;
     padding: 15px 40px;
     background-color: white;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     z-index: 999;
+    transition: left 0.3s ease;
+}
+
+/* Quando o menu é recolhido, a topbar ocupa a tela toda */
+.topbar.expanded {
+    left: 0;
 }
 
 .topbar h1{
@@ -263,21 +272,197 @@ body{
     background: linear-gradient(135deg, #9333ea, #7e22ce);
 }
 
+
+/* ÁREA INFERIOR */
+
+
+.content{
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 20px;
+    margin-top: 30px;
+}
+
+
+/* BOXES */
+
+
+.box{
+    background: white;
+    padding: 25px;
+    border-radius: 16px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+    transition: all 0.3s ease;
+}
+
+/* EFEITO HOVER */
+
+.box:hover{
+    transform: translateY(-4px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.12);
+}
+
+
+/* TÍTULOS */
+
+
+.box h2{
+    font-size: 20px;
+    color: #111827;
+    margin-bottom: 20px;
+    font-weight: 600;
+}
+
+/* ATIVIDADES */
+
+
+.atividade{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 0;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.atividade p{
+    color: #334155;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.atividade span{
+    color: #94a3b8;
+    font-size: 13px;
+}
+
+/* RESUMO */
+
+.resumo-item{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 0;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.resumo-item p{
+    color: #334155;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.resumo-item span{
+    background: #2563eb;
+    color: white;
+    padding: 4px 10px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+
 /* RESPONSIVO */
+
+
+@media (max-width: 900px){
+
+    .content{
+        grid-template-columns: 1fr;
+    }
+
+}
+
+
+/* ÍCONES DOS CARDS */
+
+.card i{
+    font-size: 32px;
+    margin-bottom: 12px;
+    opacity: 0.9;
+}
+
+.blue i{
+    color: rgba(255, 255, 255, 0.95);
+}
+
+.green i{
+    color: rgba(255, 255, 255, 0.95);
+}
+
+.orange i{
+    color: rgba(255, 255, 255, 0.95);
+}
+
+.purple i{
+    color: rgba(255, 255, 255, 0.95);
+}
+
+
+/* ÍCONES DAS ATIVIDADES */
+
+.atividade i{
+    font-size: 18px;
+    margin-right: 12px;
+    width: 24px;
+    text-align: center;
+}
+
+.atividade:nth-child(2) i{
+    color: #9333ea;
+}
+
+.atividade:nth-child(3) i{
+    color: #2563eb;
+}
+
+.atividade:nth-child(4) i{
+    color: #16a34a;
+}
+
+.atividade:nth-child(5) i{
+    color: #f59e0b;
+}
+
+
+/* ÍCONES DO RESUMO */
+
+.resumo-item i{
+    font-size: 18px;
+    margin-right: 12px;
+    width: 24px;
+    text-align: center;
+}
+
+.resumo-item:nth-child(1) i{
+    color: #f59e0b;
+}
+
+.resumo-item:nth-child(2) i{
+    color: #2563eb;
+}
+
+.resumo-item:nth-child(3) i{
+    color: #9333ea;
+}
+
+.resumo-item:nth-child(4) i{
+    color: #16a34a;
+}
+
+.resumo-item:nth-child(5) i{
+    color: #dc2626;
+}
+
+/* MOBILE */
+
 @media (max-width: 768px){
-    .menu-toggle{
-        display: flex;
-    }
-    
-    .main{
-        margin-left: 0;
-    }
-    
+
     .sidebar{
         transform: translateX(-100%);
     }
-    
+
     .sidebar.visible{
         transform: translateX(0);
     }
+
 }
