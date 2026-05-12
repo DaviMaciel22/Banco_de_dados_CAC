@@ -65,7 +65,7 @@ end;
 
 CREATE TRIGGER tg_log_alteracoes_produto
 ON Produto
-AFTER INSERT, UPDATE, DELETE
+FOR INSERT, UPDATE, DELETE
 AS
 BEGIN
 
@@ -126,7 +126,7 @@ END;
 
 CREATE TRIGGER tg_log_alteracoes_categoria
 ON Categoria
-AFTER INSERT, UPDATE, DELETE
+FOR INSERT, UPDATE, DELETE
 AS
 BEGIN
 
@@ -187,7 +187,7 @@ END;
 
 CREATE TRIGGER tg_log_alteracoes_categoria_prod_set
 ON Categoria_prod_set
-AFTER INSERT, UPDATE, DELETE
+FOR INSERT, UPDATE, DELETE
 AS
 BEGIN
 
@@ -246,7 +246,7 @@ END;
 
 CREATE TRIGGER tg_log_alteracoes_endereco_fornecedor
 ON Endereco_fornecedor
-AFTER INSERT, UPDATE, DELETE
+FOR INSERT, UPDATE, DELETE
 AS
 BEGIN
 
@@ -306,7 +306,7 @@ END;
 
 CREATE TRIGGER tg_log_alteracoes_endereco_funcionario
 ON Endereco_funcionario
-AFTER INSERT, UPDATE, DELETE
+FOR INSERT, UPDATE, DELETE
 AS
 BEGIN
 
@@ -367,7 +367,7 @@ END;
 
 CREATE TRIGGER tg_log_alteracoes_entrada
 ON Entrada
-AFTER INSERT, UPDATE, DELETE
+FOR INSERT, UPDATE, DELETE
 AS
 BEGIN
 
@@ -428,7 +428,7 @@ END;
 
 CREATE TRIGGER tg_log_alteracoes_fornecedor
 ON Fornecedor
-AFTER INSERT, UPDATE, DELETE
+FOR INSERT, UPDATE, DELETE
 AS
 BEGIN
 
@@ -487,7 +487,7 @@ END;
 
 CREATE TRIGGER tg_log_alteracoes_funcionario
 ON Funcionario
-AFTER INSERT, UPDATE, DELETE
+FOR INSERT, UPDATE, DELETE
 AS
 BEGIN
 
@@ -547,7 +547,7 @@ END;
 
 CREATE TRIGGER tg_log_alteracoes_saida
 ON Saida
-AFTER INSERT, UPDATE, DELETE
+FOR INSERT, UPDATE, DELETE
 AS
 BEGIN
 
@@ -608,7 +608,7 @@ END;
 
 CREATE TRIGGER tg_log_alteracoes_setor
 ON Setor
-AFTER INSERT, UPDATE, DELETE
+FOR INSERT, UPDATE, DELETE
 AS
 BEGIN
 
@@ -668,7 +668,7 @@ END;
 
 CREATE TRIGGER tg_log_alteracoes_telefone_funcionario
 ON Telefone_funcionario
-AFTER INSERT, UPDATE, DELETE
+FOR INSERT, UPDATE, DELETE
 AS
 BEGIN
 
@@ -729,7 +729,7 @@ END;
 
 CREATE TRIGGER tg_log_alteracoes_telefone_fornecedor
 ON Telefone_fornecedor
-AFTER INSERT, UPDATE, DELETE
+FOR INSERT, UPDATE, DELETE
 AS
 BEGIN
 
@@ -788,3 +788,122 @@ END;
 
 
 
+create trigger atualizacao_de_estoque_entrada
+on Entrada
+for insert, delete
+as
+begin
+
+    declare @acao VARCHAR(20);
+
+    IF EXISTS (SELECT * FROM inserted)
+    begin
+        SET @acao = 'INSERT';
+    end
+    ELSE IF EXISTS (SELECT * FROM deleted)
+    begin
+        SET @acao = 'DELETE';
+    end
+
+
+
+    if @acao = 'INSERT'
+    begin
+
+      declare @qnt bigint
+      set @qnt = (select quantidade_compra from inserted)
+
+      declare @id bigint
+      set @id = (select fkproduto from inserted)
+
+      update Produto
+      set quantidade_estoque += @qnt
+      where id_produto = @id
+
+    end
+
+
+
+
+     if @acao = 'DELETE'
+    begin
+
+      declare @qntd bigint
+      set @qntd = (select quantidade_compra from deleted)
+
+      declare @idd bigint
+      set @idd = (select fkproduto from deleted)
+
+      update Produto
+      set quantidade_estoque = quantidade_estoque - @qntd
+      where id_produto = @idd
+
+    end
+
+
+
+end
+
+
+
+
+/***********************************************************/
+
+
+
+
+create trigger atualizacao_de_estoque_saida
+on Saida
+for insert, delete
+as
+begin
+
+    declare @acao VARCHAR(20);
+
+    IF EXISTS (SELECT * FROM inserted)
+    begin
+        SET @acao = 'INSERT';
+    end
+    ELSE IF EXISTS (SELECT * FROM deleted)
+    begin
+        SET @acao = 'DELETE';
+    end
+
+
+
+    if @acao = 'INSERT'
+    begin
+
+      declare @qnt bigint
+      set @qnt = (select quantidade_venda from inserted)
+
+      declare @id bigint
+      set @id = (select fkproduto from inserted)
+
+      update Produto
+      set quantidade_estoque = quantidade_estoque - @qnt
+      where id_produto = @id
+
+    end
+
+
+
+
+     if @acao = 'DELETE'
+    begin
+
+      declare @qntd bigint
+      set @qntd = (select quantidade_venda from deleted)
+
+      declare @idd bigint
+      set @idd = (select fkproduto from deleted)
+
+      update Produto
+      set quantidade_estoque += @qntd
+      where id_produto = @idd
+
+    end
+
+
+
+end
