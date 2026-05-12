@@ -23,32 +23,32 @@ CREATE TABLE Produto(
     quantidade_estoque INT NOT NULL,
     preco_compra numeric(18,2) NOT NULL,
     descricao VARCHAR(255) NOT NULL,
-    nome VARCHAR(255) NOT NULL
+    nome VARCHAR(50) NOT NULL
 );
 
 CREATE TABLE Fornecedor(
     id_fornecedor BIGINT NOT NULL IDENTITY(1,1) PRIMARY KEY,
-    cnpj VARCHAR(255) NOT NULL,
-    email VARCHAR(255) NOT NULL,
-    razao_social VARCHAR(255) NOT NULL
+    cnpj VARCHAR(14) NOT NULL,
+    email VARCHAR(50) NOT NULL,
+    razao_social VARCHAR(50) NOT NULL
 );
 
 CREATE TABLE Categoria(
     id_categoria BIGINT NOT NULL IDENTITY(1,1) PRIMARY KEY,
-    nome_categoria VARCHAR(255) NOT NULL
+    nome_categoria VARCHAR(50) NOT NULL
 );
 
 CREATE TABLE Setor(
     id_setor BIGINT NOT NULL IDENTITY(1,1) PRIMARY KEY,
-    nome_setor VARCHAR(20) NOT NULL,
+    nome_setor VARCHAR(50) NOT NULL,
     numero_funcionarios INT NOT NULL
 );
 
 CREATE TABLE Funcionario(
     id_funcionario BIGINT NOT NULL IDENTITY(1,1) PRIMARY KEY,
     fksetor BIGINT NOT NULL,
-    nome_funcionario VARCHAR(255) NOT NULL,
-    tipo_funcionario VARCHAR(255) NOT NULL
+    nome_funcionario VARCHAR(100) NOT NULL,
+    tipo_funcionario VARCHAR(50) NOT NULL
 );
 
 CREATE TABLE Saida(
