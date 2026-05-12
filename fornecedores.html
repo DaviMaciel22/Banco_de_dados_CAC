@@ -1,1 +1,204 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fornecedores - CAC LTDA</title>
 
+    <!-- CSS -->
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/fornecedores.css">
+
+    <!-- FONT AWESOME -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+
+    <!-- TOPBAR -->
+    <div class="topbar">
+
+        <div class="topbar-left">
+
+            <button class="menu-toggle" id="menu-toggle" aria-label="Menu">
+                <i class="fas fa-bars"></i>
+            </button>
+
+            <h1>Fornecedores</h1>
+
+        </div>
+
+        <div class="topbar-right">
+
+            <button class="topbar-btn" aria-label="Notificações">
+                <i class="fas fa-bell"></i>
+            </button>
+
+            <div class="topbar-user">
+                <span>Administrador</span>
+                <i class="fas fa-user-circle user-icon"></i>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- SIDEBAR -->
+    <div class="sidebar" id="sidebar">
+
+        <!-- LOGO -->
+        <div class="sidebar-logo">
+
+            <div class="logo-text">
+                <h2>CAC LTDA</h2>
+                <p>Sistema de Estoque e Compras</p>
+            </div>
+
+        </div>
+
+        <!-- MENU -->
+        <ul>
+            <li><a href="index.html"><i class="fas fa-home"></i>Dashboard</a> </li>
+            <li><a href="produtos.html"><i class="fas fa-box"></i>Produtos</a></li>
+            <li><a href="fornecedores.html" class="active"><i class="fas fa-truck"></i>Fornecedores</a> </li>
+            <li><a href="entradas.html"><i class="fas fa-arrow-down"></i>Entradas</a> </li>
+            <li><a href="saidas.html"><i class="fas fa-arrow-up"></i>Saídas</a></li>
+            <li><a href="categorias.html"><i class="fas fa-users"></i>Categorias</a></li>
+            <li><a href="#"><i class="fas fa-user-tie"></i>Funcionários</a></li>
+            <li><a href="#"><i class="fas fa-building"></i> Setores</a> </li>
+            <li><a href="#"><i class="fas fa-chart-bar"></i>Relatórios</a></li>
+            <li><a href="#"><i class="fas fa-bell"></i> Alertas </a> </li>
+            <li><a href="#"><i class="fas fa-history"></i>Histórico</a></li>
+            <li><a href="#"><i class="fas fa-cog"></i>Configurações </a></li>
+            <li><a href="#"><i class="fas fa-sign-out-alt"></i> Sair </a></li>
+        </ul>
+
+    </div>
+
+    <!-- MAIN -->
+    <div class="main">
+
+        <!-- CABEÇALHO FORNECEDORES -->
+        <div class="fornecedores-header">
+            <h2>Gerenciar Fornecedores</h2>
+            <button class="btn-novo-fornecedor">
+                <i class="fas fa-plus"></i> Novo Fornecedor
+            </button>
+        </div>
+
+        <!-- FILTROS E BUSCA -->
+        <div class="fornecedores-filtros">
+            
+            <div class="busca-box">
+                <i class="fas fa-search"></i>
+                <input type="text" placeholder="Buscar fornecedores por nome ou CNPJ...">
+            </div>
+
+            <div class="filtros">
+                <select class="filtro-select" aria-label="Filtrar por categoria">
+                    <option>Todas Categorias</option>
+                    <option>Papelaria</option>
+                    <option>Informática</option>
+                    <option>Móveis</option>
+                </select>
+            </div>
+
+        </div>
+
+        <!-- TABELA FORNECEDORES -->
+        <div class="tabela-container">
+            <table class="tabela-fornecedores">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Razão Social</th>
+                        <th>CNPJ</th>
+                        <th>Telefone</th>
+                        <th>Categoria</th>
+                        <th>Status</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1</td>
+                        <td>Tech Supplies Brasil</td>
+                        <td>12.345.678/0001-90</td>
+                        <td>(11) 4002-8922</td>
+                        <td>Informática</td>
+                        <td><span class="badge ativo">Ativo</span></td>
+                        <td class="acoes">
+                            <button class="btn-acao editar" title="Editar"><i class="fas fa-edit"></i></button>
+                            <button class="btn-acao deletar" title="Deletar"><i class="fas fa-trash"></i></button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td>Papelaria Central Ltda</td>
+                        <td>98.765.432/0001-21</td>
+                        <td>(21) 2233-4455</td>
+                        <td>Papelaria</td>
+                        <td><span class="badge ativo">Ativo</span></td>
+                        <td class="acoes">
+                            <button class="btn-acao editar" title="Editar"><i class="fas fa-edit"></i></button>
+                            <button class="btn-acao deletar" title="Deletar"><i class="fas fa-trash"></i></button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>3</td>
+                        <td>Móveis Planejados S.A.</td>
+                        <td>11.222.333/0001-44</td>
+                        <td>(11) 5555-4444</td>
+                        <td>Móveis</td>
+                        <td><span class="badge pendente">Pendente</span></td>
+                        <td class="acoes">
+                            <button class="btn-acao editar" title="Editar"><i class="fas fa-edit"></i></button>
+                            <button class="btn-acao deletar" title="Deletar"><i class="fas fa-trash"></i></button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>4</td>
+                        <td>Conecta Telecom</td>
+                        <td>55.666.777/0001-88</td>
+                        <td>(31) 3322-1100</td>
+                        <td>Informática</td>
+                        <td><span class="badge inativo">Inativo</span></td>
+                        <td class="acoes">
+                            <button class="btn-acao editar" title="Editar"><i class="fas fa-edit"></i></button>
+                            <button class="btn-acao deletar" title="Deletar"><i class="fas fa-trash"></i></button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>5</td>
+                        <td>Limpeza Express Ltda</td>
+                        <td>99.888.777/0001-55</td>
+                        <td>(11) 98765-4321</td>
+                        <td>Serviços</td>
+                        <td><span class="badge ativo">Ativo</span></td>
+                        <td class="acoes">
+                            <button class="btn-acao editar" title="Editar"><i class="fas fa-edit"></i></button>
+                            <button class="btn-acao deletar" title="Deletar"><i class="fas fa-trash"></i></button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- PAGINAÇÃO -->
+        <div class="paginacao">
+            <button class="pag-btn" title="Anterior">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            <button class="pag-btn ativo">1</button>
+            <button class="pag-btn">2</button>
+            <button class="pag-btn">3</button>
+            <button class="pag-btn" title="Próximo">
+                <i class="fas fa-chevron-right"></i>
+            </button>
+        </div>
+
+    </div>
+
+    <script src="js/script.js"></script>
+</body>
+</html>
