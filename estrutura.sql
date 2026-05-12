@@ -88,6 +88,14 @@ CREATE TABLE Telefone_Funcionario(
     telefone VARCHAR(15) NOT NULL
 );
 
+CREATE TABLE log_alteracoes (
+    id_log BIGINT NOT NULL IDENTITY(1,1) PRIMARY KEY,
+    nome_tabela VARCHAR(100) NOT NULL,
+    acao VARCHAR(20) NOT NULL,         
+    id_registro_afetado BIGINT NOT NULL, 
+    data_hora DATETIME NOT NULL DEFAULT GETDATE(),
+    usuario_banco VARCHAR(100) NOT NULL DEFAULT SYSTEM_USER 
+);
 
 
 
