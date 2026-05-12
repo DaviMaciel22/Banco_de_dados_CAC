@@ -21,4 +21,38 @@ end
 
 
 
-/***********************************************************/
+
+
+
+
+
+/* ALAN ***********************************************************/
+
+create trigger quantidade_estoque
+on Produto
+for update
+as
+begin
+ 
+    if update(quantidade_estoque)
+    begin
+        if exists (select 1 from inserted where quantidade_estoque < 0)
+        begin
+            raiserror ('ERRO: O estoque não pode ficar negativo. Operação cancelada.', 16, 1);
+            rollback transaction;
+            return;
+        end
+
+        if exists (select 1 from inserted where quantidade_estoque <= 20 having count(quantidade_estoque) = 1)
+        begin
+            raiserror ('AVISO: Atenção! 1 produto chegou no estoque mínimo!', 10, 1);
+        end
+        if exists (select 1 from inserted where quantidade_estoque <= 20 having count(quantidade_estoque) > 1)
+        begin
+            raiserror ('AVISO: Atenção! Há mais de 1 produto com estoque mínimo!', 10, 1);
+        end
+     end
+
+end;
+
+

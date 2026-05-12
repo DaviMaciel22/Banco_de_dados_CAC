@@ -77,17 +77,15 @@ CREATE TABLE Categoria_prod_set(
 );
 
 CREATE TABLE Telefone_Fornecedor(
-    id_telefone_for BIGINT NOT NULL,
+    id_telefone_for BIGINT NOT NULL IDENTITY(1,1) PRIMARY KEY,
     fkfornecedor BIGINT NOT NULL,
-    telefone VARCHAR(15) NOT NULL,
-    PRIMARY KEY(id_telefone_for)
+    telefone VARCHAR(15) NOT NULL
 );
 
 CREATE TABLE Telefone_Funcionario(
-    id_telefone_fun BIGINT NOT NULL,
+    id_telefone_fun BIGINT NOT NULL IDENTITY(1,1) PRIMARY KEY,
     fkfuncionario BIGINT NOT NULL,
-    telefone VARCHAR(15) NOT NULL,
-    PRIMARY KEY(id_telefone_fun)
+    telefone VARCHAR(15) NOT NULL
 );
 
 

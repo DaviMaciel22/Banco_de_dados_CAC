@@ -384,7 +384,7 @@ begin
     end
     else 
     begin
-    select AVG(valor_unitario)
+    select avg(valor_unitario)
     from Entrada
     where fkproduto = @id_prod
     end
