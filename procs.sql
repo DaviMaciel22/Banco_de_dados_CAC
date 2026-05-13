@@ -1,5 +1,5 @@
 -- Davi
-create proc sp_insert_update_produto
+create proc sp_inserir_atualizar_produto
 (@id_produto bigint,
 @fkcategoria bigint,
 @status1 varchar(50),
@@ -34,6 +34,7 @@ begin
 insert into Produto (fkcategoria, status1, quantidade_estoque, preco_compra, descricao, nome)
 values (@fkcategoria, @status1, @quantidade_estoque, @preco_compra, @descricao, @nome)
 end
+
 end
 
 /************************************************************/
@@ -50,14 +51,13 @@ create proc sp_inserir_atualizar_fornecedor
 (@id_fornecedor bigint,
 @cnpj varchar(14),
 @email varchar(100),
-@razao_social varchar(100),
-@fkcategoria bigint 
+@razao_social varchar(100)
 )
 as
 if @id_fornecedor not in (select id_fornecedor from Fornecedor)
 begin
-insert into Fornecedor (cnpj, email, razao_social, fkcategoria)
-values (@cnpj, @email, @razao_social, @fkcategoria)
+insert into Fornecedor (cnpj, email, razao_social)
+values (@cnpj, @email, @razao_social)
 end
 
 else if @id_fornecedor in (select id_fornecedor from Fornecedor)
@@ -66,7 +66,6 @@ update Fornecedor
 set cnpj = @cnpj,
 email = @email,
 razao_social = @razao_social,
-fkcategoria = @fkcategoria
 where id_fornecedor = @id_fornecedor
 end
 
@@ -88,15 +87,15 @@ create proc sp_inserir_atualizar_categoria
 @nome_categoria varchar(50)
 )
 as
-if @id_categoria not in (Select id_categoria from Categoria_Produto)
+if @id_categoria not in (Select id_categoria from Categoria)
 begin
-insert into Categoria_Produto (nome_categoria)
+insert into Categoria (nome_categoria)
 values (@nome_categoria)
 end
 
-else if @id_categoria in (Select id_categoria from Categoria_Produto)
+else if @id_categoria in (Select id_categoria from Categoria)
 begin
-update Categoria_Produto 
+update Categoria
 set nome_categoria = @nome_categoria
 where id_categoria = @id_categoria
 end
@@ -106,7 +105,7 @@ end
 create proc sp_deletar_categoria
 (@id_categoria bigint)
 as
-delete from Categoria_Produto
+delete from Categoria
 where id_categoria = @id_categoria
 
 /************************************************************/
@@ -289,7 +288,7 @@ end
 
 /************************************************************/
 
-create proc deletar_endereco_fornecedor
+create proc sp_deletar_endereco_fornecedor
 (@id_end_forn bigint)
 as
 delete from Endereco_Fornecedor
@@ -324,7 +323,7 @@ end
 
 /************************************************************/
 
-create proc deletar_endereco_funcionario
+create proc sp_deletar_endereco_funcionario
 (@id_end_fun bigint)
 as
 delete from Endereco_Funcionario
@@ -332,24 +331,24 @@ where id_end_fun = @id_end_fun
 
 /************************************************************/
 
-create proc sp_insert_update_telefone_for
+create proc sp_inserir_atualizar_telefone_for
 (@id_telefone bigint,
 @fkfornecedor bigint,
 @telefone_for varchar(15)
 )
 as
-if @id_telefone not in (select id_telefone from Telefone_Fornecedor)
+if @id_telefone not in (select id_telefone_for from Telefone_Fornecedor)
 begin
-insert into Telefone_Fornecedor (fkfornecedor, telefone_for)
+insert into Telefone_Fornecedor (fkfornecedor, telefone)
 values(@fkfornecedor, @telefone_for)
 end
 
-else if @id_telefone in (select id_telefone from Telefone_Fornecedor)
+else if @id_telefone in (select id_telefone_for from Telefone_Fornecedor)
 begin
 update Telefone_Fornecedor
 set fkfornecedor = @fkfornecedor,
-telefone_for = @telefone_for
-where id_telefone = @id_telefone
+telefone = @telefone_for
+where id_telefone_for = @id_telefone
 end
 
 
@@ -363,24 +362,24 @@ where id_telefone_for = @id_telefone
 
 
 /*********************************************************/
-create proc sp_insert_update_telefone_fun
+create proc sp_inserir_atualizar_telefone_fun
 (@id_telefone bigint,
 @fkfuncionario bigint,
 @telefone_fun varchar(15)
 )
 as
-if @id_telefone not in (select id_telefone from Telefone_Funcionario)
+if @id_telefone not in (select id_telefone_fun from Telefone_Funcionario)
 begin
-insert into Telefone_Funcionario(fkfuncionario, telefone_fun)
+insert into Telefone_Funcionario(fkfuncionario, telefone)
 values(@fkfuncionario, @telefone_fun)
 end
 
-else if @id_telefone in (select id_telefone from Telefone_Funcionario)
+else if @id_telefone in (select id_telefone_fun from Telefone_Funcionario)
 begin
 update Telefone_Funcionario
 set fkfuncionario = @fkfuncionario,
-telefone_fun = @telefone_fun
-where id_telefone = @id_telefone
+telefone = @telefone_fun
+where id_telefone_fun = @id_telefone
 end
 
 /*********************************************************/

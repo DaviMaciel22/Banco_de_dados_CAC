@@ -28,7 +28,7 @@ CREATE TABLE Produto(
 
 CREATE TABLE Fornecedor(
     id_fornecedor BIGINT NOT NULL IDENTITY(1,1) PRIMARY KEY,
-    cnpj VARCHAR(14) NOT NULL,
+    cnpj VARCHAR(18) NOT NULL,
     email VARCHAR(50) NOT NULL,
     razao_social VARCHAR(50) NOT NULL
 );
