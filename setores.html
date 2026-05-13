@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Setores - CAC LTDA</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/setores.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <!-- TOPBAR -->
+    <div class="topbar">
+        <div class="topbar-left">
+            <button type="button" class="menu-toggle" id="menu-toggle" title="Menu" aria-label="Menu">
+                <i class="fas fa-bars"></i>
+            </button>
+            <h1>Setores</h1>
+        </div>
+        <div class="topbar-right">
+            <button type="button" class="topbar-btn" title="Notificações" aria-label="Notificações">
+                <i class="fas fa-bell"></i>
+            </button>
+            <div class="topbar-user">
+                <span>Administrador</span>
+                <i class="fas fa-user-circle user-icon"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- SIDEBAR -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-logo">
+            <div class="logo-text">
+                <h2>CAC LTDA</h2>
+                <p>Sistema de Estoque e Compras</p>
+            </div>
+        </div>
+        <ul>
+        <ul>
+            <li><a href="index.html"><i class="fas fa-home"></i>Dashboard</a></li>
+            <li><a href="produtos.html"><i class="fas fa-box"></i>Produtos</a></li>
+            <li><a href="fornecedores.html"><i class="fas fa-truck"></i>Fornecedores</a></li>
+            <li><a href="entradas.html"><i class="fas fa-arrow-down"></i>Entradas</a></li>
+            <li><a href="saidas.html"><i class="fas fa-arrow-up"></i>Saídas</a></li>
+            <li><a href="categorias.html"><i class="fas fa-tags"></i>Categorias</a></li>
+            <li><a href="funcionarios.html"><i class="fas fa-user-tie"></i>Funcionários</a></li>
+            <li><a href="setores.html" class="active"><i class="fas fa-building"></i>Setores</a></li>
+            <li><a href="relatorios.html"><i class="fas fa-chart-bar"></i>Relatórios</a></li>
+            <li><a href="alertas.html"><i class="fas fa-bell"></i>Alertas</a></li>
+            <li><a href="historico.html"><i class="fas fa-history"></i>Histórico</a></li>
+            <li><a href="configuracoes.html"><i class="fas fa-cog"></i>Configurações</a></li>
+            <li><a href="#"><i class="fas fa-sign-out-alt"></i>Sair</a></li>
+        </ul>
+        </ul>
+    </div>
+
+    <!-- MAIN -->
+    <div class="main">
+
+        <!-- CARDS DE RESUMO -->
+        <div class="cards-setores">
+            <div class="card-set blue">
+                <div class="card-set-info">
+                    <h3>Total de Setores</h3>
+                    <p>8</p>
+                </div>
+                <i class="fas fa-building"></i>
+            </div>
+            <div class="card-set green">
+                <div class="card-set-info">
+                    <h3>Setores Ativos</h3>
+                    <p>7</p>
+                </div>
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <div class="card-set orange">
+                <div class="card-set-info">
+                    <h3>Total de Funcionários</h3>
+                    <p>12</p>
+                </div>
+                <i class="fas fa-users"></i>
+            </div>
+            <div class="card-set purple">
+                <div class="card-set-info">
+                    <h3>Maior Setor</h3>
+                    <p>TI</p>
+                </div>
+                <i class="fas fa-star"></i>
+            </div>
+        </div>
+
+        <div class="header-flex">
+            <h2>Gerenciar Setores</h2>
+            <button type="button" class="btn-primary">
+                <i class="fas fa-plus"></i> Novo Setor
+            </button>
+        </div>
+
+        <!-- FILTROS -->
+        <div class="filtros-container">
+            <div class="busca-box">
+                <i class="fas fa-search"></i>
+                <input type="text" placeholder="Buscar setor por nome ou responsável...">
+            </div>
+            <div class="filtros">
+                <select class="filtro-select" aria-label="Filtrar por status">
+                    <option value="">Todos os Status</option>
+                    <option value="ativo">Ativo</option>
+                    <option value="inativo">Inativo</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- TABELA -->
+        <div class="tabela-container">
+            <table class="tabela-setores">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Setor</th>
+                        <th>Responsável</th>
+                        <th>Funcionários</th>
+                        <th>Ramal</th>
+                        <th>Localização</th>
+                        <th>Status</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1</td>
+                        <td>
+                            <div class="setor-nome">
+                                <div class="setor-icon azul"><i class="fas fa-laptop-code"></i></div>
+                                <span>Tecnologia da Informação</span>
+                            </div>
+                        </td>
+                        <td>Ricardo Fernandes</td>
+                        <td><span class="count-badge">3 funcs.</span></td>
+                        <td>2100</td>
+                        <td>Bloco A – 2º andar</td>
+                        <td><span class="badge ativo">Ativo</span></td>
+                        <td class="acoes">
+                            <button type="button" class="btn-acao editar" title="Editar"><i class="fas fa-edit"></i></button>
+                            <button type="button" class="btn-acao deletar" title="Excluir"><i class="fas fa-trash"></i></button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td>
+                            <div class="setor-nome">
+                                <div class="setor-icon verde"><i class="fas fa-file-alt"></i></div>
+                                <span>Administrativo</span>
+                            </div>
+                        </td>
+                        <td>Maria Souza</td>
+                        <td><span class="count-badge">4 funcs.</span></td>
+                        <td>2200</td>
+                        <td>Bloco A – 1º andar</td>
+                        <td><span class="badge ativo">Ativo</span></td>
+                        <td class="acoes">
+                            <button type="button" class="btn-acao editar" title="Editar"><i class="fas fa-edit"></i></button>
+                            <button type="button" class="btn-acao deletar" title="Excluir"><i class="fas fa-trash"></i></button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>3</td>
+                        <td>
+                            <div class="setor-nome">
+                                <div class="setor-icon laranja"><i class="fas fa-boxes"></i></div>
+                                <span>Almoxarifado</span>
+                            </div>
+                        </td>
+                        <td>Carlos Pereira</td>
+                        <td><span class="count-badge">2 funcs.</span></td>
+                        <td>2300</td>
+                        <td>Bloco B – Térreo</td>
+                        <td><span class="badge ativo">Ativo</span></td>
+                        <td class="acoes">
+                            <button type="button" class="btn-acao editar" title="Editar"><i class="fas fa-edit"></i></button>
+                            <button type="button" class="btn-acao deletar" title="Excluir"><i class="fas fa-trash"></i></button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>4</td>
+                        <td>
+                            <div class="setor-nome">
+                                <div class="setor-icon roxo"><i class="fas fa-shopping-bag"></i></div>
+                                <span>Compras</span>
+                            </div>
+                        </td>
+                        <td>Ana Lima</td>
+                        <td><span class="count-badge">2 funcs.</span></td>
+                        <td>2400</td>
+                        <td>Bloco A – 1º andar</td>
+                        <td><span class="badge ativo">Ativo</span></td>
+                        <td class="acoes">
+                            <button type="button" class="btn-acao editar" title="Editar"><i class="fas fa-edit"></i></button>
+                            <button type="button" class="btn-acao deletar" title="Excluir"><i class="fas fa-trash"></i></button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>5</td>
+                        <td>
+                            <div class="setor-nome">
+                                <div class="setor-icon cinza"><i class="fas fa-archive"></i></div>
+                                <span>Arquivo</span>
+                            </div>
+                        </td>
+                        <td>—</td>
+                        <td><span class="count-badge">1 func.</span></td>
+                        <td>—</td>
+                        <td>Bloco C – Subsolo</td>
+                        <td><span class="badge inativo">Inativo</span></td>
+                        <td class="acoes">
+                            <button type="button" class="btn-acao editar" title="Editar"><i class="fas fa-edit"></i></button>
+                            <button type="button" class="btn-acao deletar" title="Excluir"><i class="fas fa-trash"></i></button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- PAGINAÇÃO -->
+        <div class="paginacao">
+            <button type="button" class="pag-btn" title="Anterior"><i class="fas fa-chevron-left"></i></button>
+            <button type="button" class="pag-btn ativo">1</button>
+            <button type="button" class="pag-btn">2</button>
+            <button type="button" class="pag-btn" title="Próximo"><i class="fas fa-chevron-right"></i></button>
+        </div>
+    </div>
+
+    <script src="js/script.js"></script>
+</body>
+</html>
