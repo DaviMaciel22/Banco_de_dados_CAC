@@ -1,13 +1,17 @@
 -- Davi
+/*Falta fazer os try-catch nas procs de Alan e testar as minhas*/
+
 create proc sp_inserir_atualizar_produto
-(@id_produto bigint,
-@fkcategoria bigint,
-@status1 varchar(50),
-@quantidade_estoque numeric (4,0),
-@preco_compra numeric (18,2),
-@descricao varchar(200),
-@nome varchar(50))
+(@id_produto bigint = null,
+@fkcategoria bigint = null,
+@status1 varchar(50) = null,
+@quantidade_estoque numeric (4,0) = null,
+@preco_compra numeric (18,2) = null,
+@descricao varchar(200) = null,
+@nome varchar(50) = null)
 as
+begin try
+
 if @preco_compra = 0
 begin
 print('Valor do produto não pode ser zero!')
@@ -37,23 +41,41 @@ end
 
 end
 
+end try
+
+begin catch
+print('Ops, deu erro na hora de inserir/atualizar o produto... O erro foi '+ERROR_MESSAGE())
+return
+end catch
+
 /************************************************************/
 
 create proc sp_deletar_produto
-( @id_produto bigint )
+( @id_produto bigint = null )
 as
+begin try
 delete from Produto 
 where id_produto = @id_produto
+
+end try
+
+begin catch
+print('Ops, deu erro na hora de deletar o produto... O erro foi '+ERROR_MESSAGE())
+return
+end catch
 
 /************************************************************/
 
 create proc sp_inserir_atualizar_fornecedor
-(@id_fornecedor bigint,
-@cnpj varchar(14),
-@email varchar(100),
-@razao_social varchar(100)
+(@id_fornecedor bigint = null,
+@cnpj varchar(14) = null,
+@email varchar(100) = null,
+@razao_social varchar(100) = null
 )
 as
+
+begin try
+
 if @id_fornecedor not in (select id_fornecedor from Fornecedor)
 begin
 insert into Fornecedor (cnpj, email, razao_social)
@@ -65,28 +87,42 @@ begin
 update Fornecedor
 set cnpj = @cnpj,
 email = @email,
-razao_social = @razao_social,
+razao_social = @razao_social
 where id_fornecedor = @id_fornecedor
 end
+
+end try
+
+begin catch
+print('Ops, deu erro na hora de inserir/atualizar esse fornecedor... O erro foi '+ERROR_MESSAGE())
+return
+end catch
 
 /************************************************************/
 
 create proc sp_deletar_fornecedor
 (
-@id_fornecedor bigint
+@id_fornecedor bigint = null
 )
 as
+begin try
 delete from Fornecedor
 where id_fornecedor = @id_fornecedor
+end try
 
+begin catch
+print('Ops, deu erro na hora de deletar os dados desse fornecedor... O erro foi '+ERROR_MESSAGE())
+return
+end catch
 
 /************************************************************/
 
 create proc sp_inserir_atualizar_categoria
-( @id_categoria bigint,
-@nome_categoria varchar(50)
+( @id_categoria bigint = null,
+@nome_categoria varchar(50) = null
 )
 as
+begin try
 if @id_categoria not in (Select id_categoria from Categoria)
 begin
 insert into Categoria (nome_categoria)
@@ -100,21 +136,37 @@ set nome_categoria = @nome_categoria
 where id_categoria = @id_categoria
 end
 
+end try
+
+begin catch
+print('Ops, deu erro na hora de inserir/atualizar essa categoria... O erro foi '+ERROR_MESSAGE())
+return
+end catch
+
 /************************************************************/
 
 create proc sp_deletar_categoria
-(@id_categoria bigint)
+(@id_categoria bigint = null)
 as
+begin try
 delete from Categoria
 where id_categoria = @id_categoria
+end try
+
+begin catch
+print('Ops, deu erro na hora de deletar a categoria... O erro foi '+ERROR_MESSAGE())
+return
+end catch
 
 /************************************************************/
 
 create proc sp_inserir_atualizar_setor
-( @id_setor bigint,
-@nome_sertor varchar(20),
-@numero_funcionarios int)
+( @id_setor bigint = null,
+@nome_sertor varchar(20) = null,
+@numero_funcionarios int = null)
 as
+begin try
+
 if @id_setor not in (select id_setor from Setor)
 begin
 insert into Setor (nome_setor, numero_funcionarios)
@@ -129,22 +181,37 @@ numero_funcionarios = @numero_funcionarios
 where id_setor = @id_setor
 end
 
+end try
+
+begin catch
+print('Ops, deu erro na hora de inserir/atualizar esse setor... O erro foi '+ERROR_MESSAGE())
+return
+end catch
 /************************************************************/
 
 create proc sp_deletar_setor
-(@id_setor bigint)
+(@id_setor bigint = null)
 as
+begin try
 delete from Setor
 where id_setor = @id_setor
+end try
+
+begin catch
+print('Ops, deu erro na hora de deletar os dados desse setor... O erro foi '+ERROR_MESSAGE())
+return
+end catch
 
 /************************************************************/
 
 create proc sp_inserir_atualizar_funcionario
-( @idfuncionario bigint,
-@fksetor bigint,
-@nome_funcionario varchar(50),
-@tipo_funcionario varchar(50)
+( @idfuncionario bigint = null,
+@fksetor bigint = null,
+@nome_funcionario varchar(50) = null,
+@tipo_funcionario varchar(50) = null
 ) as
+begin try
+
 if @idfuncionario not in (Select id_funcionario from Funcionario)
 begin
 insert into Funcionario (fksetor, nome_funcionario, tipo_funcionario)
@@ -160,24 +227,40 @@ tipo_funcionario = @tipo_funcionario
 where id_funcionario = @idfuncionario
 end
 
+end try
+
+begin catch
+print('Ops, deu erro na hora de inserir/atualizar esse funcionário... O erro foi '+ERROR_MESSAGE())
+return
+end catch
+
 /************************************************************/
 
 create proc sp_deletar_funcionario
-( @id_funcionario bigint)
+( @id_funcionario bigint = null)
 as
+begin try
 delete from Funcionario
 where id_funcionario = @id_funcionario
+end try
+
+begin catch
+print('Ops, deu erro na hora de deletar os dados desse funcionário... O erro foi '+ERROR_MESSAGE())
+return
+end catch
 
 /************************************************************/
 
 create proc sp_inserir_atualizar_saida 
-(@id_saida bigint,
-@fkproduto bigint,
-@fksetor bigint,
-@data_saida datetime,
-@valor_saida numeric(18,2),
-@quantidade_produto int)
+(@id_saida bigint = null,
+@fkproduto bigint = null,
+@fksetor bigint = null,
+@data_saida datetime = null,
+@valor_saida numeric(18,2) = null,
+@quantidade_produto int = null)
 as
+begin try
+
 if @valor_saida = 0
 begin
 print('Valor saída não pode ser zero!')
@@ -204,25 +287,40 @@ end
 
 end
 
+end try
+
+begin catch
+print('Ops, deu erro na hora de inserir/atualizar essa saída... O erro foi '+ERROR_MESSAGE())
+return
+end catch
+
 /************************************************************/
 
 create proc sp_deletar_saida
-( @id_saida bigint)
+( @id_saida bigint = null)
 as
+begin try
 delete from Saida
 where id_saida = @id_saida
+end try
+
+begin catch
+print('Ops, deu erro na hora de deletar os dados dessa saída... O erro foi '+ERROR_MESSAGE())
+return
+end catch
 
 
 /************************************************************/
 
 create proc sp_inserir_atualizar_entrada 
-(@id_entrada bigint,
-@fkproduto bigint,
-@fkfornecedor bigint,
-@data_compra datetime,
-@valor_compra numeric(18,2),
-@valor_unitario numeric(18,2))
+(@id_entrada bigint = null,
+@fkproduto bigint = null,
+@fkfornecedor bigint = null,
+@data_compra datetime = null,
+@valor_compra numeric(18,2) = null,
+@valor_unitario numeric(18,2) = null)
 as
+begin try
 
 if @valor_compra = 0 or @valor_unitario = 0
 begin
@@ -250,25 +348,41 @@ end
 
 end
 
+end try
+
+begin catch
+print('Ops, deu erro na hora de inserir/atualizar essa entrada... O erro foi '+ERROR_MESSAGE())
+return
+end catch
+
 /************************************************************/
 
 create proc sp_deletar_entrada
-( @id_entrada bigint)
+( @id_entrada bigint = null)
 as
+begin try
 delete from Entrada
 where id_entrada = @id_entrada
+end try
+
+begin catch
+print('Ops, deu erro na hora de deletar os dados dessa entrada... O erro foi '+ERROR_MESSAGE())
+return
+end catch
 
 /************************************************************/
 
 
 create proc sp_inserir_atualizar_endereco_fornecedor
-(@id_end_forn bigint,
-@fkfornecedor bigint,
-@rua varchar(100),
-@cep varchar(9),
-@cidade varchar(20),
-@numero int)
+(@id_end_forn bigint = null,
+@fkfornecedor bigint = null,
+@rua varchar(100) = null,
+@cep varchar(9) = null,
+@cidade varchar(20) = null,
+@numero int = null)
 as
+begin try
+
 if @id_end_forn not in (select id_end_forn from Endereco_Fornecedor)
 begin
 insert into Endereco_Fornecedor (fkfornecedor, rua, cep, cidade, numero)
@@ -286,24 +400,40 @@ numero = @numero
 where id_end_forn = @id_end_forn
 end
 
+end try
+
+begin catch
+print('Ops, deu erro na hora de inserir/atualizar esse endereço... O erro foi '+ERROR_MESSAGE())
+return
+end catch
+
 /************************************************************/
 
 create proc sp_deletar_endereco_fornecedor
-(@id_end_forn bigint)
+(@id_end_forn bigint = null)
 as
+begin try
 delete from Endereco_Fornecedor
 where id_end_forn = @id_end_forn
+end try
+
+begin catch
+print('Ops, deu erro na hora de deletar os dados desse endereço... O erro foi '+ERROR_MESSAGE())
+return
+end catch
 
 /************************************************************/
 
 create proc sp_inserir_atualizar_endereco_funcionario
-(@id_end_fun bigint,
-@fkfuncionario bigint,
-@rua varchar(100),
-@cep varchar(9),
-@cidade varchar(20),
-@numero int)
+(@id_end_fun bigint = null,
+@fkfuncionario bigint = null,
+@rua varchar(100) = null,
+@cep varchar(9) = null,
+@cidade varchar(20) = null,
+@numero int = null)
 as
+begin try
+
 if @id_end_fun not in (select id_end_fun from Endereco_Funcionario)
 begin
 insert into Endereco_Funcionario(fkfuncionario, rua, cep, cidade, numero)
@@ -321,22 +451,38 @@ numero = @numero
 where @id_end_fun = @id_end_fun
 end
 
+end try
+
+begin catch
+print('Ops, deu erro na hora de inserir/atualizar esse endereço... O erro foi '+ERROR_MESSAGE())
+return
+end catch
+
 /************************************************************/
 
 create proc sp_deletar_endereco_funcionario
-(@id_end_fun bigint)
+(@id_end_fun bigint = null)
 as
+begin try
 delete from Endereco_Funcionario
 where id_end_fun = @id_end_fun
+end try
+
+begin catch
+print('Ops, deu erro na hora de deletar os dados desse endereço... O erro foi '+ERROR_MESSAGE())
+return
+end catch
 
 /************************************************************/
 
 create proc sp_inserir_atualizar_telefone_for
-(@id_telefone bigint,
-@fkfornecedor bigint,
-@telefone_for varchar(15)
+(@id_telefone bigint = null,
+@fkfornecedor bigint = null,
+@telefone_for varchar(15) = null
 )
 as
+begin try
+
 if @id_telefone not in (select id_telefone_for from Telefone_Fornecedor)
 begin
 insert into Telefone_Fornecedor (fkfornecedor, telefone)
@@ -351,23 +497,38 @@ telefone = @telefone_for
 where id_telefone_for = @id_telefone
 end
 
+end try
+
+begin catch
+print('Ops, deu erro na hora de inserir/atualizar esse telefone... O erro foi '+ERROR_MESSAGE())
+return
+end catch
 
 /*********************************************************/
 
 create proc sp_deletar_telefone_for
-(@id_telefone bigint)
+(@id_telefone bigint = null)
 as
+begin try
 delete from Telefone_Fornecedor
 where id_telefone_for = @id_telefone
+end try
+
+begin catch
+print('Ops, deu erro na hora de deletar os dados desse telefone... O erro foi '+ERROR_MESSAGE())
+return
+end catch
 
 
 /*********************************************************/
 create proc sp_inserir_atualizar_telefone_fun
-(@id_telefone bigint,
-@fkfuncionario bigint,
-@telefone_fun varchar(15)
+(@id_telefone bigint = null,
+@fkfuncionario bigint = null,
+@telefone_fun varchar(15) = null
 )
 as
+begin try
+
 if @id_telefone not in (select id_telefone_fun from Telefone_Funcionario)
 begin
 insert into Telefone_Funcionario(fkfuncionario, telefone)
@@ -382,12 +543,26 @@ telefone = @telefone_fun
 where id_telefone_fun = @id_telefone
 end
 
+end try
+
+begin catch
+print('Ops, deu erro na hora de inserir/atualizar esse telefone... O erro foi '+ERROR_MESSAGE())
+return
+end catch
+
 /*********************************************************/
 create proc sp_deletar_telefone_fun
-(@id_telefone bigint)
+(@id_telefone bigint = null)
 as
+begin try
 delete from Telefone_Funcionario
 where id_telefone_fun = @id_telefone
+end try
+
+begin catch
+print('Ops, deu erro na hora de deletar os dados desse telefone... O erro foi '+ERROR_MESSAGE())
+return
+end catch
 
 
 /*********************************************************/
