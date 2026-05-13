@@ -1,5 +1,5 @@
 -- Davi
-alter proc sp_insert_update_produto
+create proc sp_insert_update_produto
 (@id_produto bigint,
 @fkcategoria bigint,
 @status1 varchar(50),
@@ -8,6 +8,14 @@ alter proc sp_insert_update_produto
 @descricao varchar(200),
 @nome varchar(50))
 as
+if @preco_compra = 0
+begin
+print('Valor do produto não pode ser zero!')
+return
+end
+
+else
+begin
 if @id_produto in (select id_produto from Produto)
 begin
 update Produto
@@ -20,10 +28,12 @@ nome = @nome
 where id_produto = @id_produto
 end
 
+
 else if @id_produto not in(select id_produto from Produto)
 begin
 insert into Produto (fkcategoria, status1, quantidade_estoque, preco_compra, descricao, nome)
 values (@fkcategoria, @status1, @quantidade_estoque, @preco_compra, @descricao, @nome)
+end
 end
 
 /************************************************************/
@@ -169,6 +179,13 @@ create proc sp_inserir_atualizar_saida
 @valor_saida numeric(18,2),
 @quantidade_produto int)
 as
+if @valor_saida = 0
+begin
+print('Valor saída não pode ser zero!')
+end
+
+else
+begin
 if @id_saida not in (select id_saida from Saida)
 begin
 insert into Saida (fkproduto, fksetor, data_saida, valor_saida, quantidade_venda)
@@ -184,6 +201,8 @@ data_saida = @data_saida,
 valor_saida = @valor_saida,
 quantidade_venda = @quantidade_produto
 where id_saida = @id_saida
+end
+
 end
 
 /************************************************************/
@@ -205,6 +224,14 @@ create proc sp_inserir_atualizar_entrada
 @valor_compra numeric(18,2),
 @valor_unitario numeric(18,2))
 as
+
+if @valor_compra = 0 or @valor_unitario = 0
+begin
+print('Valor do produto não pode ser zero!')
+end
+
+else
+begin
 if @id_entrada not in (select id_entrada from Entrada)
 begin
 insert into Entrada(fkproduto, fkfornecedor, data_compra, valor_compra, valor_unitario)
@@ -220,6 +247,8 @@ data_compra = @data_compra,
 valor_compra = @valor_compra,
 valor_unitario = @valor_unitario
 where id_entrada = @id_entrada
+end
+
 end
 
 /************************************************************/
