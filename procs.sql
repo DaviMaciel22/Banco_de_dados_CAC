@@ -607,65 +607,76 @@ end;
 
 /************************************************/
 
-create procedure sp_consumo_por_setor_30
-@id_prod bigint
+create proc sp_consumo_setor_30
+(@id_setor bigint)
 as
+if @id_setor in (select fksetor from Saida)
+begin 
+select fksetor, fkproduto, sum(valor_saida) as 'Valor Total', sum(quantidade_venda) as 'Quantidade Total' from Saida
+where @id_setor = fksetor
+and datediff(day, data_saida, getdate()) <= 30
+and datediff(day, data_saida, getdate()) >= 0
+group by fkproduto, fksetor
+end
+
+else 
 begin
-
-    select fksetor as 'Setor', sum(quantidade_venda) as 'Quantidade', sum(valor_saida) as 'Valor', fkproduto as 'Produto'
-    from Saida
-    where datediff(day, data_saida, getdate()) <= 30
-    and datediff(day, data_saida, getdate()) >= 0
-    and fkproduto = @id_prod
-    group by fksetor, fkproduto
-
-end;
+print('Esse setor ainda não utilizou nenhum produto!')
+end
 
 /************************************************/
 
-create procedure sp_consumo_por_setor_180
-@id_prod bigint
+create proc sp_consumo_setor_180
+(@id_setor bigint)
 as
+if @id_setor in (select fksetor from Saida)
+begin 
+select fksetor, fkproduto, sum(valor_saida) as 'Valor Total', sum(quantidade_venda) as 'Quantidade Total' from Saida
+where @id_setor = fksetor
+and datediff(day, data_saida, getdate()) <= 180
+and datediff(day, data_saida, getdate()) >= 0
+group by fkproduto, fksetor
+end
+
+else 
 begin
-
-    select fksetor as 'Setor', sum(quantidade_venda) as 'Quantidade', sum(valor_saida) as 'Valor', fkproduto as 'Produto'
-    from Saida
-    where datediff(day, data_saida, getdate()) <= 180
-    and datediff(day, data_saida, getdate()) >= 0
-    and fkproduto = @id_prod
-    group by fksetor, fkproduto
-
-end;
+print('Esse setor ainda não utilizou nenhum produto!')
 
 /************************************************/
 
-create procedure sp_consumo_por_setor_365
-@id_prod bigint
+create proc sp_consumo_setor_365
+(@id_setor bigint)
 as
+if @id_setor in (select fksetor from Saida)
+begin 
+select fksetor, fkproduto, sum(valor_saida) as 'Valor Total', sum(quantidade_venda) as 'Quantidade Total' from Saida
+where @id_setor = fksetor
+and datediff(day, data_saida, getdate()) <= 365
+and datediff(day, data_saida, getdate()) >= 0
+group by fkproduto, fksetor
+end
+
+else 
 begin
-
-    select fksetor as 'Setor', sum(quantidade_venda) as 'Quantidade', sum(valor_saida) as 'Valor', fkproduto as 'Produto'
-    from Saida
-    where datediff(day, data_saida, getdate()) <= 365
-    and datediff(day, data_saida, getdate()) >= 0
-    and fkproduto = @id_prod
-    group by fksetor, fkproduto
-
-end;
+print('Esse setor ainda não utilizou nenhum produto!')
+end
 
 /************************************************/
 
-create procedure sp_consumo_por_setor
-@id_prod bigint
+alter proc sp_consumo_setor
+(@id_setor bigint)
 as
+if @id_setor in (select fksetor from Saida)
+begin 
+select fksetor, fkproduto, sum(valor_saida) as 'Valor Total', sum(quantidade_venda) as 'Quantidade Total' from Saida
+where @id_setor = fksetor
+group by fkproduto, fksetor
+end
+
+else 
 begin
-
-    select fksetor as 'Setor', sum(quantidade_venda) as 'Quantidade', sum(valor_saida) as 'Valor', fkproduto as 'Produto'
-    from Saida
-    where fkproduto = @id_prod
-    group by fksetor, fkproduto
-
-end;
+print('Esse setor ainda não utilizou nenhum produto!')
+end
 
 /************************************************/
 
