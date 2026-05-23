@@ -680,7 +680,7 @@ end
 
 /************************************************/
 
-create procedure sp_ficha_produto
+alter procedure sp_ficha_produto
 @id_prod bigint
 as
 begin
@@ -688,6 +688,12 @@ begin
     select id_produto, c.nome_categoria as 'categoria', status1 as 'status', quantidade_estoque, preco_compra, descricao, nome
     from Produto p, Categoria c
     where id_produto = @id_prod
+
+    select * from Entrada
+    where fkproduto = @id_prod
+
+    select * from Saida
+    where fkproduto = @id_prod
    
 end;
 
