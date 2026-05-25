@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - CAC LTDA</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <div class="topbar">
+        <div class="topbar-left">
+            <button class="menu-toggle" id="menu-toggle" aria-label="Menu">
+                <i class="fas fa-bars"></i>
+            </button>
+            <h1>Dashboard</h1>
+        </div>
+        <div class="topbar-right">
+            <button class="topbar-btn" aria-label="Notificações">
+                <i class="fas fa-bell"></i>
+            </button>
+            <div class="topbar-user">
+                <span>Administrador</span>
+                <i class="fas fa-user-circle user-icon"></i>
+            </div>
+        </div>
+    </div>
+
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-logo">
+            <div class="logo-text">
+                <h2>CAC LTDA</h2>
+                <p>Sistema de Estoque e Compras</p>
+            </div>
+        </div>
+        <ul>
+            <li><a href="index.html" class="active"><i class="fas fa-home"></i> <span>Dashboard</span></a></li>
+            <li><a href="produtos.html"><i class="fas fa-box"></i> <span>Produtos</span></a></li>
+            <li><a href="fornecedores.html"><i class="fas fa-truck"></i> <span>Fornecedores</span></a></li>
+            <li><a href="entradas.html"><i class="fas fa-arrow-down"></i> <span>Entradas</span></a></li>
+            <li><a href="saidas.html"><i class="fas fa-arrow-up"></i> <span>Saídas</span></a></li>
+            <li><a href="categorias.html"><i class="fas fa-tags"></i> <span>Categorias</span></a></li>
+            <li><a href="funcionarios.html"><i class="fas fa-user-tie"></i> <span>Funcionários</span></a></li>
+            <li><a href="setores.html"><i class="fas fa-building"></i> <span>Setores</span></a></li>
+            <li><a href="relatorios.html"><i class="fas fa-chart-bar"></i> <span>Relatórios</span></a></li>
+            <li><a href="alertas.html"><i class="fas fa-bell"></i> <span>Alertas</span></a></li>
+            <li><a href="historico.html"><i class="fas fa-history"></i> <span>Histórico</span></a></li>
+            <li><a href="configuracoes.html"><i class="fas fa-cog"></i> <span>Configurações</span></a></li>
+            <li><a href="#"><i class="fas fa-sign-out-alt"></i> <span>Sair</span></a></li>
+        </ul>
+    </div>
+
+    <div style="margin-left:250px; padding:90px 40px 40px 40px; box-sizing:border-box; transition:margin-left .3s ease;">
+
+        <!-- CARDS -->
+        <div class="cards">
+            <a href="entradas.html" class="card blue" style="text-decoration:none; cursor:pointer;">
+                <div>
+                    <h3>Entradas do Mês</h3>
+                    <p id="card-entradas"><i class="fas fa-spinner fa-spin" style="font-size:22px;opacity:.7;"></i></p>
+                </div>
+                <i class="fas fa-arrow-down"></i>
+            </a>
+            <a href="saidas.html" class="card green" style="text-decoration:none; cursor:pointer;">
+                <div>
+                    <h3>Saídas do Mês</h3>
+                    <p id="card-saidas"><i class="fas fa-spinner fa-spin" style="font-size:22px;opacity:.7;"></i></p>
+                </div>
+                <i class="fas fa-arrow-up"></i>
+            </a>
+            <a href="alertas.html" class="card orange" style="text-decoration:none; cursor:pointer;">
+                <div>
+                    <h3>Alertas de Estoque</h3>
+                    <p id="card-alertas"><i class="fas fa-spinner fa-spin" style="font-size:22px;opacity:.7;"></i></p>
+                </div>
+                <i class="fas fa-exclamation-triangle"></i>
+            </a>
+            <a href="produtos.html" class="card purple" style="text-decoration:none; cursor:pointer;">
+                <div>
+                    <h3>Total no Estoque</h3>
+                    <p id="card-estoque"><i class="fas fa-spinner fa-spin" style="font-size:22px;opacity:.7;"></i></p>
+                </div>
+                <i class="fas fa-boxes"></i>
+            </a>
+        </div>
+
+        <div class="content">
+
+            <!-- ÚLTIMAS ATIVIDADES -->
+            <div class="box">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+                    <h2 style="margin:0;">Últimas Atividades</h2>
+                    <a href="historico.html" style="font-size:13px; color:#2563eb; font-weight:600; text-decoration:none; display:flex; align-items:center; gap:6px; padding:7px 14px; border:1px solid #dbeafe; border-radius:8px; transition:.2s;" onmouseover="this.style.background='#dbeafe'" onmouseout="this.style.background='transparent'">
+                        <i class="fas fa-history"></i> Ver histórico completo
+                    </a>
+                </div>
+                <div id="lista-atividades">
+                    <div class="atividade">
+                        <i class="fas fa-spinner fa-spin" style="color:#2563eb;"></i>
+                        <p style="color:#94a3b8;">Carregando atividades...</p>
+                        <span></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- RESUMO RÁPIDO -->
+            <div class="box">
+                <h2>Resumo Rápido</h2>
+
+                <div class="resumo-item">
+                    <i class="fas fa-truck"></i>
+                    <p>Fornecedores</p>
+                    <span id="res-fornecedores">—</span>
+                </div>
+
+                <div class="resumo-item">
+                    <i class="fas fa-user-tie"></i>
+                    <p>Funcionários</p>
+                    <span id="res-funcionarios">—</span>
+                </div>
+
+                <div class="resumo-item">
+                    <i class="fas fa-building"></i>
+                    <p>Setores</p>
+                    <span id="res-setores">—</span>
+                </div>
+
+                <div class="resumo-item">
+                    <i class="fas fa-tags"></i>
+                    <p>Categorias</p>
+                    <span id="res-categorias">—</span>
+                </div>
+
+                <div class="resumo-item">
+                    <i class="fas fa-bell"></i>
+                    <p>Alertas ativos</p>
+                    <span id="res-alertas">—</span>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script src="../js/api.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/script.js"></script>
+</body>
+</html>

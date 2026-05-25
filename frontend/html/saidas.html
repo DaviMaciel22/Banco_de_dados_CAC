@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Saídas - CAC LTDA</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/saidas.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="topbar">
+        <div class="topbar-left">
+            <button class="menu-toggle" id="menu-toggle" aria-label="Menu"><i class="fas fa-bars"></i></button>
+            <h1>Saídas de Estoque</h1>
+        </div>
+        <div class="topbar-right">
+            <button class="topbar-btn" aria-label="Notificações"><i class="fas fa-bell"></i></button>
+            <div class="topbar-user"><span>Administrador</span><i class="fas fa-user-circle user-icon"></i></div>
+        </div>
+    </div>
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-logo"><div class="logo-text"><h2>CAC LTDA</h2><p>Sistema de Estoque e Compras</p></div></div>
+        <ul>
+            <li><a href="index.html"><i class="fas fa-home"></i>Dashboard</a></li>
+            <li><a href="produtos.html"><i class="fas fa-box"></i>Produtos</a></li>
+            <li><a href="fornecedores.html"><i class="fas fa-truck"></i>Fornecedores</a></li>
+            <li><a href="entradas.html"><i class="fas fa-arrow-down"></i>Entradas</a></li>
+            <li><a href="saidas.html" class="active"><i class="fas fa-arrow-up"></i>Saídas</a></li>
+            <li><a href="categorias.html"><i class="fas fa-tags"></i>Categorias</a></li>
+            <li><a href="funcionarios.html"><i class="fas fa-user-tie"></i>Funcionários</a></li>
+            <li><a href="setores.html"><i class="fas fa-building"></i>Setores</a></li>
+            <li><a href="relatorios.html"><i class="fas fa-chart-bar"></i>Relatórios</a></li>
+            <li><a href="alertas.html"><i class="fas fa-bell"></i>Alertas</a></li>
+            <li><a href="historico.html"><i class="fas fa-history"></i>Histórico</a></li>
+            <li><a href="configuracoes.html"><i class="fas fa-cog"></i>Configurações</a></li>
+            <li><a href="#"><i class="fas fa-sign-out-alt"></i>Sair</a></li>
+        </ul>
+    </div>
+    <div class="main">
+        <div class="header-flex">
+            <h2>Requisições de Saída</h2>
+            <button class="btn-danger"><i class="fas fa-minus"></i> Nova Saída</button>
+        </div>
+        <div class="filtros-container">
+            <div class="busca-box"><i class="fas fa-search"></i><input type="text" placeholder="Buscar por produto ou setor..."></div>
+        </div>
+        <div class="tabela-container">
+            <table>
+                <thead>
+                    <tr><th>Data</th><th>Produto</th><th>Setor Destino</th><th>Qtd</th><th>Responsável</th><th>Status</th><th>Ações</th></tr>
+                </thead>
+                <tbody id="tabela-saidas-body">
+                    <tr><td colspan="7" style="text-align:center;padding:20px;color:#64748b">Carregando...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- MODAL SAÍDA -->
+    <div id="modal-saida" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);justify-content:center;align-items:center;z-index:1000;">
+        <div style="background:white;padding:30px;border-radius:12px;width:500px;box-shadow:0 10px 40px rgba(0,0,0,0.2);">
+            <h3 style="margin:0 0 20px;color:#051d61;font-size:18px;border-bottom:2px solid #e2e8f0;padding-bottom:12px;">Registrar Nova Saída</h3>
+            <form id="form-saida" style="display:flex;flex-direction:column;gap:14px;">
+                <div>
+                    <label style="display:block;font-size:13px;font-weight:600;color:#374151;margin-bottom:5px;">Produto</label>
+                    <select id="saida-produto" required style="width:100%;padding:10px;border:1px solid #cbd5e1;border-radius:8px;box-sizing:border-box;font-family:Poppins,sans-serif;height:40px;background:white;"></select>
+                </div>
+                <div>
+                    <label style="display:block;font-size:13px;font-weight:600;color:#374151;margin-bottom:5px;">Setor Destino</label>
+                    <select id="saida-setor" required style="width:100%;padding:10px;border:1px solid #cbd5e1;border-radius:8px;box-sizing:border-box;font-family:Poppins,sans-serif;height:40px;background:white;"></select>
+                </div>
+                <div style="display:flex;gap:12px;">
+                    <div style="flex:1;">
+                        <label style="display:block;font-size:13px;font-weight:600;color:#374151;margin-bottom:5px;">Data</label>
+                        <input type="date" id="saida-data" required style="width:100%;padding:10px;border:1px solid #cbd5e1;border-radius:8px;box-sizing:border-box;height:40px;">
+                    </div>
+                    <div style="flex:1;">
+                        <label style="display:block;font-size:13px;font-weight:600;color:#374151;margin-bottom:5px;">Quantidade</label>
+                        <input type="number" id="saida-qtd" min="1" value="1" required style="width:100%;padding:10px;border:1px solid #cbd5e1;border-radius:8px;box-sizing:border-box;height:40px;">
+                    </div>
+                </div>
+                <div>
+                    <label style="display:block;font-size:13px;font-weight:600;color:#374151;margin-bottom:5px;">Valor da Saída (R$) <span style="color:#94a3b8;font-weight:400;">(opcional)</span></label>
+                    <input type="number" step="0.01" id="saida-valor" value="0" style="width:100%;padding:10px;border:1px solid #cbd5e1;border-radius:8px;box-sizing:border-box;">
+                </div>
+                <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:6px;">
+                    <button type="button" id="btn-fechar-modal-saida" style="background:#e2e8f0;color:#475569;border:none;padding:10px 18px;border-radius:8px;cursor:pointer;font-weight:600;font-family:Poppins,sans-serif;">Cancelar</button>
+                    <button type="submit" style="background:#ef4444;color:white;border:none;padding:10px 22px;border-radius:8px;cursor:pointer;font-weight:600;font-family:Poppins,sans-serif;">Registrar Saída</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <!-- MODAL EXCLUSÃO -->
+    <div id="modal-aviso-exclusao" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.6);justify-content:center;align-items:center;z-index:2000;">
+        <div style="background:white;width:420px;border-radius:12px;overflow:hidden;box-shadow:0 10px 40px rgba(0,0,0,0.3);">
+            <div style="padding:24px;display:flex;gap:16px;"><div style="width:48px;height:48px;border-radius:50%;background:#fee2e2;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i class="fas fa-exclamation-triangle" style="font-size:20px;color:#dc2626;"></i></div><div><h3 style="margin:0 0 8px;color:#1e293b;font-size:17px;">Confirmar Exclusão</h3><p id="excluir-mensagem" style="margin:0;color:#64748b;font-size:14px;"></p></div></div>
+            <div style="background:#f8fafc;padding:14px 24px;display:flex;justify-content:flex-end;gap:10px;border-top:1px solid #e2e8f0;">
+                <button id="btn-modal-excluir-cancelar" style="background:white;border:1px solid #cbd5e1;color:#334155;padding:9px 18px;border-radius:8px;cursor:pointer;font-family:Poppins,sans-serif;">Cancelar</button>
+                <button id="btn-modal-excluir-confirmar" style="background:#dc2626;color:white;border:none;padding:9px 18px;border-radius:8px;cursor:pointer;font-family:Poppins,sans-serif;font-weight:600;">Excluir</button>
+            </div>
+        </div>
+    </div>
+            <div class="paginacao" id="paginacao-saidas" style="margin-top:20px;"></div>
+
+    <script src="../js/api.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/script.js"></script>
+</body>
+</html>

@@ -1,0 +1,168 @@
+/* Header e Botão Novo */
+.fornecedores-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+.btn-novo-fornecedor {
+    background-color: #27ae60;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: background 0.3s;
+}
+
+.btn-novo-fornecedor:hover {
+    background-color: #219150;
+}
+
+/* Filtros e Busca */
+.fornecedores-filtros {
+    display: flex;
+    justify-content: space-between;
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    margin-bottom: 25px;
+    gap: 15px;
+}
+
+.busca-box {
+    position: relative;
+    flex: 1;
+}
+
+.busca-box i {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #888;
+}
+
+.busca-box input {
+    width: 100%;
+    padding: 12px 12px 12px 45px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 14px;
+}
+
+.filtro-select {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    background: white;
+    min-width: 180px;
+}
+
+/* Estilização da Tabela */
+.tabela-container {
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    overflow: hidden;
+}
+
+.tabela-fornecedores {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.tabela-fornecedores th,
+.tabela-fornecedores td {
+    padding: 15px 20px;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+}
+
+.tabela-fornecedores th {
+    background-color: #f8f9fa;
+    font-weight: 600;
+    color: #333;
+}
+
+/* Classes de Status (Badges) */
+.badge {
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.badge.ativo {
+    background-color: #e6f7ee;
+    color: #27ae60;
+}
+
+.badge.inativo {
+    background-color: #fceaea;
+    color: #eb5757;
+}
+
+.badge.pendente {
+    background-color: #fff9db;
+    color: #f59e0b;
+}
+
+/* Botões de Ações na Tabela */
+.acoes {
+    display: flex;
+    gap: 8px;
+}
+
+.btn-acao {
+    border: none;
+    background: #f1f5f9;
+    color: #64748b;
+    width: 32px;
+    height: 32px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-acao.editar:hover { background: #dbeafe; color: #2563eb; }
+.btn-acao.deletar:hover { background: #fee2e2; color: #dc2626; }
+
+/* Paginação */
+.paginacao {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 30px;
+}
+
+.pag-btn {
+    width: 38px;
+    height: 38px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #e2e8f0;
+    background: white;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: 0.2s;
+    color: #64748b;
+}
+
+.pag-btn.ativo {
+    background: #2563eb;
+    color: white;
+    border-color: #2563eb;
+}
+
+.pag-btn:hover:not(.ativo) { background: #f1f5f9; }

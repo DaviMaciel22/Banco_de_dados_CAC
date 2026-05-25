@@ -1,0 +1,235 @@
+/* ============================================
+   SETORES - CAC LTDA
+   Visual alinhado ao padrão do sistema
+   ============================================ */
+
+/* Header */
+.header-flex {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+.header-flex h2 {
+    font-size: 22px;
+    color: #051d61;
+    font-weight: 600;
+    margin: 0;
+}
+
+.btn-primary {
+    background: #2563eb;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: 0.3s ease;
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+}
+
+.btn-primary:hover {
+    opacity: 0.92;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(37, 99, 235, 0.25);
+}
+
+/* Filtros */
+.filtros-container {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 25px;
+    background: white;
+    padding: 18px 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.03);
+    border: 1px solid #f1f5f9;
+}
+
+.busca-box {
+    position: relative;
+    flex: 1;
+}
+
+.busca-box i {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #94a3b8;
+    font-size: 14px;
+}
+
+.busca-box input {
+    width: 100%;
+    padding: 12px 12px 12px 42px;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    font-size: 14px;
+    font-family: 'Poppins', sans-serif;
+    background: #f8fafc;
+    transition: 0.2s;
+    box-sizing: border-box;
+}
+
+.busca-box input:focus {
+    outline: none;
+    border-color: #2563eb;
+    background: white;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+/* Tabela */
+.tabela-container {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+    overflow: hidden;
+    border: 1px solid #f1f5f9;
+}
+
+.tabela-setores {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: 'Poppins', sans-serif;
+}
+
+.tabela-setores thead {
+    background: #f8fafc;
+}
+
+.tabela-setores th {
+    padding: 14px 18px;
+    text-align: left;
+    font-weight: 600;
+    color: #475569;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    border-bottom: 2px solid #e2e8f0;
+    white-space: nowrap;
+}
+
+.tabela-setores td {
+    padding: 14px 18px;
+    border-bottom: 1px solid #f1f5f9;
+    font-size: 14px;
+    color: #334155;
+    vertical-align: middle;
+}
+
+.tabela-setores tbody tr {
+    transition: background 0.15s ease;
+}
+
+.tabela-setores tbody tr:hover {
+    background: #f8fafc;
+}
+
+.tabela-setores tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* Coluna # (id) */
+.tabela-setores td:first-child {
+    color: #94a3b8;
+    font-weight: 600;
+    width: 50px;
+}
+
+/* Nome do setor em destaque */
+.tabela-setores td:nth-child(2) {
+    font-weight: 600;
+    color: #051d61;
+}
+
+/* Badge de status */
+.status-badge {
+    display: inline-block;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: capitalize;
+}
+
+.status-badge.ativo {
+    background: #d1fae5;
+    color: #065f46;
+}
+
+.status-badge.inativo {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+/* Contador de funcionários */
+.func-count {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    background: #eff6ff;
+    color: #1d4ed8;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+/* Ações */
+.acoes {
+    display: flex;
+    gap: 8px;
+}
+
+.btn-acao {
+    border: none;
+    background: #f1f5f9;
+    color: #64748b;
+    width: 34px;
+    height: 34px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+}
+
+.btn-acao.editar:hover {
+    background: #dbeafe;
+    color: #2563eb;
+}
+
+.btn-acao.deletar:hover {
+    background: #fee2e2;
+    color: #dc2626;
+}
+
+/* Responsivo */
+@media (max-width: 900px) {
+    .filtros-container {
+        flex-direction: column;
+    }
+
+    .tabela-container {
+        overflow-x: auto;
+    }
+
+    .tabela-setores {
+        min-width: 720px;
+    }
+
+    .header-flex {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+}
