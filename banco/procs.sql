@@ -9,9 +9,7 @@ GO
 -- PRODUTO
 -- ============================================================
 
-IF OBJECT_ID('sp_inserir_atualizar_produto','P') IS NOT NULL DROP PROCEDURE sp_inserir_atualizar_produto;
-GO
-CREATE PROCEDURE sp_inserir_atualizar_produto
+CREATE OR ALTER PROCEDURE sp_inserir_atualizar_produto
     @id_produto         BIGINT         = NULL,
     @fkcategoria        BIGINT,
     @status1            VARCHAR(50),
@@ -39,9 +37,7 @@ BEGIN
 END;
 GO
 
-IF OBJECT_ID('sp_deletar_produto','P') IS NOT NULL DROP PROCEDURE sp_deletar_produto;
-GO
-CREATE PROCEDURE sp_deletar_produto
+CREATE OR ALTER PROCEDURE sp_deletar_produto
     @id_produto BIGINT
 AS
 BEGIN
@@ -60,9 +56,7 @@ GO
 -- FORNECEDOR
 -- ============================================================
 
-IF OBJECT_ID('sp_inserir_atualizar_fornecedor','P') IS NOT NULL DROP PROCEDURE sp_inserir_atualizar_fornecedor;
-GO
-CREATE PROCEDURE sp_inserir_atualizar_fornecedor
+CREATE OR ALTER PROCEDURE sp_inserir_atualizar_fornecedor
     @id_fornecedor BIGINT        = NULL,
     @cnpj          VARCHAR(18),
     @email         VARCHAR(100),
@@ -78,9 +72,7 @@ BEGIN
 END;
 GO
 
-IF OBJECT_ID('sp_deletar_fornecedor','P') IS NOT NULL DROP PROCEDURE sp_deletar_fornecedor;
-GO
-CREATE PROCEDURE sp_deletar_fornecedor
+CREATE OR ALTER PROCEDURE sp_deletar_fornecedor
     @id_fornecedor BIGINT
 AS
 BEGIN
@@ -100,9 +92,7 @@ GO
 -- CATEGORIA
 -- ============================================================
 
-IF OBJECT_ID('sp_inserir_atualizar_categoria','P') IS NOT NULL DROP PROCEDURE sp_inserir_atualizar_categoria;
-GO
-CREATE PROCEDURE sp_inserir_atualizar_categoria
+CREATE OR ALTER PROCEDURE sp_inserir_atualizar_categoria
     @id_categoria   BIGINT      = NULL,
     @nome_categoria VARCHAR(50)
 AS
@@ -115,9 +105,8 @@ BEGIN
 END;
 GO
 
-IF OBJECT_ID('sp_deletar_categoria','P') IS NOT NULL DROP PROCEDURE sp_deletar_categoria;
-GO
-CREATE PROCEDURE sp_deletar_categoria
+
+CREATE OR ALTER PROCEDURE sp_deletar_categoria
     @id_categoria BIGINT
 AS
 BEGIN
@@ -136,9 +125,7 @@ GO
 -- SETOR
 -- ============================================================
 
-IF OBJECT_ID('sp_inserir_atualizar_setor','P') IS NOT NULL DROP PROCEDURE sp_inserir_atualizar_setor;
-GO
-CREATE PROCEDURE sp_inserir_atualizar_setor
+CREATE OR ALTER PROCEDURE sp_inserir_atualizar_setor
     @id_setor            BIGINT      = NULL,
     @nome_sertor         VARCHAR(50),
     @numero_funcionarios INT         = 0
@@ -152,9 +139,7 @@ BEGIN
 END;
 GO
 
-IF OBJECT_ID('sp_deletar_setor','P') IS NOT NULL DROP PROCEDURE sp_deletar_setor;
-GO
-CREATE PROCEDURE sp_deletar_setor
+CREATE OR ALTER PROCEDURE sp_deletar_setor
     @id_setor BIGINT
 AS
 BEGIN
@@ -178,9 +163,7 @@ GO
 -- FUNCIONÁRIO
 -- ============================================================
 
-IF OBJECT_ID('sp_inserir_atualizar_funcionario','P') IS NOT NULL DROP PROCEDURE sp_inserir_atualizar_funcionario;
-GO
-CREATE PROCEDURE sp_inserir_atualizar_funcionario
+CREATE OR ALTER PROCEDURE sp_inserir_atualizar_funcionario
     @idfuncionario    BIGINT      = NULL,
     @fksetor          BIGINT,
     @nome_funcionario VARCHAR(50),
@@ -198,9 +181,7 @@ BEGIN
 END;
 GO
 
-IF OBJECT_ID('sp_deletar_funcionario','P') IS NOT NULL DROP PROCEDURE sp_deletar_funcionario;
-GO
-CREATE PROCEDURE sp_deletar_funcionario
+CREATE OR ALTER PROCEDURE sp_deletar_funcionario
     @id_funcionario BIGINT
 AS
 BEGIN
@@ -215,9 +196,7 @@ GO
 -- ENTRADAS E SAÍDAS
 -- ============================================================
 
-IF OBJECT_ID('sp_deletar_entrada','P') IS NOT NULL DROP PROCEDURE sp_deletar_entrada;
-GO
-CREATE PROCEDURE sp_deletar_entrada
+CREATE OR ALTER PROCEDURE sp_deletar_entrada
     @id_entrada BIGINT
 AS
 BEGIN
@@ -226,9 +205,7 @@ BEGIN
 END;
 GO
 
-IF OBJECT_ID('sp_inserir_atualizar_saida','P') IS NOT NULL DROP PROCEDURE sp_inserir_atualizar_saida;
-GO
-CREATE PROCEDURE sp_inserir_atualizar_saida
+CREATE OR ALTER PROCEDURE sp_inserir_atualizar_saida
     @id_saida           BIGINT          = NULL,
     @fkproduto          BIGINT,
     @fksetor            BIGINT,
@@ -256,9 +233,7 @@ BEGIN
 END;
 GO
 
-IF OBJECT_ID('sp_deletar_saida','P') IS NOT NULL DROP PROCEDURE sp_deletar_saida;
-GO
-CREATE PROCEDURE sp_deletar_saida
+CREATE OR ALTER PROCEDURE sp_deletar_saida
     @id_saida BIGINT
 AS
 BEGIN
@@ -271,9 +246,7 @@ GO
 -- CONTATOS — TELEFONES E ENDEREÇOS
 -- ============================================================
 
-IF OBJECT_ID('sp_inserir_telefone_fornecedor','P') IS NOT NULL DROP PROCEDURE sp_inserir_telefone_fornecedor;
-GO
-CREATE PROCEDURE sp_inserir_telefone_fornecedor
+CREATE OR ALTER PROCEDURE sp_inserir_telefone_fornecedor
     @fkfornecedor BIGINT, @telefone VARCHAR(15)
 AS
 BEGIN
@@ -284,16 +257,12 @@ BEGIN
 END;
 GO
 
-IF OBJECT_ID('sp_deletar_telefone_fornecedor','P') IS NOT NULL DROP PROCEDURE sp_deletar_telefone_fornecedor;
-GO
-CREATE PROCEDURE sp_deletar_telefone_fornecedor
+CREATE OR ALTER PROCEDURE sp_deletar_telefone_fornecedor
     @id_telefone_for BIGINT
 AS BEGIN SET NOCOUNT ON; DELETE FROM Telefone_Fornecedor WHERE id_telefone_for = @id_telefone_for; END;
 GO
 
-IF OBJECT_ID('sp_inserir_atualizar_endereco_fornecedor','P') IS NOT NULL DROP PROCEDURE sp_inserir_atualizar_endereco_fornecedor;
-GO
-CREATE PROCEDURE sp_inserir_atualizar_endereco_fornecedor
+CREATE OR ALTER PROCEDURE sp_inserir_atualizar_endereco_fornecedor
     @id_end_forn  BIGINT = NULL, @fkfornecedor BIGINT,
     @rua VARCHAR(255), @cep VARCHAR(9), @cidade VARCHAR(255), @numero INT
 AS
@@ -306,16 +275,12 @@ BEGIN
 END;
 GO
 
-IF OBJECT_ID('sp_deletar_endereco_fornecedor','P') IS NOT NULL DROP PROCEDURE sp_deletar_endereco_fornecedor;
-GO
-CREATE PROCEDURE sp_deletar_endereco_fornecedor
+CREATE OR ALTER PROCEDURE sp_deletar_endereco_fornecedor
     @id_end_forn BIGINT
 AS BEGIN SET NOCOUNT ON; DELETE FROM Endereco_Fornecedor WHERE id_end_forn = @id_end_forn; END;
 GO
 
-IF OBJECT_ID('sp_inserir_telefone_funcionario','P') IS NOT NULL DROP PROCEDURE sp_inserir_telefone_funcionario;
-GO
-CREATE PROCEDURE sp_inserir_telefone_funcionario
+CREATE OR ALTER PROCEDURE sp_inserir_telefone_funcionario
     @fkfuncionario BIGINT, @telefone VARCHAR(15)
 AS
 BEGIN
@@ -326,16 +291,12 @@ BEGIN
 END;
 GO
 
-IF OBJECT_ID('sp_deletar_telefone_funcionario','P') IS NOT NULL DROP PROCEDURE sp_deletar_telefone_funcionario;
-GO
-CREATE PROCEDURE sp_deletar_telefone_funcionario
+CREATE OR ALTER PROCEDURE sp_deletar_telefone_funcionario
     @id_telefone_fun BIGINT
 AS BEGIN SET NOCOUNT ON; DELETE FROM Telefone_Funcionario WHERE id_telefone_fun = @id_telefone_fun; END;
 GO
 
-IF OBJECT_ID('sp_inserir_atualizar_endereco_funcionario','P') IS NOT NULL DROP PROCEDURE sp_inserir_atualizar_endereco_funcionario;
-GO
-CREATE PROCEDURE sp_inserir_atualizar_endereco_funcionario
+CREATE OR ALTER PROCEDURE sp_inserir_atualizar_endereco_funcionario
     @id_end_fun BIGINT = NULL, @fkfuncionario BIGINT,
     @rua VARCHAR(255), @cep VARCHAR(9), @cidade VARCHAR(255), @numero INT
 AS
@@ -348,9 +309,7 @@ BEGIN
 END;
 GO
 
-IF OBJECT_ID('sp_deletar_endereco_funcionario','P') IS NOT NULL DROP PROCEDURE sp_deletar_endereco_funcionario;
-GO
-CREATE PROCEDURE sp_deletar_endereco_funcionario
+CREATE OR ALTER PROCEDURE sp_deletar_endereco_funcionario
     @id_end_fun BIGINT
 AS BEGIN SET NOCOUNT ON; DELETE FROM Endereco_Funcionario WHERE id_end_fun = @id_end_fun; END;
 GO
@@ -359,9 +318,7 @@ GO
 -- RELATÓRIOS GERENCIAIS
 -- ============================================================
 
-IF OBJECT_ID('sp_ficha_produto','P') IS NOT NULL DROP PROCEDURE sp_ficha_produto;
-GO
-CREATE PROCEDURE sp_ficha_produto
+CREATE OR ALTER PROCEDURE sp_ficha_produto
     @id_produto BIGINT
 AS
 BEGIN
@@ -388,9 +345,7 @@ BEGIN
 END;
 GO
 
-IF OBJECT_ID('sp_relatorio_consumo_setor','P') IS NOT NULL DROP PROCEDURE sp_relatorio_consumo_setor;
-GO
-CREATE PROCEDURE sp_relatorio_consumo_setor
+CREATE OR ALTER PROCEDURE sp_relatorio_consumo_setor
     @id_setor     BIGINT = NULL,
     @id_categoria BIGINT = NULL,
     @data_inicio  DATE   = NULL,
@@ -415,9 +370,7 @@ BEGIN
 END;
 GO
 
-IF OBJECT_ID('sp_fornecedores_produto','P') IS NOT NULL DROP PROCEDURE sp_fornecedores_produto;
-GO
-CREATE PROCEDURE sp_fornecedores_produto
+CREATE OR ALTER PROCEDURE sp_fornecedores_produto
     @id_produto BIGINT = NULL
 AS
 BEGIN
@@ -436,9 +389,7 @@ BEGIN
 END;
 GO
 
-IF OBJECT_ID('sp_produtos_em_falta','P') IS NOT NULL DROP PROCEDURE sp_produtos_em_falta;
-GO
-CREATE PROCEDURE sp_produtos_em_falta
+CREATE OR ALTER PROCEDURE sp_produtos_em_falta
     @apenas_zerados BIT = 0
 AS
 BEGIN
@@ -461,9 +412,7 @@ BEGIN
 END;
 GO
 
-IF OBJECT_ID('sp_menor_preco_fornecedor','P') IS NOT NULL DROP PROCEDURE sp_menor_preco_fornecedor;
-GO
-CREATE PROCEDURE sp_menor_preco_fornecedor
+CREATE OR ALTER PROCEDURE sp_menor_preco_fornecedor
     @id_produto   BIGINT = NULL,
     @id_categoria BIGINT = NULL
 AS
@@ -487,9 +436,7 @@ BEGIN
 END;
 GO
 
-IF OBJECT_ID('sp_ultimas_compras_produto','P') IS NOT NULL DROP PROCEDURE sp_ultimas_compras_produto;
-GO
-CREATE PROCEDURE sp_ultimas_compras_produto
+CREATE OR ALTER PROCEDURE sp_ultimas_compras_produto
     @id_produto BIGINT = NULL,
     @top_n      INT    = 5
 AS
@@ -508,9 +455,7 @@ BEGIN
 END;
 GO
 
-IF OBJECT_ID('sp_setores_por_grupo','P') IS NOT NULL DROP PROCEDURE sp_setores_por_grupo;
-GO
-CREATE PROCEDURE sp_setores_por_grupo
+CREATE OR ALTER PROCEDURE sp_setores_por_grupo
     @id_categoria BIGINT = NULL
 AS
 BEGIN
@@ -533,9 +478,7 @@ GO
 -- LOG DO SISTEMA
 -- ============================================================
 
-IF OBJECT_ID('sp_registrar_log','P') IS NOT NULL DROP PROCEDURE sp_registrar_log;
-GO
-CREATE PROCEDURE sp_registrar_log
+CREATE OR ALTER PROCEDURE sp_registrar_log
     @nome_tabela VARCHAR(100),
     @acao        VARCHAR(20),
     @id_registro BIGINT,
