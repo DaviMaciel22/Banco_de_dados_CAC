@@ -9,9 +9,7 @@ GO
 -- TRIGGER 1: Atualiza preço médio e data da última compra
 -- Dispara: AFTER INSERT na tabela Entrada
 -- ============================================================
-IF OBJECT_ID('trg_entrada_atualiza_produto','TR') IS NOT NULL DROP TRIGGER trg_entrada_atualiza_produto;
-GO
-CREATE TRIGGER trg_entrada_atualiza_produto
+CREATE OR ALTER TRIGGER trg_entrada_atualiza_produto
 ON Entrada
 AFTER INSERT
 AS
@@ -43,9 +41,7 @@ GO
 -- TRIGGER 2: Atualiza estoque ao registrar entrada
 -- Dispara: AFTER INSERT na tabela Entrada
 -- ============================================================
-IF OBJECT_ID('atualizacao_de_estoque_entrada','TR') IS NOT NULL DROP TRIGGER atualizacao_de_estoque_entrada;
-GO
-CREATE TRIGGER atualizacao_de_estoque_entrada
+CREATE OR ALTER TRIGGER atualizacao_de_estoque_entrada
 ON Entrada
 AFTER INSERT
 AS
@@ -62,9 +58,7 @@ GO
 -- TRIGGER 3: Desconta estoque ao registrar saída
 -- Dispara: AFTER INSERT na tabela Saida
 -- ============================================================
-IF OBJECT_ID('atualizacao_de_estoque_saida','TR') IS NOT NULL DROP TRIGGER atualizacao_de_estoque_saida;
-GO
-CREATE TRIGGER atualizacao_de_estoque_saida
+CREATE OR ALTER TRIGGER atualizacao_de_estoque_saida
 ON Saida
 AFTER INSERT
 AS
@@ -81,9 +75,7 @@ GO
 -- TRIGGER 4: Valida estoque — impede negativo, alerta mínimo
 -- Dispara: FOR UPDATE na tabela Produto
 -- ============================================================
-IF OBJECT_ID('quantidade_estoque','TR') IS NOT NULL DROP TRIGGER quantidade_estoque;
-GO
-CREATE TRIGGER quantidade_estoque
+CREATE OR ALTER TRIGGER quantidade_estoque
 ON Produto
 FOR UPDATE
 AS
@@ -126,9 +118,7 @@ GO
 -- TRIGGER 5: Valida exclusão de produto com movimentações
 -- Dispara: FOR DELETE na tabela Produto
 -- ============================================================
-IF OBJECT_ID('validacao_exclusao','TR') IS NOT NULL DROP TRIGGER validacao_exclusao;
-GO
-CREATE TRIGGER validacao_exclusao
+CREATE OR ALTER TRIGGER validacao_exclusao
 ON Produto
 FOR DELETE
 AS
@@ -150,9 +140,7 @@ GO
 -- TRIGGER 6: Mantém numero_funcionarios atualizado em Setor
 -- Dispara: AFTER INSERT, DELETE, UPDATE em Funcionario
 -- ============================================================
-IF OBJECT_ID('trg_atualiza_numero_funcionarios','TR') IS NOT NULL DROP TRIGGER trg_atualiza_numero_funcionarios;
-GO
-CREATE TRIGGER trg_atualiza_numero_funcionarios
+CREATE OR ALTER TRIGGER trg_atualiza_numero_funcionarios
 ON Funcionario
 AFTER INSERT, DELETE, UPDATE
 AS
