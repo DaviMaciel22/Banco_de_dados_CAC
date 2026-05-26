@@ -131,5 +131,5 @@ SELECT id_log, nome_tabela, acao, id_registro_afetado, data_hora,
 FROM log_alteracoes;
 GO
 
-PRINT '✅ Todas as views criadas com sucesso!';
+PRINT 'Todas as views criadas com sucesso!';
 GO

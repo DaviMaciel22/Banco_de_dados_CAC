@@ -248,6 +248,6 @@ CREATE TABLE Configuracoes (
 );
 GO
 
-PRINT '✅ Estrutura criada com sucesso!';
-PRINT '   Execute na ordem: estrutura.sql → procs.sql → views.sql → triggers.sql → dados_iniciais.sql';
+PRINT 'Estrutura criada com sucesso!';
+PRINT 'Execute na ordem: estrutura.sql → procs.sql → views.sql → triggers.sql → dados_iniciais.sql';
 GO

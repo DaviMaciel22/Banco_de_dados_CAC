@@ -171,7 +171,7 @@ BEGIN
 END;
 GO
 
-PRINT '✅ Todas as triggers criadas com sucesso!';
+PRINT 'Todas as triggers criadas com sucesso!';
 PRINT '';
 PRINT 'ATENÇÃO: NÃO criar triggers tg_log_alteracoes_*.';
 PRINT '         O log é feito pelo backend via sp_registrar_log,';

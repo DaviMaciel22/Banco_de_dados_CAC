@@ -30,3 +30,6 @@ build/
 # Cache
 .npm
 .cache/
+
+# Notas
+notas.txt

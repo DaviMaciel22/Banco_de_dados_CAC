@@ -548,5 +548,5 @@ BEGIN
 END;
 GO
 
-PRINT '✅ Todas as stored procedures criadas com sucesso!';
+PRINT 'Todas as stored procedures criadas com sucesso!';
 GO
