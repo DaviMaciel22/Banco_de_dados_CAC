@@ -1,3 +1,32 @@
+# Dependências Node.js — não subir (cada um roda npm install)
+node_modules/
+backend/node_modules/
+
+# Variáveis de ambiente — NÃO subir (contém senhas e secrets)
+.env
+backend/.env
+*.env
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+
+# Sistema operacional
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDEs e editores
 .vscode/
-*xml
-teste.txt
+.idea/
+*.suo
+*.user
+
+# Build outputs
+dist/
+build/
+
+# Cache
+.npm
+.cache/

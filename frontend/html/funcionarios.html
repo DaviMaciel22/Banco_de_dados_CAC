@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Funcionários - CAC LTDA</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/funcionarios.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="topbar">
+        <div class="topbar-left">
+            <button class="menu-toggle" id="menu-toggle" aria-label="Menu"><i class="fas fa-bars"></i></button>
+            <h1>Funcionários</h1>
+        </div>
+        <div class="topbar-right">
+            <button class="topbar-btn" aria-label="Notificações"><i class="fas fa-bell"></i></button>
+            <div class="topbar-user"><span>Administrador</span><i class="fas fa-user-circle user-icon"></i></div>
+        </div>
+    </div>
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-logo"><div class="logo-text"><h2>CAC LTDA</h2><p>Sistema de Estoque e Compras</p></div></div>
+        <ul>
+            <li><a href="index.html"><i class="fas fa-home"></i>Dashboard</a></li>
+            <li><a href="produtos.html"><i class="fas fa-box"></i>Produtos</a></li>
+            <li><a href="fornecedores.html"><i class="fas fa-truck"></i>Fornecedores</a></li>
+            <li><a href="entradas.html"><i class="fas fa-arrow-down"></i>Entradas</a></li>
+            <li><a href="saidas.html"><i class="fas fa-arrow-up"></i>Saídas</a></li>
+            <li><a href="categorias.html"><i class="fas fa-tags"></i>Categorias</a></li>
+            <li><a href="funcionarios.html" class="active"><i class="fas fa-user-tie"></i>Funcionários</a></li>
+            <li><a href="setores.html"><i class="fas fa-building"></i>Setores</a></li>
+            <li><a href="relatorios.html"><i class="fas fa-chart-bar"></i>Relatórios</a></li>
+            <li><a href="alertas.html"><i class="fas fa-bell"></i>Alertas</a></li>
+            <li><a href="historico.html"><i class="fas fa-history"></i>Histórico</a></li>
+            <li><a href="configuracoes.html"><i class="fas fa-cog"></i>Configurações</a></li>
+            <li><a href="#"><i class="fas fa-sign-out-alt"></i>Sair</a></li>
+        </ul>
+    </div>
+    <div class="main">
+        <div class="header-flex">
+            <h2>Gerenciar Funcionários</h2>
+            <button type="button" class="btn-primary"><i class="fas fa-plus"></i> Novo Funcionário</button>
+        </div>
+        <div class="filtros-container">
+            <div class="busca-box"><i class="fas fa-search"></i><input type="text" placeholder="Buscar funcionário..."></div>
+        </div>
+        <div class="tabela-container">
+            <table class="tabela-funcionarios">
+                <thead>
+                    <tr><th>#</th><th>Nome</th><th>Cargo</th><th>Setor</th><th>E-mail</th><th>Telefone</th><th>Status</th><th>Ações</th></tr>
+                </thead>
+                <tbody id="tabela-funcionarios-body">
+                    <tr><td colspan="8" style="text-align:center;padding:20px;color:#64748b">Carregando...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- MODAL FUNCIONÁRIO — com abas -->
+    <div id="modal-funcionario" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);justify-content:center;align-items:center;z-index:1000;overflow-y:auto;padding:20px;box-sizing:border-box;">
+        <div style="background:white;border-radius:12px;width:600px;max-width:100%;box-shadow:0 10px 40px rgba(0,0,0,0.2);">
+
+            <div style="padding:24px 24px 0;">
+                <h3 id="modal-titulo-func" style="margin:0 0 16px;color:#051d61;font-size:18px;">Novo Funcionário</h3>
+                <div style="display:flex;gap:4px;border-bottom:2px solid #e2e8f0;">
+                    <button type="button" class="func-tab-btn active" data-tab="func-basico" style="background:none;border:none;padding:8px 16px;font-size:13px;font-weight:600;cursor:pointer;color:#2563eb;border-bottom:2px solid #2563eb;margin-bottom:-2px;font-family:Poppins,sans-serif;">
+                        <i class="fas fa-user-tie"></i> Dados
+                    </button>
+                    <button type="button" class="func-tab-btn" data-tab="func-telefones" id="btn-tab-telefones-func" style="background:none;border:none;padding:8px 16px;font-size:13px;font-weight:600;cursor:pointer;color:#64748b;border-bottom:2px solid transparent;margin-bottom:-2px;font-family:Poppins,sans-serif;" disabled>
+                        <i class="fas fa-phone"></i> Telefones
+                    </button>
+                    <button type="button" class="func-tab-btn" data-tab="func-endereco" id="btn-tab-endereco-func" style="background:none;border:none;padding:8px 16px;font-size:13px;font-weight:600;cursor:pointer;color:#64748b;border-bottom:2px solid transparent;margin-bottom:-2px;font-family:Poppins,sans-serif;" disabled>
+                        <i class="fas fa-map-marker-alt"></i> Endereço
+                    </button>
+                </div>
+            </div>
+
+            <div style="padding:20px 24px 24px;">
+
+                <!-- ABA: Dados -->
+                <div class="func-tab-painel active" id="func-basico">
+                    <form id="form-funcionario" style="display:flex;flex-direction:column;gap:14px;">
+                        <div style="display:flex;gap:12px;">
+                            <div style="flex:2;">
+                                <label style="display:block;font-size:13px;font-weight:600;color:#374151;margin-bottom:5px;">Nome Completo</label>
+                                <input type="text" id="func-nome" required autocomplete="off" style="width:100%;padding:10px;border:1px solid #cbd5e1;border-radius:8px;box-sizing:border-box;font-family:Poppins,sans-serif;">
+                            </div>
+                            <div style="flex:1;">
+                                <label style="display:block;font-size:13px;font-weight:600;color:#374151;margin-bottom:5px;">Setor</label>
+                                <select id="func-setor" required style="width:100%;padding:10px;border:1px solid #cbd5e1;border-radius:8px;box-sizing:border-box;font-family:Poppins,sans-serif;height:40px;background:white;"></select>
+                            </div>
+                        </div>
+                        <div>
+                            <label style="display:block;font-size:13px;font-weight:600;color:#374151;margin-bottom:5px;">Cargo / Tipo</label>
+                            <input type="text" id="func-tipo" placeholder="Ex: Analista, Gerente..." required style="width:100%;padding:10px;border:1px solid #cbd5e1;border-radius:8px;box-sizing:border-box;font-family:Poppins,sans-serif;">
+                        </div>
+                        <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:6px;">
+                            <button type="button" id="btn-fechar-modal-func" style="background:#e2e8f0;color:#475569;border:none;padding:10px 18px;border-radius:8px;cursor:pointer;font-weight:600;font-family:Poppins,sans-serif;">Cancelar</button>
+                            <button type="submit" style="background:#2563eb;color:white;border:none;padding:10px 22px;border-radius:8px;cursor:pointer;font-weight:600;font-family:Poppins,sans-serif;">Salvar Dados</button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- ABA: Telefones -->
+                <div class="func-tab-painel" id="func-telefones" style="display:none;">
+                    <div style="display:flex;gap:8px;margin-bottom:16px;">
+                        <input type="text" id="novo-tel-func" placeholder="(00) 00000-0000" maxlength="15"
+                            style="flex:1;padding:10px;border:1px solid #cbd5e1;border-radius:8px;font-family:Poppins,sans-serif;">
+                        <button type="button" onclick="adicionarTelefoneFunc()" style="background:#2563eb;color:white;border:none;padding:10px 18px;border-radius:8px;cursor:pointer;font-weight:600;font-family:Poppins,sans-serif;white-space:nowrap;">
+                            <i class="fas fa-plus"></i> Adicionar
+                        </button>
+                    </div>
+                    <div id="lista-tel-func" style="display:flex;flex-direction:column;gap:8px;min-height:60px;">
+                        <p style="color:#94a3b8;font-size:13px;text-align:center;">Nenhum telefone cadastrado.</p>
+                    </div>
+                </div>
+
+                <!-- ABA: Endereço -->
+                <div class="func-tab-painel" id="func-endereco" style="display:none;">
+                    <form id="form-end-func" style="display:flex;flex-direction:column;gap:12px;">
+                        <input type="hidden" id="end-func-id">
+                        <div style="display:flex;gap:12px;">
+                            <div style="flex:2;">
+                                <label style="display:block;font-size:13px;font-weight:600;color:#374151;margin-bottom:5px;">Rua / Logradouro</label>
+                                <input type="text" id="end-func-rua" style="width:100%;padding:10px;border:1px solid #cbd5e1;border-radius:8px;box-sizing:border-box;font-family:Poppins,sans-serif;">
+                            </div>
+                            <div style="flex:1;">
+                                <label style="display:block;font-size:13px;font-weight:600;color:#374151;margin-bottom:5px;">Número</label>
+                                <input type="number" id="end-func-numero" min="1" style="width:100%;padding:10px;border:1px solid #cbd5e1;border-radius:8px;box-sizing:border-box;">
+                            </div>
+                        </div>
+                        <div style="display:flex;gap:12px;">
+                            <div style="flex:1;">
+                                <label style="display:block;font-size:13px;font-weight:600;color:#374151;margin-bottom:5px;">CEP</label>
+                                <input type="text" id="end-func-cep" placeholder="00000-000" maxlength="9" style="width:100%;padding:10px;border:1px solid #cbd5e1;border-radius:8px;box-sizing:border-box;font-family:Poppins,sans-serif;">
+                            </div>
+                            <div style="flex:2;">
+                                <label style="display:block;font-size:13px;font-weight:600;color:#374151;margin-bottom:5px;">Cidade</label>
+                                <input type="text" id="end-func-cidade" style="width:100%;padding:10px;border:1px solid #cbd5e1;border-radius:8px;box-sizing:border-box;font-family:Poppins,sans-serif;">
+                            </div>
+                        </div>
+                        <div style="display:flex;justify-content:flex-end;">
+                            <button type="submit" style="background:#2563eb;color:white;border:none;padding:10px 22px;border-radius:8px;cursor:pointer;font-weight:600;font-family:Poppins,sans-serif;">
+                                <i class="fas fa-save"></i> Salvar Endereço
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <!-- MODAL EXCLUSÃO -->
+    <div id="modal-aviso-exclusao" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.6);justify-content:center;align-items:center;z-index:2000;">
+        <div style="background:white;width:420px;border-radius:12px;overflow:hidden;box-shadow:0 10px 40px rgba(0,0,0,0.3);">
+            <div style="padding:24px;display:flex;gap:16px;"><div style="width:48px;height:48px;border-radius:50%;background:#fee2e2;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i class="fas fa-exclamation-triangle" style="font-size:20px;color:#dc2626;"></i></div><div><h3 style="margin:0 0 8px;color:#1e293b;font-size:17px;">Confirmar Exclusão</h3><p id="excluir-mensagem" style="margin:0;color:#64748b;font-size:14px;"></p></div></div>
+            <div style="background:#f8fafc;padding:14px 24px;display:flex;justify-content:flex-end;gap:10px;border-top:1px solid #e2e8f0;">
+                <button id="btn-modal-excluir-cancelar" style="background:white;border:1px solid #cbd5e1;color:#334155;padding:9px 18px;border-radius:8px;cursor:pointer;font-family:Poppins,sans-serif;">Cancelar</button>
+                <button id="btn-modal-excluir-confirmar" style="background:#dc2626;color:white;border:none;padding:9px 18px;border-radius:8px;cursor:pointer;font-family:Poppins,sans-serif;font-weight:600;">Excluir</button>
+            </div>
+        </div>
+    </div>
+            <div class="paginacao" id="paginacao-funcionarios" style="margin-top:20px;"></div>
+
+    <script src="../js/api.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/script.js"></script>
+</body>
+</html>

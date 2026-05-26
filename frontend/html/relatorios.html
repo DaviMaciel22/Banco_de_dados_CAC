@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relatórios - CAC LTDA</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/relatorios.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- SheetJS para exportar Excel -->
+    <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
+
+    <style>
+        /* ── Print CSS — esconde UI e mostra só o relatório ── */
+        @media print {
+            /* Oculta tudo exceto o modal de relatório */
+            body > *:not(#modal-relatorio) { display: none !important; }
+
+            #modal-relatorio {
+                position: static !important;
+                overflow: visible !important;
+                background: white !important;
+            }
+
+            #modal-relatorio > div {
+                max-width: 100% !important;
+                box-shadow: none !important;
+            }
+
+            /* Oculta botões e filtros dentro do modal */
+            .rel-export-bar,
+            #filtros-relatorio { display: none !important; }
+
+            /* Mostra cabeçalho de impressão */
+            #print-header { display: block !important; }
+
+            /* Sticky header vira normal na impressão */
+            #modal-relatorio > div > div:first-child {
+                position: static !important;
+                box-shadow: none !important;
+                border-bottom: 2px solid #051d61 !important;
+            }
+
+            table { font-size: 11px !important; }
+            th, td { padding: 6px 8px !important; }
+            .tabela-container { box-shadow: none !important; }
+        }
+
+        /* Cabeçalho de impressão (oculto na tela) */
+        #print-header {
+            display: none;
+            text-align: center;
+            margin-bottom: 20px;
+            padding-bottom: 16px;
+            border-bottom: 2px solid #051d61;
+        }
+        #print-header h2 { color: #051d61; font-size: 20px; margin: 0 0 4px; }
+        #print-header p  { color: #64748b; font-size: 12px; margin: 0; }
+
+        /* Barra de ações do relatório */
+        .rel-export-bar {
+            display: flex;
+            gap: 8px;
+        }
+        .btn-export {
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-family: Poppins, sans-serif;
+            transition: opacity .2s;
+        }
+        .btn-export:hover { opacity: .85; }
+        .btn-export.pdf   { background: #ef4444; color: white; }
+        .btn-export.excel { background: #16a34a; color: white; }
+        .btn-export.fechar{ background: #64748b; color: white; }
+    </style>
+</head>
+<body>
+    <div class="topbar">
+        <div class="topbar-left">
+            <button class="menu-toggle" id="menu-toggle"><i class="fas fa-bars"></i></button>
+            <h1>Relatórios</h1>
+        </div>
+        <div class="topbar-right">
+            <button class="topbar-btn"><i class="fas fa-bell"></i></button>
+            <div class="topbar-user"><span>Administrador</span><i class="fas fa-user-circle user-icon"></i></div>
+        </div>
+    </div>
+
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-logo"><div class="logo-text"><h2>CAC LTDA</h2><p>Sistema de Estoque e Compras</p></div></div>
+        <ul>
+            <li><a href="index.html"><i class="fas fa-home"></i>Dashboard</a></li>
+            <li><a href="produtos.html"><i class="fas fa-box"></i>Produtos</a></li>
+            <li><a href="fornecedores.html"><i class="fas fa-truck"></i>Fornecedores</a></li>
+            <li><a href="entradas.html"><i class="fas fa-arrow-down"></i>Entradas</a></li>
+            <li><a href="saidas.html"><i class="fas fa-arrow-up"></i>Saídas</a></li>
+            <li><a href="categorias.html"><i class="fas fa-tags"></i>Categorias</a></li>
+            <li><a href="funcionarios.html"><i class="fas fa-user-tie"></i>Funcionários</a></li>
+            <li><a href="setores.html"><i class="fas fa-building"></i>Setores</a></li>
+            <li><a href="relatorios.html" class="active"><i class="fas fa-chart-bar"></i>Relatórios</a></li>
+            <li><a href="alertas.html"><i class="fas fa-bell"></i>Alertas</a></li>
+            <li><a href="historico.html"><i class="fas fa-history"></i>Histórico</a></li>
+            <li><a href="configuracoes.html"><i class="fas fa-cog"></i>Configurações</a></li>
+            <li><a href="#"><i class="fas fa-sign-out-alt"></i>Sair</a></li>
+        </ul>
+    </div>
+
+    <div class="main">
+        <div class="header-flex">
+            <h2>Central de Relatórios</h2>
+        </div>
+
+        <!-- CARDS DOS 5 RELATÓRIOS -->
+        <div class="relatorio-grid">
+
+            <div class="relatorio-card">
+                <div class="rel-icon orange"><i class="fas fa-building"></i></div>
+                <div class="rel-info">
+                    <h3>Consumo por Setor</h3>
+                    <p>Qtd e valor dos produtos consumidos por setor no período.</p>
+                </div>
+                <div class="rel-acoes">
+                    <button class="btn-rel" onclick="abrirRelatorio('consumo-setor')"><i class="fas fa-eye"></i> Visualizar</button>
+                </div>
+            </div>
+
+            <div class="relatorio-card">
+                <div class="rel-icon blue"><i class="fas fa-file-alt"></i></div>
+                <div class="rel-info">
+                    <h3>Ficha do Produto</h3>
+                    <p>Todas as compras e saídas de um produto específico.</p>
+                </div>
+                <div class="rel-acoes">
+                    <button class="btn-rel" onclick="abrirRelatorio('ficha-produto')"><i class="fas fa-eye"></i> Visualizar</button>
+                </div>
+            </div>
+
+            <div class="relatorio-card">
+                <div class="rel-icon green"><i class="fas fa-truck"></i></div>
+                <div class="rel-info">
+                    <h3>Fornecedores por Produto</h3>
+                    <p>Todos os fornecedores e preços históricos de cada produto.</p>
+                </div>
+                <div class="rel-acoes">
+                    <button class="btn-rel" onclick="abrirRelatorio('fornecedores-produto')"><i class="fas fa-eye"></i> Visualizar</button>
+                </div>
+            </div>
+
+            <div class="relatorio-card">
+                <div class="rel-icon red"><i class="fas fa-exclamation-triangle"></i></div>
+                <div class="rel-info">
+                    <h3>Produtos em Falta</h3>
+                    <p>Produtos zerados ou abaixo do estoque mínimo individual.</p>
+                </div>
+                <div class="rel-acoes">
+                    <button class="btn-rel" onclick="abrirRelatorio('produtos-em-falta')"><i class="fas fa-eye"></i> Visualizar</button>
+                </div>
+            </div>
+
+            <div class="relatorio-card">
+                <div class="rel-icon purple"><i class="fas fa-tags"></i></div>
+                <div class="rel-info">
+                    <h3>Menor Preço por Fornecedor</h3>
+                    <p>Fornecedor com menor preço histórico de cada produto.</p>
+                </div>
+                <div class="rel-acoes">
+                    <button class="btn-rel" onclick="abrirRelatorio('menor-preco')"><i class="fas fa-eye"></i> Visualizar</button>
+                </div>
+            </div>
+
+            <div class="relatorio-card">
+                <div class="rel-icon teal"><i class="fas fa-history"></i></div>
+                <div class="rel-info">
+                    <h3>Últimas Compras</h3>
+                    <p>Histórico das compras mais recentes por produto.</p>
+                </div>
+                <div class="rel-acoes">
+                    <button class="btn-rel" onclick="abrirRelatorio('ultimas-compras')"><i class="fas fa-eye"></i> Visualizar</button>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- area-relatorio mantido para compatibilidade -->
+        <div id="area-relatorio" style="display:none;"></div>
+
+    </div><!-- fim .main -->
+
+    <!-- ══ MODAL FULLSCREEN DE RELATÓRIO ══ -->
+    <div id="modal-relatorio" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(15,23,42,0.6);z-index:1500;overflow-y:auto;">
+        <div style="background:white;min-height:100%;max-width:1200px;margin:0 auto;display:flex;flex-direction:column;">
+
+            <!-- Barra superior sticky -->
+            <div style="position:sticky;top:0;z-index:10;background:white;border-bottom:2px solid #e2e8f0;padding:16px 32px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;box-shadow:0 2px 12px rgba(0,0,0,0.08);">
+                <div>
+                    <h2 id="titulo-relatorio" style="margin:0;color:#051d61;font-size:20px;font-family:Poppins,sans-serif;"></h2>
+                    <p id="subtitulo-relatorio" style="margin:3px 0 0;font-size:12px;color:#94a3b8;font-family:Poppins,sans-serif;"></p>
+                </div>
+                <div class="rel-export-bar">
+                    <button class="btn-export excel" onclick="exportarExcel()" title="Exportar Excel (.xlsx)">
+                        <i class="fas fa-file-excel"></i> Excel
+                    </button>
+                    <button class="btn-export pdf" onclick="exportarPDF()" title="Imprimir / PDF">
+                        <i class="fas fa-file-pdf"></i> PDF
+                    </button>
+                    <button class="btn-export fechar" onclick="fecharRelatorio()" title="Fechar (ESC)">
+                        <i class="fas fa-times"></i> Fechar
+                    </button>
+                </div>
+            </div>
+
+            <!-- Filtros -->
+            <div id="filtros-relatorio" style="display:flex;flex-wrap:wrap;gap:12px;padding:16px 32px;background:#f8fafc;border-bottom:1px solid #e2e8f0;align-items:flex-end;"></div>
+
+            <!-- Cabeçalho de impressão -->
+            <div id="print-header" style="padding:0 32px;">
+                <h2>CAC LTDA — Sistema de Estoque e Compras</h2>
+                <p id="print-titulo-rel"></p>
+                <p>Gerado em: <span id="print-data"></span></p>
+            </div>
+
+            <!-- Conteúdo -->
+            <div style="padding:28px 32px;flex:1;">
+                <div id="conteudo-relatorio" style="text-align:center;color:#64748b;padding:60px 0;">
+                    <i class="fas fa-spinner fa-spin" style="font-size:28px;"></i>
+                    <p style="margin-top:12px;font-family:Poppins,sans-serif;">Carregando...</p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script src="../js/api.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/script.js"></script>
+    <script>
+let _relatorioAtual = null;
+        let _dadosRelatorioAtual = [];
+        let _tituloRelatorioAtual = '';
+        let _produtos = [];
+        let _setores  = [];
+        let _categorias = [];
+
+        // Carrega os selects de filtro ao abrir a página
+        document.addEventListener('DOMContentLoaded', async () => {
+            try {
+                [_produtos, _setores, _categorias] = await Promise.all([
+                    api.get('/produtos'),
+                    api.get('/setores'),
+                    api.get('/categorias'),
+                ]);
+            } catch(e) { console.error(e); }
+        });
+
+        function abrirRelatorio(tipo) {
+            _relatorioAtual = tipo;
+            // Abre o modal fullscreen
+            document.getElementById('modal-relatorio').style.display = 'block';
+            document.body.style.overflow = 'hidden'; // impede scroll do fundo
+            renderizarFiltros(tipo);
+            executarRelatorio(tipo);
+        }
+
+        function fecharRelatorio() {
+            document.getElementById('modal-relatorio').style.display = 'none';
+            document.body.style.overflow = '';
+            _relatorioAtual = null;
+            // Limpa o conteúdo para não mostrar dados velhos na próxima abertura
+            document.getElementById('conteudo-relatorio').innerHTML = '';
+            document.getElementById('filtros-relatorio').innerHTML  = '';
+        }
+
+        // Fecha com ESC
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && _relatorioAtual) fecharRelatorio();
+        });
+
+        // Fecha ao clicar no fundo escuro
+        document.getElementById('modal-relatorio')?.addEventListener('click', (e) => {
+            if (e.target.id === 'modal-relatorio') fecharRelatorio();
+        });
+
+        function renderizarFiltros(tipo) {
+            const div = document.getElementById('filtros-relatorio');
+            const titulos = {
+                'consumo-setor':       'Consumo por Setor',
+                'ficha-produto':       'Ficha do Produto',
+                'fornecedores-produto':'Fornecedores por Produto',
+                'produtos-em-falta':   'Produtos em Falta',
+                'menor-preco':         'Menor Preço por Fornecedor',
+                'ultimas-compras':     'Últimas Compras',
+            };
+            document.getElementById('titulo-relatorio').textContent = titulos[tipo] || tipo;
+
+            const selectProduto = `
+                <div>
+                    <label style="display:block;font-size:12px;font-weight:600;color:#64748b;margin-bottom:4px;">Produto</label>
+                    <select id="f-produto" class="filtro-select">
+                        <option value="">Todos os Produtos</option>
+                        ${_produtos.map(p => `<option value="${p.id_produto}">${p.nome}</option>`).join('')}
+                    </select>
+                </div>`;
+
+            const selectCategoria = `
+                <div>
+                    <label style="display:block;font-size:12px;font-weight:600;color:#64748b;margin-bottom:4px;">Grupo/Categoria</label>
+                    <select id="f-categoria" class="filtro-select">
+                        <option value="">Todas as Categorias</option>
+                        ${_categorias.map(c => `<option value="${c.id_categoria}">${c.nome_categoria}</option>`).join('')}
+                    </select>
+                </div>`;
+
+            const selectSetor = `
+                <div>
+                    <label style="display:block;font-size:12px;font-weight:600;color:#64748b;margin-bottom:4px;">Setor</label>
+                    <select id="f-setor" class="filtro-select">
+                        <option value="">Todos os Setores</option>
+                        ${_setores.map(s => `<option value="${s.id_setor}">${s.nome_setor}</option>`).join('')}
+                    </select>
+                </div>`;
+
+            const inputDatas = `
+                <div>
+                    <label style="display:block;font-size:12px;font-weight:600;color:#64748b;margin-bottom:4px;">Data inicial</label>
+                    <input type="date" id="f-data-inicio" class="filtro-select">
+                </div>
+                <div>
+                    <label style="display:block;font-size:12px;font-weight:600;color:#64748b;margin-bottom:4px;">Data final</label>
+                    <input type="date" id="f-data-fim" class="filtro-select">
+                </div>`;
+
+            const btnFiltrar = `
+                <div style="display:flex;align-items:flex-end;">
+                    <button class="btn-primary" onclick="executarRelatorio('${tipo}')">
+                        <i class="fas fa-search"></i> Filtrar
+                    </button>
+                </div>`;
+
+            const filtrosPorTipo = {
+                'consumo-setor':        selectSetor + selectCategoria + inputDatas + btnFiltrar,
+                'ficha-produto':        selectProduto + btnFiltrar,
+                'fornecedores-produto': selectProduto + btnFiltrar,
+                'produtos-em-falta':    `<div><label style="display:block;font-size:12px;font-weight:600;color:#64748b;margin-bottom:4px;">Mostrar</label><select id="f-zerados" class="filtro-select"><option value="0">Abaixo do mínimo</option><option value="1">Apenas zerados</option></select></div>` + btnFiltrar,
+                'menor-preco':          selectProduto + selectCategoria + btnFiltrar,
+                'ultimas-compras':      selectProduto + btnFiltrar,
+            };
+
+            div.innerHTML = filtrosPorTipo[tipo] || btnFiltrar;
+        }
+
+        async function executarRelatorio(tipo) {
+            const conteudo = document.getElementById('conteudo-relatorio');
+            conteudo.innerHTML = `<div style="padding:30px;text-align:center;color:#64748b;"><i class="fas fa-spinner fa-spin" style="font-size:24px;"></i><p style="margin-top:10px;">Carregando relatório...</p></div>`;
+
+            try {
+                let dados, html;
+                const params = new URLSearchParams();
+
+                const get = id => document.getElementById(id)?.value || '';
+
+                switch(tipo) {
+                    case 'consumo-setor':
+                        if (get('f-setor'))      params.append('id_setor',    get('f-setor'));
+                        if (get('f-categoria'))  params.append('id_categoria',get('f-categoria'));
+                        if (get('f-data-inicio'))params.append('data_inicio', get('f-data-inicio'));
+                        if (get('f-data-fim'))   params.append('data_fim',    get('f-data-fim'));
+                        dados = await api.get('/relatorios/consumo-setor?' + params);
+                        html  = tabelaConsumoSetor(dados);
+                        break;
+
+                    case 'ficha-produto':
+                        const idProd = get('f-produto');
+                        if (!idProd) {
+                            conteudo.innerHTML = `<div style="padding:30px;text-align:center;color:#f59e0b;"><i class="fas fa-exclamation-triangle" style="font-size:24px;"></i><p>Selecione um produto para ver a ficha.</p></div>`;
+                            return;
+                        }
+                        dados = await api.get('/relatorios/ficha-produto/' + idProd);
+                        html  = tabelaFichaProduto(dados);
+                        break;
+
+                    case 'fornecedores-produto':
+                        if (get('f-produto')) params.append('id_produto', get('f-produto'));
+                        dados = await api.get('/relatorios/fornecedores-produto?' + params);
+                        html  = tabelaFornecedoresProduto(dados);
+                        break;
+
+                    case 'produtos-em-falta':
+                        params.append('apenas_zerados', get('f-zerados') || '0');
+                        dados = await api.get('/relatorios/produtos-em-falta?' + params);
+                        html  = tabelaProdutosEmFalta(dados);
+                        break;
+
+                    case 'menor-preco':
+                        if (get('f-produto'))   params.append('id_produto',   get('f-produto'));
+                        if (get('f-categoria')) params.append('id_categoria', get('f-categoria'));
+                        dados = await api.get('/relatorios/menor-preco?' + params);
+                        html  = tabelaMenorPreco(dados);
+                        break;
+
+                    case 'ultimas-compras':
+                        if (get('f-produto')) params.append('id_produto', get('f-produto'));
+                        dados = await api.get('/relatorios/ultimas-compras?' + params);
+                        html  = tabelaUltimasCompras(dados);
+                        break;
+                }
+
+                conteudo.innerHTML = html;
+
+                // Armazena o título para o nome do arquivo de export
+                _tituloRelatorioAtual = document.getElementById('titulo-relatorio')?.textContent || tipo;
+                // Atualiza subtítulo com data e contagem
+                const subEl = document.getElementById('subtitulo-relatorio');
+                if (subEl) subEl.textContent = `Gerado em ${new Date().toLocaleString('pt-BR')}`;
+
+            } catch (err) {
+                conteudo.innerHTML = `<div style="padding:30px;text-align:center;color:#dc2626;"><i class="fas fa-times-circle" style="font-size:24px;"></i><p>${err.message}</p></div>`;
+            }
+        }
+
+        // ── Funções de renderização de tabela ───────────────────
+
+        function semDados() {
+            return `<div style="padding:30px;text-align:center;color:#64748b;"><i class="fas fa-inbox" style="font-size:28px;margin-bottom:10px;display:block;"></i>Nenhum registro encontrado.</div>`;
+        }
+
+        function cabecalhoTabela(colunas) {
+            return `<table style="width:100%;border-collapse:collapse;font-size:14px;">
+                <thead style="background:#f8fafc;">
+                    <tr>${colunas.map(c => `<th style="padding:14px 16px;text-align:left;font-weight:600;color:#475569;border-bottom:2px solid #e2e8f0;">${c}</th>`).join('')}</tr>
+                </thead><tbody>`;
+        }
+
+        function rodapeTabela() { return `</tbody></table>`; }
+
+        function linha(celulas) {
+            return `<tr style="border-bottom:1px solid #f1f5f9;" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background=''">
+                ${celulas.map(c => `<td style="padding:13px 16px;color:#334155;">${c ?? '—'}</td>`).join('')}
+            </tr>`;
+        }
+
+        function tabelaConsumoSetor(dados) {
+            if (!dados.length) return semDados();
+            let html = cabecalhoTabela(['Setor','Grupo','Produto','Qtd Total','Valor Total','Requisições']);
+            dados.forEach(r => {
+                html += linha([
+                    `<strong>${r.nome_setor}</strong>`,
+                    r.grupo,
+                    r.produto,
+                    r.total_quantidade,
+                    formatarMoeda(r.total_valor),
+                    r.total_requisicoes,
+                ]);
+            });
+            return html + rodapeTabela();
+        }
+
+        function tabelaFichaProduto(dados) {
+            if (!dados.cabecalho) return semDados();
+            const p = dados.cabecalho;
+            let html = `
+                <div style="background:#f8fafc;border-radius:10px;padding:20px;margin-bottom:20px;display:grid;grid-template-columns:repeat(4,1fr);gap:16px;">
+                    <div><small style="color:#64748b;font-size:12px;">Produto</small><p style="font-weight:700;color:#1e293b;margin:4px 0;">${p.produto}</p></div>
+                    <div><small style="color:#64748b;font-size:12px;">Grupo</small><p style="font-weight:600;margin:4px 0;">${p.grupo||'—'}</p></div>
+                    <div><small style="color:#64748b;font-size:12px;">Saldo Atual</small><p style="font-weight:700;color:${p.saldo_atual<=p.estoque_minimo?'#ef4444':'#10b981'};margin:4px 0;">${p.saldo_atual} un.</p></div>
+                    <div><small style="color:#64748b;font-size:12px;">Preço Médio</small><p style="font-weight:700;color:#2563eb;margin:4px 0;">${formatarMoeda(p.preco_medio)}</p></div>
+                </div>`;
+
+            html += `<h4 style="color:#059669;margin:16px 0 8px;"><i class="fas fa-arrow-down"></i> Entradas (${dados.entradas.length})</h4>`;
+            if (dados.entradas.length) {
+                html += cabecalhoTabela(['Data','Fornecedor','Qtd','Valor Unit.','Valor Total']);
+                dados.entradas.forEach(e => {
+                    html += linha([formatarData(e.data_movimento), e.origem_destino, e.quantidade, formatarMoeda(e.valor_unitario), formatarMoeda(e.valor_total)]);
+                });
+                html += rodapeTabela();
+            } else {
+                html += `<p style="color:#94a3b8;font-size:13px;">Nenhuma entrada registrada.</p>`;
+            }
+
+            html += `<h4 style="color:#ef4444;margin:20px 0 8px;"><i class="fas fa-arrow-up"></i> Saídas (${dados.saidas.length})</h4>`;
+            if (dados.saidas.length) {
+                html += cabecalhoTabela(['Data','Setor','Qtd','Valor Unit.','Valor Total']);
+                dados.saidas.forEach(s => {
+                    html += linha([formatarData(s.data_movimento), s.setor, s.quantidade, formatarMoeda(s.valor_unitario), formatarMoeda(s.valor_total)]);
+                });
+                html += rodapeTabela();
+            } else {
+                html += `<p style="color:#94a3b8;font-size:13px;">Nenhuma saída registrada.</p>`;
+            }
+            return html;
+        }
+
+        function tabelaFornecedoresProduto(dados) {
+            if (!dados.length) return semDados();
+            let html = cabecalhoTabela(['Produto','Grupo','Fornecedor','Compras','Qtd Total','Menor Preço','Maior Preço','Preço Médio','Última Compra']);
+            dados.forEach(r => {
+                html += linha([
+                    r.produto, r.grupo, `<strong>${r.fornecedor}</strong>`,
+                    r.total_compras, r.total_qtd_fornecida,
+                    formatarMoeda(r.menor_preco), formatarMoeda(r.maior_preco),
+                    formatarMoeda(r.preco_medio), formatarData(r.ultima_compra),
+                ]);
+            });
+            return html + rodapeTabela();
+        }
+
+        function tabelaProdutosEmFalta(dados) {
+            if (!dados.length) return `<div style="padding:30px;text-align:center;color:#10b981;"><i class="fas fa-check-circle" style="font-size:28px;margin-bottom:10px;display:block;"></i><strong>Nenhum produto em falta!</strong><p>Todos os produtos estão acima do estoque mínimo.</p></div>`;
+            let html = cabecalhoTabela(['Produto','Grupo','Saldo','Mínimo','Situação','Sugestão de Compra','Último Fornecedor','Menor Preço Hist.']);
+            dados.forEach(r => {
+                const cor = r.situacao === 'SEM ESTOQUE' ? '#dc2626' : '#f59e0b';
+                html += linha([
+                    `<strong>${r.produto}</strong>`, r.grupo,
+                    `<span style="color:${cor};font-weight:700;">${r.saldo_atual}</span>`,
+                    r.estoque_minimo,
+                    `<span style="background:${r.situacao==='SEM ESTOQUE'?'#fee2e2':'#fef3c7'};color:${cor};padding:3px 8px;border-radius:20px;font-size:12px;font-weight:600;">${r.situacao}</span>`,
+                    `${r.sugestao_compra} un.`,
+                    r.ultimo_fornecedor,
+                    formatarMoeda(r.menor_preco_historico),
+                ]);
+            });
+            return html + rodapeTabela();
+        }
+
+        function tabelaMenorPreco(dados) {
+            if (!dados.length) return semDados();
+            let html = cabecalhoTabela(['Produto','Grupo','Fornecedor Mais Barato','CNPJ','Menor Preço','Data da Compra']);
+            dados.forEach(r => {
+                html += linha([
+                    r.produto, r.grupo,
+                    `<strong style="color:#059669;">${r.fornecedor_mais_barato}</strong>`,
+                    r.cnpj, `<strong style="color:#2563eb;">${formatarMoeda(r.menor_preco_unitario)}</strong>`,
+                    formatarData(r.data_da_compra),
+                ]);
+            });
+            return html + rodapeTabela();
+        }
+
+        function tabelaUltimasCompras(dados) {
+            if (!dados.length) return semDados();
+            let html = cabecalhoTabela(['Produto','Grupo','Fornecedor','Data','Qtd','Valor Unit.','Valor Total','Nº Compra']);
+            dados.forEach(r => {
+                html += linha([
+                    r.produto, r.grupo, r.fornecedor,
+                    formatarData(r.data_compra), r.quantidade_compra,
+                    formatarMoeda(r.valor_unitario), formatarMoeda(r.valor_total),
+                    `#${r.numero_compra}`,
+                ]);
+            });
+            return html + rodapeTabela();
+        }
+
+        // Extrai dados da tabela HTML atual como array de objetos
+        // Extrai TODAS as tabelas do relatório — retorna array de { titulo, dados }
+        function extrairDadosTabela() {
+            const conteudo = document.getElementById('conteudo-relatorio');
+            if (!conteudo) return [];
+
+            const tabelas = [...conteudo.querySelectorAll('table')];
+            if (!tabelas.length) return [];
+
+            // Para cada tabela, tenta encontrar o título (h4 antes dela)
+            return tabelas.map((tabela, idx) => {
+                // Busca o <h4> ou <h3> mais próximo antes da tabela
+                let titulo = `Tabela ${idx + 1}`;
+                let el = tabela.previousElementSibling;
+                while (el) {
+                    if (['H2','H3','H4'].includes(el.tagName)) {
+                        titulo = el.innerText.trim().replace(/\(.*?\)/g,'').trim();
+                        break;
+                    }
+                    el = el.previousElementSibling;
+                }
+
+                const headers = [...tabela.querySelectorAll('thead th')]
+                    .map(th => th.textContent.trim());
+
+                const dados = [...tabela.querySelectorAll('tbody tr')]
+                    .filter(tr => tr.querySelector('td')) // ignora linhas vazias
+                    .map(tr => {
+                        const obj = {};
+                        [...tr.querySelectorAll('td')].forEach((td, i) => {
+                            obj[headers[i] || `col${i}`] = td.innerText.trim();
+                        });
+                        return obj;
+                    });
+
+                return { titulo, dados };
+            });
+        }
+
+        // ── Export Excel — suporta múltiplas tabelas (uma aba por tabela) ──
+        function exportarExcel() {
+            const sheets = extrairDadosTabela();
+            const sheetsComDados = sheets.filter(s => s.dados.length > 0);
+
+            if (!sheetsComDados.length) {
+                alert('Nenhum dado para exportar. Execute o relatório primeiro.');
+                return;
+            }
+
+            const wb = XLSX.utils.book_new();
+
+            sheetsComDados.forEach((sheet, idx) => {
+                const ws = XLSX.utils.json_to_sheet(sheet.dados);
+
+                // Ajusta largura das colunas automaticamente
+                if (sheet.dados.length > 0) {
+                    const cols = Object.keys(sheet.dados[0]).map(k => ({
+                        wch: Math.max(
+                            k.length,
+                            ...sheet.dados.map(r => String(r[k] ?? '').length)
+                        ) + 2
+                    }));
+                    ws['!cols'] = cols;
+                }
+
+                // Nome da aba: limita a 31 chars (limite do Excel)
+                const nomeAba = sheet.titulo.substring(0, 31) || `Aba ${idx + 1}`;
+                XLSX.utils.book_append_sheet(wb, ws, nomeAba);
+            });
+
+            const nomeArquivo = `CAC_${_tituloRelatorioAtual.replace(/\s+/g,'_')}_${new Date().toLocaleDateString('pt-BR').replace(/\//g,'-')}.xlsx`;
+            XLSX.writeFile(wb, nomeArquivo);
+        }
+
+        // ── Export PDF (via print do navegador) ────────────────────
+        function exportarPDF() {
+            const sheets = extrairDadosTabela();
+            if (!sheets.some(s => s.dados.length > 0)) {
+                alert('Nenhum dado para exportar. Execute o relatório primeiro.');
+                return;
+            }
+            // Preenche o cabeçalho de impressão
+            const el = document.getElementById('print-titulo-rel');
+            const dt = document.getElementById('print-data');
+            if (el) el.textContent = _tituloRelatorioAtual;
+            if (dt) dt.textContent = new Date().toLocaleString('pt-BR');
+            window.print();
+        }
+
+        function formatarMoeda(v) {
+            return Number(v||0).toLocaleString('pt-BR', { style:'currency', currency:'BRL' });
+        }
+        function formatarData(iso) {
+            if (!iso) return '—';
+            return new Date(iso).toLocaleDateString('pt-BR');
+        }
+    </script>
+</body>
+</html>

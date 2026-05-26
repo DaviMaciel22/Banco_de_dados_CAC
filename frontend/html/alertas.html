@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alertas - CAC LTDA</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/alertas.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="topbar">
+        <div class="topbar-left">
+            <button type="button" class="menu-toggle" id="menu-toggle"><i class="fas fa-bars"></i></button>
+            <h1>Alertas</h1>
+        </div>
+        <div class="topbar-right">
+            <button type="button" class="topbar-btn"><i class="fas fa-bell"></i></button>
+            <div class="topbar-user"><span>Administrador</span><i class="fas fa-user-circle user-icon"></i></div>
+        </div>
+    </div>
+
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-logo"><div class="logo-text"><h2>CAC LTDA</h2><p>Sistema de Estoque e Compras</p></div></div>
+        <ul>
+            <li><a href="index.html"><i class="fas fa-home"></i>Dashboard</a></li>
+            <li><a href="produtos.html"><i class="fas fa-box"></i>Produtos</a></li>
+            <li><a href="fornecedores.html"><i class="fas fa-truck"></i>Fornecedores</a></li>
+            <li><a href="entradas.html"><i class="fas fa-arrow-down"></i>Entradas</a></li>
+            <li><a href="saidas.html"><i class="fas fa-arrow-up"></i>Saídas</a></li>
+            <li><a href="categorias.html"><i class="fas fa-tags"></i>Categorias</a></li>
+            <li><a href="funcionarios.html"><i class="fas fa-user-tie"></i>Funcionários</a></li>
+            <li><a href="setores.html"><i class="fas fa-building"></i>Setores</a></li>
+            <li><a href="relatorios.html"><i class="fas fa-chart-bar"></i>Relatórios</a></li>
+            <li><a href="alertas.html" class="active"><i class="fas fa-bell"></i>Alertas</a></li>
+            <li><a href="historico.html"><i class="fas fa-history"></i>Histórico</a></li>
+            <li><a href="configuracoes.html"><i class="fas fa-cog"></i>Configurações</a></li>
+            <li><a href="#"><i class="fas fa-sign-out-alt"></i>Sair</a></li>
+        </ul>
+    </div>
+
+    <div class="main">
+
+        <!-- BANNER: notificações desativadas -->
+        <div id="banner-notif-off" style="display:none; background:#fef3c7; border:1px solid #f59e0b; border-radius:10px; padding:14px 20px; margin-bottom:24px; align-items:center; gap:12px;">
+            <i class="fas fa-exclamation-triangle" style="color:#d97706; font-size:18px;"></i>
+            <div>
+                <strong style="color:#92400e;">Notificações de estoque desativadas</strong>
+                <p style="margin:2px 0 0; font-size:13px; color:#92400e;">
+                    Os alertas estão silenciados. Para ativá-los vá em
+                    <a href="configuracoes.html" style="color:#2563eb; font-weight:600;">Configurações → Notificações</a>.
+                </p>
+            </div>
+        </div>
+
+        <!-- CARDS DE RESUMO -->
+        <div class="cards-alertas">
+            <div class="card-alerta red">
+                <div class="card-alerta-info"><h3>Críticos</h3><p id="total-criticos">—</p></div>
+                <i class="fas fa-times-circle"></i>
+            </div>
+            <div class="card-alerta orange">
+                <div class="card-alerta-info"><h3>Atenção</h3><p id="total-atencao">—</p></div>
+                <i class="fas fa-exclamation-triangle"></i>
+            </div>
+            <div class="card-alerta blue">
+                <div class="card-alerta-info"><h3>Total em Alerta</h3><p id="total-alertas">—</p></div>
+                <i class="fas fa-bell"></i>
+            </div>
+            <div class="card-alerta green">
+                <div class="card-alerta-info"><h3>Mínimo Global</h3><p id="estoque-min-global">—</p></div>
+                <i class="fas fa-sliders-h"></i>
+            </div>
+        </div>
+
+        <div class="header-flex">
+            <h2>Produtos com Estoque Baixo</h2>
+            <div style="display:flex; gap:10px; align-items:center;">
+                <a href="configuracoes.html" style="background:#f1f5f9;color:#475569;border:1px solid #e2e8f0;padding:10px 16px;border-radius:8px;font-size:13px;font-weight:600;text-decoration:none;display:flex;align-items:center;gap:6px;">
+                    <i class="fas fa-cog"></i> Ajustar configurações
+                </a>
+                <button type="button" class="btn-marcar-todos" onclick="carregarAlertas()">
+                    <i class="fas fa-sync-alt"></i> Atualizar
+                </button>
+            </div>
+        </div>
+
+        <!-- FILTROS -->
+        <div class="filtros-container">
+            <div class="busca-box">
+                <i class="fas fa-search"></i>
+                <input type="text" id="busca-alerta" placeholder="Buscar produto...">
+            </div>
+            <div class="filtros">
+                <select class="filtro-select" id="filtro-severidade">
+                    <option value="">Todos</option>
+                    <option value="critico">Crítico</option>
+                    <option value="atencao">Atenção</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- LISTA -->
+        <div class="alertas-lista" id="alertas-lista">
+            <div class="alerta-item info">
+                <div class="alerta-icone"><i class="fas fa-spinner fa-spin"></i></div>
+                <div class="alerta-corpo"><div class="alerta-titulo"><strong>Carregando alertas...</strong></div></div>
+            </div>
+        </div>
+        <div class="paginacao" id="paginacao-alertas" style="margin-top:20px;"></div>
+    </div>
+
+    <script src="../js/api.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/script.js"></script>
+    <script>
+        let _todosAlertas = [];
+        let _paginaAlertas = 1;
+
+        async function carregarAlertas() {
+            const lista = document.getElementById('alertas-lista');
+            lista.innerHTML = `
+                <div class="alerta-item info">
+                    <div class="alerta-icone"><i class="fas fa-spinner fa-spin"></i></div>
+                    <div class="alerta-corpo"><div class="alerta-titulo"><strong>Carregando...</strong></div></div>
+                </div>`;
+
+            try {
+                const dados = await api.get('/alertas');
+
+                document.getElementById('total-criticos').textContent    = dados.totais.criticos;
+                document.getElementById('total-atencao').textContent     = dados.totais.atencao;
+                document.getElementById('total-alertas').textContent     = dados.totais.total;
+                document.getElementById('estoque-min-global').textContent = (dados.estoqueMinGlobal || '—') + ' un.';
+
+                const banner = document.getElementById('banner-notif-off');
+                if (banner) banner.style.display = !dados.notificacoesAtivas ? 'flex' : 'none';
+
+                _todosAlertas   = dados.alertas;
+                _paginaAlertas  = 1;
+                aplicarFiltrosAlertas();
+
+            } catch (err) {
+                lista.innerHTML = `
+                    <div class="alerta-item critico">
+                        <div class="alerta-icone"><i class="fas fa-times-circle"></i></div>
+                        <div class="alerta-corpo">
+                            <div class="alerta-titulo"><strong>Erro ao carregar alertas</strong></div>
+                            <p class="alerta-desc">${err.message}</p>
+                        </div>
+                    </div>`;
+            }
+        }
+
+        function aplicarFiltrosAlertas() {
+            const busca      = (document.getElementById('busca-alerta')?.value || '').toLowerCase();
+            const severidade = document.getElementById('filtro-severidade')?.value || '';
+            const filtrados  = _todosAlertas.filter(a =>
+                (!busca      || a.nome.toLowerCase().includes(busca)) &&
+                (!severidade || a.severidade === severidade)
+            );
+            renderizarAlertasPaginado(filtrados, _paginaAlertas);
+        }
+
+        function renderizarAlertasPaginado(alertas, pagina) {
+            const limite = _cfg?.itensPorPagina || 20;
+            const inicio = (pagina - 1) * limite;
+            const fatia  = alertas.slice(inicio, inicio + limite);
+
+            const lista = document.getElementById('alertas-lista');
+
+            if (!alertas.length) {
+                lista.innerHTML = `
+                    <div class="alerta-item resolvido">
+                        <div class="alerta-icone"><i class="fas fa-check-circle"></i></div>
+                        <div class="alerta-corpo">
+                            <div class="alerta-titulo">
+                                <strong>Nenhum produto em alerta</strong>
+                                <span class="alerta-badge resolvido">Tudo ok</span>
+                            </div>
+                            <p class="alerta-desc">Todos os produtos estão acima do estoque mínimo configurado.</p>
+                        </div>
+                    </div>`;
+                document.getElementById('paginacao-alertas').innerHTML = '';
+                return;
+            }
+
+            lista.innerHTML = fatia.map(a => {
+                const isCritico = a.severidade === 'critico';
+                const cls   = isCritico ? 'critico' : 'atencao';
+                const icon  = isCritico ? 'fa-times-circle' : 'fa-exclamation-triangle';
+                const badge = isCritico ? 'Crítico' : 'Atenção';
+                const msg   = a.quantidade_estoque === 0
+                    ? `Produto <strong>sem estoque</strong>. Reposição imediata necessária.`
+                    : `Apenas <strong>${a.quantidade_estoque} unidade(s)</strong> em estoque. Mínimo: <strong>${a.estoque_minimo} un.</strong>`;
+                const ultForn = a.ultimo_fornecedor
+                    ? `<span style="font-size:12px;color:#64748b;margin-left:8px;"><i class="fas fa-truck"></i> ${a.ultimo_fornecedor}</span>`
+                    : '';
+                return `
+                    <div class="alerta-item ${cls}">
+                        <div class="alerta-icone"><i class="fas ${icon}"></i></div>
+                        <div class="alerta-corpo">
+                            <div class="alerta-titulo">
+                                <strong>${a.nome}</strong>
+                                <span class="alerta-badge ${cls}">${badge}</span>
+                                ${a.nome_categoria ? `<span style="font-size:11px;color:#94a3b8;background:#f1f5f9;padding:2px 8px;border-radius:20px;">${a.nome_categoria}</span>` : ''}
+                            </div>
+                            <p class="alerta-desc">${msg}</p>
+                            <span class="alerta-data">
+                                <i class="fas fa-box"></i> Estoque atual: ${a.quantidade_estoque} un.${ultForn}
+                            </span>
+                        </div>
+                        <div class="alerta-acoes">
+                            <a href="entradas.html" class="btn-acao editar" title="Registrar entrada" style="display:flex;align-items:center;justify-content:center;text-decoration:none;"><i class="fas fa-plus"></i></a>
+                            <a href="produtos.html" class="btn-acao" title="Ver produto" style="background:#f1f5f9;color:#64748b;display:flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:6px;text-decoration:none;"><i class="fas fa-eye"></i></a>
+                        </div>
+                    </div>`;
+            }).join('');
+
+            // Paginação usando o sistema central
+            renderPaginacao('paginacao-alertas', alertas.length, pagina, limite, (p) => {
+                _paginaAlertas = p;
+                renderizarAlertasPaginado(alertas, p);
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            carregarAlertas();
+            document.getElementById('busca-alerta')?.addEventListener('input',  aplicarFiltrosAlertas);
+            document.getElementById('filtro-severidade')?.addEventListener('change', aplicarFiltrosAlertas);
+        });
+    </script>
+</body>
+</html>
