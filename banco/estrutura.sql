@@ -100,6 +100,7 @@ CREATE TABLE Entrada (
     valor_compra      NUMERIC(18,2)   NOT NULL,
     quantidade_compra INT             NOT NULL,
     valor_unitario    NUMERIC(18,2)   NOT NULL,
+    num_nf            NUMERIC(18,2)   NOT NULL,
     CONSTRAINT PK_Entrada          PRIMARY KEY (id_entrada),
     CONSTRAINT FK_Entrada_Prod     FOREIGN KEY (fkproduto)
         REFERENCES Produto(id_produto),
