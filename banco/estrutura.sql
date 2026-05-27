@@ -8,7 +8,7 @@
 IF NOT EXISTS (SELECT name FROM sys.databases WHERE name = 'banco_cac')
 BEGIN
     CREATE DATABASE banco_cac;
-    PRINT '✅ Banco banco_cac criado.';
+    PRINT 'Banco banco_cac criado.';
 END
 GO
 
@@ -42,7 +42,7 @@ GO
 IF OBJECT_ID('Fornecedor', 'U') IS NULL
 CREATE TABLE Fornecedor (
     id_fornecedor BIGINT        IDENTITY(1,1) NOT NULL,
-    cnpj          VARCHAR(18)   NOT NULL,
+    cnpj          VARCHAR(18)   NOT NULL UNIQUE,
     email         VARCHAR(100)  NOT NULL,
     razao_social  VARCHAR(100)  NOT NULL,
     CONSTRAINT PK_Fornecedor    PRIMARY KEY (id_fornecedor),
@@ -249,5 +249,5 @@ CREATE TABLE Configuracoes (
 GO
 
 PRINT 'Estrutura criada com sucesso!';
-PRINT 'Execute na ordem: estrutura.sql → procs.sql → views.sql → triggers.sql → dados_iniciais.sql';
+PRINT 'Execute na ordem: estrutura.sql -> procs.sql -> views.sql -> triggers.sql -> dados_iniciais.sql';
 GO
