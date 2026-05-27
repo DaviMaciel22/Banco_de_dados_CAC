@@ -7,11 +7,11 @@ GO
 
 -- ============================================================
 -- TRIGGER 1: Atualiza preço médio e data da última compra
--- Dispara: AFTER INSERT na tabela Entrada
+-- Dispara: FOR INSERT na tabela Entrada
 -- ============================================================
 CREATE OR ALTER TRIGGER trg_entrada_atualiza_produto
 ON Entrada
-AFTER INSERT
+FOR INSERT
 AS
 BEGIN
     SET NOCOUNT ON;
@@ -43,7 +43,7 @@ GO
 -- ============================================================
 CREATE OR ALTER TRIGGER atualizacao_de_estoque_entrada
 ON Entrada
-AFTER INSERT
+FOR INSERT
 AS
 BEGIN
     SET NOCOUNT ON;
@@ -60,7 +60,7 @@ GO
 -- ============================================================
 CREATE OR ALTER TRIGGER atualizacao_de_estoque_saida
 ON Saida
-AFTER INSERT
+FOR INSERT
 AS
 BEGIN
     SET NOCOUNT ON;
@@ -142,7 +142,7 @@ GO
 -- ============================================================
 CREATE OR ALTER TRIGGER trg_atualiza_numero_funcionarios
 ON Funcionario
-AFTER INSERT, DELETE, UPDATE
+FOR INSERT, DELETE, UPDATE
 AS
 BEGIN
     SET NOCOUNT ON;

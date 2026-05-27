@@ -10,14 +10,14 @@ GO
 -- ============================================================
 
 CREATE OR ALTER PROCEDURE sp_inserir_atualizar_produto
-    @id_produto         BIGINT         = NULL,
+ (  @id_produto         BIGINT         = NULL,
     @fkcategoria        BIGINT,
     @status1            VARCHAR(50),
     @quantidade_estoque INT,
     @preco_compra       NUMERIC(18,2),
     @descricao          VARCHAR(200),
     @nome               VARCHAR(50),
-    @estoque_minimo     INT            = 20
+    @estoque_minimo     INT            = 20 )
 AS
 BEGIN
     SET NOCOUNT ON;
@@ -38,7 +38,7 @@ END;
 GO
 
 CREATE OR ALTER PROCEDURE sp_deletar_produto
-    @id_produto BIGINT
+    (@id_produto BIGINT)
 AS
 BEGIN
     SET NOCOUNT ON;
@@ -57,10 +57,10 @@ GO
 -- ============================================================
 
 CREATE OR ALTER PROCEDURE sp_inserir_atualizar_fornecedor
-    @id_fornecedor BIGINT        = NULL,
+ (  @id_fornecedor BIGINT        = NULL,
     @cnpj          VARCHAR(18),
     @email         VARCHAR(100),
-    @razao_social  VARCHAR(100)
+    @razao_social  VARCHAR(100) )
 AS
 BEGIN
     SET NOCOUNT ON;
@@ -73,7 +73,7 @@ END;
 GO
 
 CREATE OR ALTER PROCEDURE sp_deletar_fornecedor
-    @id_fornecedor BIGINT
+    (@id_fornecedor BIGINT)
 AS
 BEGIN
     SET NOCOUNT ON;
@@ -93,8 +93,8 @@ GO
 -- ============================================================
 
 CREATE OR ALTER PROCEDURE sp_inserir_atualizar_categoria
-    @id_categoria   BIGINT      = NULL,
-    @nome_categoria VARCHAR(50)
+ (  @id_categoria   BIGINT      = NULL,
+    @nome_categoria VARCHAR(50) )
 AS
 BEGIN
     SET NOCOUNT ON;
@@ -107,7 +107,7 @@ GO
 
 
 CREATE OR ALTER PROCEDURE sp_deletar_categoria
-    @id_categoria BIGINT
+    (@id_categoria BIGINT)
 AS
 BEGIN
     SET NOCOUNT ON;
@@ -126,9 +126,9 @@ GO
 -- ============================================================
 
 CREATE OR ALTER PROCEDURE sp_inserir_atualizar_setor
-    @id_setor            BIGINT      = NULL,
+ (  @id_setor            BIGINT      = NULL,
     @nome_sertor         VARCHAR(50),
-    @numero_funcionarios INT         = 0
+    @numero_funcionarios INT         = 0 )
 AS
 BEGIN
     SET NOCOUNT ON;
@@ -140,7 +140,7 @@ END;
 GO
 
 CREATE OR ALTER PROCEDURE sp_deletar_setor
-    @id_setor BIGINT
+    (@id_setor BIGINT)
 AS
 BEGIN
     SET NOCOUNT ON;
@@ -164,10 +164,10 @@ GO
 -- ============================================================
 
 CREATE OR ALTER PROCEDURE sp_inserir_atualizar_funcionario
-    @idfuncionario    BIGINT      = NULL,
+ (  @idfuncionario    BIGINT      = NULL,
     @fksetor          BIGINT,
     @nome_funcionario VARCHAR(50),
-    @tipo_funcionario VARCHAR(50)
+    @tipo_funcionario VARCHAR(50) )
 AS
 BEGIN
     SET NOCOUNT ON;
@@ -182,7 +182,7 @@ END;
 GO
 
 CREATE OR ALTER PROCEDURE sp_deletar_funcionario
-    @id_funcionario BIGINT
+    (@id_funcionario BIGINT)
 AS
 BEGIN
     SET NOCOUNT ON;
@@ -195,6 +195,27 @@ GO
 -- ============================================================
 -- ENTRADAS E SAÍDAS
 -- ============================================================
+
+CREATE OR ALTER PROCEDURE sp_inserir_atualizar_entrada
+ (  @id_entrada         BIGINT          = NULL,
+    @fkproduto          BIGINT,
+    @fkfornecedor       BIGINT,
+    @data_compra        DATETIME,
+    @valor_compra       NUMERIC(18,2),
+    @quantidade_compra  INT,
+    @valor_unitario     NUMERIC(18,2) )
+AS
+BEGIN
+    IF @id_entrada IS NULL OR @id_entrada = 0
+        INSERT INTO Entrada (fkproduto, fkfornecedor, data_compra, valor_compra, quantidade_compra, valor_unitario)
+        VALUES (@fkproduto, @fkfornecedor, @data_compra, @valor_compra, @quantidade_compra, @valor_unitario);
+    ELSE
+        UPDATE Entrada
+        SET fkproduto = @fkproduto, fkfornecedor = @fkfornecedor, data_compra = @data_compra,
+            valor_compra = @valor_compra, quantidade_compra = @quantidade_compra, valor_unitario = @valor_unitario
+        WHERE id_entrada = @id_entrada;
+END;
+GO
 
 CREATE OR ALTER PROCEDURE sp_deletar_entrada
     @id_entrada BIGINT
