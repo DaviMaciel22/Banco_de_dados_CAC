@@ -9,7 +9,7 @@ GO
 -- PRODUTO
 -- ============================================================
 
-CREATE OR ALTER PROCEDURE sp_inserir_atualizar_produto
+CREATE OR ALTER PROC sp_inserir_atualizar_produto
  (  @id_produto         BIGINT         = NULL,
     @fkcategoria        BIGINT,
     @status1            VARCHAR(50),
@@ -37,7 +37,7 @@ BEGIN
 END;
 GO
 
-CREATE OR ALTER PROCEDURE sp_deletar_produto
+CREATE OR ALTER PROC sp_deletar_produto
     (@id_produto BIGINT)
 AS
 BEGIN
@@ -56,7 +56,7 @@ GO
 -- FORNECEDOR
 -- ============================================================
 
-CREATE OR ALTER PROCEDURE sp_inserir_atualizar_fornecedor
+CREATE OR ALTER PROC sp_inserir_atualizar_fornecedor
  (  @id_fornecedor BIGINT        = NULL,
     @cnpj          VARCHAR(18),
     @email         VARCHAR(100),
@@ -72,7 +72,7 @@ BEGIN
 END;
 GO
 
-CREATE OR ALTER PROCEDURE sp_deletar_fornecedor
+CREATE OR ALTER PROC sp_deletar_fornecedor
     (@id_fornecedor BIGINT)
 AS
 BEGIN
@@ -92,7 +92,7 @@ GO
 -- CATEGORIA
 -- ============================================================
 
-CREATE OR ALTER PROCEDURE sp_inserir_atualizar_categoria
+CREATE OR ALTER PROC sp_inserir_atualizar_categoria
  (  @id_categoria   BIGINT      = NULL,
     @nome_categoria VARCHAR(50) )
 AS
@@ -106,7 +106,7 @@ END;
 GO
 
 
-CREATE OR ALTER PROCEDURE sp_deletar_categoria
+CREATE OR ALTER PROC sp_deletar_categoria
     (@id_categoria BIGINT)
 AS
 BEGIN
@@ -125,7 +125,7 @@ GO
 -- SETOR
 -- ============================================================
 
-CREATE OR ALTER PROCEDURE sp_inserir_atualizar_setor
+CREATE OR ALTER PROC sp_inserir_atualizar_setor
  (  @id_setor            BIGINT      = NULL,
     @nome_sertor         VARCHAR(50),
     @numero_funcionarios INT         = 0 )
@@ -139,7 +139,7 @@ BEGIN
 END;
 GO
 
-CREATE OR ALTER PROCEDURE sp_deletar_setor
+CREATE OR ALTER PROC sp_deletar_setor
     (@id_setor BIGINT)
 AS
 BEGIN
@@ -163,7 +163,7 @@ GO
 -- FUNCIONÁRIO
 -- ============================================================
 
-CREATE OR ALTER PROCEDURE sp_inserir_atualizar_funcionario
+CREATE OR ALTER PROC sp_inserir_atualizar_funcionario
  (  @idfuncionario    BIGINT      = NULL,
     @fksetor          BIGINT,
     @nome_funcionario VARCHAR(50),
@@ -181,7 +181,7 @@ BEGIN
 END;
 GO
 
-CREATE OR ALTER PROCEDURE sp_deletar_funcionario
+CREATE OR ALTER PROC sp_deletar_funcionario
     (@id_funcionario BIGINT)
 AS
 BEGIN
@@ -196,7 +196,7 @@ GO
 -- ENTRADAS E SAÍDAS
 -- ============================================================
 
-CREATE OR ALTER PROCEDURE sp_inserir_atualizar_entrada
+CREATE OR ALTER PROC sp_inserir_atualizar_entrada
  (  @id_entrada         BIGINT          = NULL,
     @fkproduto          BIGINT,
     @fkfornecedor       BIGINT,
@@ -217,8 +217,8 @@ BEGIN
 END;
 GO
 
-CREATE OR ALTER PROCEDURE sp_deletar_entrada
-    @id_entrada BIGINT
+CREATE OR ALTER PROC sp_deletar_entrada
+    (@id_entrada BIGINT)
 AS
 BEGIN
     SET NOCOUNT ON;
@@ -226,13 +226,13 @@ BEGIN
 END;
 GO
 
-CREATE OR ALTER PROCEDURE sp_inserir_atualizar_saida
-    @id_saida           BIGINT          = NULL,
+CREATE OR ALTER PROC sp_inserir_atualizar_saida
+ (  @id_saida           BIGINT          = NULL,
     @fkproduto          BIGINT,
     @fksetor            BIGINT,
     @data_saida         DATETIME,
     @valor_saida        NUMERIC(18,2),
-    @quantidade_produto INT
+    @quantidade_produto INT )
 AS
 BEGIN
     SET NOCOUNT ON;
@@ -254,8 +254,8 @@ BEGIN
 END;
 GO
 
-CREATE OR ALTER PROCEDURE sp_deletar_saida
-    @id_saida BIGINT
+CREATE OR ALTER PROC sp_deletar_saida
+    (@id_saida BIGINT)
 AS
 BEGIN
     SET NOCOUNT ON;
@@ -267,8 +267,9 @@ GO
 -- CONTATOS — TELEFONES E ENDEREÇOS
 -- ============================================================
 
-CREATE OR ALTER PROCEDURE sp_inserir_telefone_fornecedor
-    @fkfornecedor BIGINT, @telefone VARCHAR(15)
+CREATE OR ALTER PROC sp_inserir_telefone_fornecedor
+ (  @fkfornecedor BIGINT, 
+    @telefone     VARCHAR(15) )
 AS
 BEGIN
     SET NOCOUNT ON;
@@ -278,14 +279,18 @@ BEGIN
 END;
 GO
 
-CREATE OR ALTER PROCEDURE sp_deletar_telefone_fornecedor
-    @id_telefone_for BIGINT
+CREATE OR ALTER PROC sp_deletar_telefone_fornecedor
+    (@id_telefone_for BIGINT)
 AS BEGIN SET NOCOUNT ON; DELETE FROM Telefone_Fornecedor WHERE id_telefone_for = @id_telefone_for; END;
 GO
 
-CREATE OR ALTER PROCEDURE sp_inserir_atualizar_endereco_fornecedor
-    @id_end_forn  BIGINT = NULL, @fkfornecedor BIGINT,
-    @rua VARCHAR(255), @cep VARCHAR(9), @cidade VARCHAR(255), @numero INT
+CREATE OR ALTER PROC sp_inserir_atualizar_endereco_fornecedor
+ (  @id_end_forn  BIGINT = NULL, 
+    @fkfornecedor BIGINT,
+    @rua          VARCHAR(255), 
+    @cep          VARCHAR(9), 
+    @cidade       VARCHAR(255), 
+    @numero       INT )
 AS
 BEGIN
     SET NOCOUNT ON;
@@ -296,13 +301,14 @@ BEGIN
 END;
 GO
 
-CREATE OR ALTER PROCEDURE sp_deletar_endereco_fornecedor
-    @id_end_forn BIGINT
+CREATE OR ALTER PROC sp_deletar_endereco_fornecedor
+    (@id_end_forn BIGINT)
 AS BEGIN SET NOCOUNT ON; DELETE FROM Endereco_Fornecedor WHERE id_end_forn = @id_end_forn; END;
 GO
 
-CREATE OR ALTER PROCEDURE sp_inserir_telefone_funcionario
-    @fkfuncionario BIGINT, @telefone VARCHAR(15)
+CREATE OR ALTER PROC sp_inserir_telefone_funcionario
+ (  @fkfuncionario BIGINT, 
+    @telefone      VARCHAR(15) )
 AS
 BEGIN
     SET NOCOUNT ON;
@@ -312,14 +318,18 @@ BEGIN
 END;
 GO
 
-CREATE OR ALTER PROCEDURE sp_deletar_telefone_funcionario
-    @id_telefone_fun BIGINT
+CREATE OR ALTER PROC sp_deletar_telefone_funcionario
+    (@id_telefone_fun BIGINT)
 AS BEGIN SET NOCOUNT ON; DELETE FROM Telefone_Funcionario WHERE id_telefone_fun = @id_telefone_fun; END;
 GO
 
-CREATE OR ALTER PROCEDURE sp_inserir_atualizar_endereco_funcionario
-    @id_end_fun BIGINT = NULL, @fkfuncionario BIGINT,
-    @rua VARCHAR(255), @cep VARCHAR(9), @cidade VARCHAR(255), @numero INT
+CREATE OR ALTER PROC sp_inserir_atualizar_endereco_funcionario
+ (  @id_end_fun    BIGINT = NULL, 
+    @fkfuncionario BIGINT,
+    @rua           VARCHAR(255), 
+    @cep           VARCHAR(9), 
+    @cidade        VARCHAR(255), 
+    @numero        INT )
 AS
 BEGIN
     SET NOCOUNT ON;
@@ -330,8 +340,8 @@ BEGIN
 END;
 GO
 
-CREATE OR ALTER PROCEDURE sp_deletar_endereco_funcionario
-    @id_end_fun BIGINT
+CREATE OR ALTER PROC sp_deletar_endereco_funcionario
+    (@id_end_fun BIGINT)
 AS BEGIN SET NOCOUNT ON; DELETE FROM Endereco_Funcionario WHERE id_end_fun = @id_end_fun; END;
 GO
 
@@ -339,8 +349,8 @@ GO
 -- RELATÓRIOS GERENCIAIS
 -- ============================================================
 
-CREATE OR ALTER PROCEDURE sp_ficha_produto
-    @id_produto BIGINT
+CREATE OR ALTER PROC sp_ficha_produto
+    (@id_produto BIGINT)
 AS
 BEGIN
     SET NOCOUNT ON;
@@ -366,11 +376,11 @@ BEGIN
 END;
 GO
 
-CREATE OR ALTER PROCEDURE sp_relatorio_consumo_setor
-    @id_setor     BIGINT = NULL,
+CREATE OR ALTER PROC sp_relatorio_consumo_setor
+ (  @id_setor     BIGINT = NULL,
     @id_categoria BIGINT = NULL,
     @data_inicio  DATE   = NULL,
-    @data_fim     DATE   = NULL
+    @data_fim     DATE   = NULL )
 AS
 BEGIN
     SET NOCOUNT ON;
@@ -391,8 +401,8 @@ BEGIN
 END;
 GO
 
-CREATE OR ALTER PROCEDURE sp_fornecedores_produto
-    @id_produto BIGINT = NULL
+CREATE OR ALTER PROC sp_fornecedores_produto
+    (@id_produto BIGINT = NULL)
 AS
 BEGIN
     SET NOCOUNT ON;
@@ -410,8 +420,8 @@ BEGIN
 END;
 GO
 
-CREATE OR ALTER PROCEDURE sp_produtos_em_falta
-    @apenas_zerados BIT = 0
+CREATE OR ALTER PROC sp_produtos_em_falta
+    (@apenas_zerados BIT = 0)
 AS
 BEGIN
     SET NOCOUNT ON;
@@ -433,9 +443,9 @@ BEGIN
 END;
 GO
 
-CREATE OR ALTER PROCEDURE sp_menor_preco_fornecedor
-    @id_produto   BIGINT = NULL,
-    @id_categoria BIGINT = NULL
+CREATE OR ALTER PROC sp_menor_preco_fornecedor
+ (  @id_produto   BIGINT = NULL,
+    @id_categoria BIGINT = NULL )
 AS
 BEGIN
     SET NOCOUNT ON;
@@ -457,9 +467,9 @@ BEGIN
 END;
 GO
 
-CREATE OR ALTER PROCEDURE sp_ultimas_compras_produto
-    @id_produto BIGINT = NULL,
-    @top_n      INT    = 5
+CREATE OR ALTER PROC sp_ultimas_compras_produto
+ (  @id_produto BIGINT = NULL,
+    @top_n      INT    = 5)
 AS
 BEGIN
     SET NOCOUNT ON;
@@ -476,8 +486,8 @@ BEGIN
 END;
 GO
 
-CREATE OR ALTER PROCEDURE sp_setores_por_grupo
-    @id_categoria BIGINT = NULL
+CREATE OR ALTER PROC sp_setores_por_grupo
+    (@id_categoria BIGINT = NULL)
 AS
 BEGIN
     SET NOCOUNT ON;
@@ -499,11 +509,11 @@ GO
 -- LOG DO SISTEMA
 -- ============================================================
 
-CREATE OR ALTER PROCEDURE sp_registrar_log
-    @nome_tabela VARCHAR(100),
+CREATE OR ALTER PROC sp_registrar_log
+ (  @nome_tabela VARCHAR(100),
     @acao        VARCHAR(20),
     @id_registro BIGINT,
-    @usuario_app VARCHAR(100) = NULL
+    @usuario_app VARCHAR(100) = NULL )
 AS
 BEGIN
     SET NOCOUNT ON;
