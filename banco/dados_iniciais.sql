@@ -20,10 +20,10 @@ BEGIN
         'admin',
         1
     );
-    PRINT '✅ Usuário admin criado: admin@cac.com / Admin@123';
+    PRINT 'Usuário admin criado: admin@cac.com / Admin@123';
 END
 ELSE
-    PRINT 'ℹ️  Usuário admin já existe.';
+    PRINT 'Usuário admin já existe.';
 GO
 
 -- ============================================================
@@ -55,7 +55,7 @@ WHEN NOT MATCHED THEN
     INSERT (chave, valor, descricao) VALUES (s.chave, s.valor, s.descricao);
 GO
 
-PRINT '✅ Configurações padrão inseridas/atualizadas.';
+PRINT 'Configurações padrão inseridas/atualizadas.';
 GO
 
 -- ============================================================
@@ -63,13 +63,13 @@ GO
 -- ============================================================
 PRINT '';
 PRINT '════════════════════════════════════════════════════════';
-PRINT '✅ BANCO CAC LTDA CRIADO COM SUCESSO!';
+PRINT '  BANCO CAC LTDA CRIADO COM SUCESSO!';
 PRINT '';
 PRINT '   Acesso inicial:';
 PRINT '   E-mail : admin@cac.com';
 PRINT '   Senha  : Admin@123';
 PRINT '';
-PRINT '   ⚠️  Troque a senha no primeiro acesso em:';
+PRINT '   Troque a senha no primeiro acesso em:';
 PRINT '   Configurações → Segurança → Alterar Senha';
 PRINT '════════════════════════════════════════════════════════';
 GO

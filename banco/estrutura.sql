@@ -8,7 +8,7 @@
 IF NOT EXISTS (SELECT name FROM sys.databases WHERE name = 'banco_cac')
 BEGIN
     CREATE DATABASE banco_cac;
-    PRINT '✅ Banco banco_cac criado.';
+    PRINT 'Banco banco_cac criado.';
 END
 GO
 
