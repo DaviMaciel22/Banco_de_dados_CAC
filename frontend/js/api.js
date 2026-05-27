@@ -1,7 +1,7 @@
 // frontend/js/api.js
 // Cliente HTTP centralizado — injeta o token JWT em todas as requisições automaticamente
 
-const API_URL = 'http://localhost:3000/api';
+const API_URL = 'https://backend-cac-d3h8baa6f8age8f3.centralus-01.azurewebsites.net/api';
 
 const api = {
 
