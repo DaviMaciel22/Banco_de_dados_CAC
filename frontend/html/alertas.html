@@ -11,11 +11,11 @@
 <body>
     <div class="topbar">
         <div class="topbar-left">
-            <button type="button" class="menu-toggle" id="menu-toggle"><i class="fas fa-bars"></i></button>
+            <button type="button" class="menu-toggle" id="menu-toggle" title="Abrir menu" aria-label="Abrir menu"><i class="fas fa-bars"></i></button>
             <h1>Alertas</h1>
         </div>
         <div class="topbar-right">
-            <button type="button" class="topbar-btn"><i class="fas fa-bell"></i></button>
+            <button type="button" class="topbar-btn" title="Notificações" aria-label="Notificações"><i class="fas fa-bell"></i></button>
             <div class="topbar-user"><span>Administrador</span><i class="fas fa-user-circle user-icon"></i></div>
         </div>
     </div>
@@ -42,13 +42,13 @@
     <div class="main">
 
         <!-- BANNER: notificações desativadas -->
-        <div id="banner-notif-off" style="display:none; background:#fef3c7; border:1px solid #f59e0b; border-radius:10px; padding:14px 20px; margin-bottom:24px; align-items:center; gap:12px;">
-            <i class="fas fa-exclamation-triangle" style="color:#d97706; font-size:18px;"></i>
+        <div id="banner-notif-off" class="banner-notif-off">
+            <i class="fas fa-exclamation-triangle banner-icon"></i>
             <div>
-                <strong style="color:#92400e;">Notificações de estoque desativadas</strong>
-                <p style="margin:2px 0 0; font-size:13px; color:#92400e;">
+                <strong class="banner-title">Notificações de estoque desativadas</strong>
+                <p class="banner-desc">
                     Os alertas estão silenciados. Para ativá-los vá em
-                    <a href="configuracoes.html" style="color:#2563eb; font-weight:600;">Configurações → Notificações</a>.
+                    <a href="configuracoes.html" class="banner-link">Configurações → Notificações</a>.
                 </p>
             </div>
         </div>
@@ -73,10 +73,10 @@
             </div>
         </div>
 
-        <div class="header-flex">
+            <div class="header-flex">
             <h2>Produtos com Estoque Baixo</h2>
-            <div style="display:flex; gap:10px; align-items:center;">
-                <a href="configuracoes.html" style="background:#f1f5f9;color:#475569;border:1px solid #e2e8f0;padding:10px 16px;border-radius:8px;font-size:13px;font-weight:600;text-decoration:none;display:flex;align-items:center;gap:6px;">
+            <div class="header-actions">
+                <a href="configuracoes.html" class="btn-marcar-todos">
                     <i class="fas fa-cog"></i> Ajustar configurações
                 </a>
                 <button type="button" class="btn-marcar-todos" onclick="carregarAlertas()">
@@ -92,7 +92,7 @@
                 <input type="text" id="busca-alerta" placeholder="Buscar produto...">
             </div>
             <div class="filtros">
-                <select class="filtro-select" id="filtro-severidade">
+                <select class="filtro-select" id="filtro-severidade" aria-label="Filtrar por severidade">
                     <option value="">Todos</option>
                     <option value="critico">Crítico</option>
                     <option value="atencao">Atenção</option>
@@ -107,7 +107,7 @@
                 <div class="alerta-corpo"><div class="alerta-titulo"><strong>Carregando alertas...</strong></div></div>
             </div>
         </div>
-        <div class="paginacao" id="paginacao-alertas" style="margin-top:20px;"></div>
+            <div class="paginacao" id="paginacao-alertas"></div>
     </div>
 
     <script src="../js/api.js"></script>
@@ -196,6 +196,7 @@
                 const ultForn = a.ultimo_fornecedor
                     ? `<span style="font-size:12px;color:#64748b;margin-left:8px;"><i class="fas fa-truck"></i> ${a.ultimo_fornecedor}</span>`
                     : '';
+                const isRead = (typeof getReadAlertIds === 'function') && getReadAlertIds().includes(String(a.id_produto));
                 return `
                     <div class="alerta-item ${cls}">
                         <div class="alerta-icone"><i class="fas ${icon}"></i></div>
@@ -213,6 +214,9 @@
                         <div class="alerta-acoes">
                             <a href="entradas.html" class="btn-acao editar" title="Registrar entrada" style="display:flex;align-items:center;justify-content:center;text-decoration:none;"><i class="fas fa-plus"></i></a>
                             <a href="produtos.html" class="btn-acao" title="Ver produto" style="background:#f1f5f9;color:#64748b;display:flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:6px;text-decoration:none;"><i class="fas fa-eye"></i></a>
+                            <button class="btn-acao marcar-lido ${isRead ? 'lido' : ''}" title="${isRead ? 'Lido' : 'Marcar como lido'}" onclick="marcarAlertaComoLido(${a.id_produto})" style="margin-left:6px;">
+                                <i class="fas fa-check"></i>
+                            </button>
                         </div>
                     </div>`;
             }).join('');
