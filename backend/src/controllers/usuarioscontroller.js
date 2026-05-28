@@ -35,11 +35,11 @@ const create = async (req, res, next) => {
         await pool.request()
             .input('nome',       sql.VarChar(100), nome)
             .input('email',      sql.VarChar(100), email)
-            .input('senha_hash', sql.VarChar(255), hash)
+            .input('senha',      sql.VarChar(255), hash)
             .input('perfil',     sql.VarChar(20),  perfil)
             .query(`
-                INSERT INTO Usuarios (nome, email, senha_hash, perfil)
-                VALUES (@nome, @email, @senha_hash, @perfil)
+                INSERT INTO Usuarios (nome, email, senha, perfil)
+                VALUES (@nome, @email, @senha, @perfil)
             `);
 
         return res.status(201).json({ message: 'Usuário criado com sucesso!' });
@@ -105,7 +105,7 @@ const resetarSenha = async (req, res, next) => {
         await pool.request()
             .input('hash', sql.VarChar(255), hash)
             .input('id',   sql.BigInt,       req.params.id)
-            .query('UPDATE Usuarios SET senha_hash = @hash WHERE id_usuario = @id');
+            .query('UPDATE Usuarios SET senha = @hash WHERE id_usuario = @id');
 
         return res.json({ message: 'Senha resetada com sucesso!' });
     } catch (err) { next(err); }
