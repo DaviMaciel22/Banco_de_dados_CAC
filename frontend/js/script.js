@@ -87,10 +87,11 @@ async function carregarConfigGlobal() {
 // SISTEMA DE NOTIFICAÇÕES — Polling + Dropdown de alertas
 // ════════════════════════════════════════════════════════════
 
-let _alertaCountAnterior = -1;
-let _alertasCache        = [];
-let _pollingInterval     = null;
-let _dropdownAberto      = false;
+let _notificacaoCountAnterior = -1;
+let _alertasCache           = [];
+let _historicoCache         = [];
+let _pollingInterval        = null;
+let _dropdownAberto         = false;
 
 // Gerencia lista local de alertas marcadas como lidas (persistida no localStorage)
 function getReadAlertIds() {
@@ -106,36 +107,50 @@ function marcarAlertaComoLido(id) {
         ids.add(String(id));
         localStorage.setItem('cac_alertas_lidas', JSON.stringify(Array.from(ids)));
     } catch (_) {}
-    // Atualiza badge e UI localmente
-    const unread = (_alertasCache || []).filter(a => !getReadAlertIds().includes(String(a.id_produto))).length;
+
+    const readIds = getReadAlertIds();
+    const unread = [
+        ...(_alertasCache || []).map(a => String(a.id_produto)),
+        ...(_historicoCache || []).map(h => `hist_${h.id_log}`)
+    ].filter(itemId => !readIds.includes(itemId)).length;
     atualizarBadgeSino(unread);
-    // Re-renderiza dropdown se aberto
+
     if (document.getElementById('notif-dropdown') && _dropdownAberto) {
         criarDropdownNotificacoes();
         abrirDropdown();
     }
-    // Recarrega a página de alertas se estiver presente
     if (document.getElementById('alertas-lista')) carregarAlertas();
 }
 
 // Marca todas as alertas atuais como lidas (cliente-local)
-function marcarTodosComoLidos() {
-    try {
+function marcarTodosComoLidos() {    try {
         const ids = new Set(getReadAlertIds().map(String));
         (_alertasCache || []).forEach(a => ids.add(String(a.id_produto)));
+        (_historicoCache || []).forEach(h => ids.add(`hist_${h.id_log}`));
         localStorage.setItem('cac_alertas_lidas', JSON.stringify(Array.from(ids)));
     } catch (_) {}
 
     // Atualiza badge e fecha dropdown
-    const unread = (_alertasCache || []).filter(a => !getReadAlertIds().includes(String(a.id_produto))).length;
+    const unread = [
+        ...(_alertasCache || []).map(a => String(a.id_produto)),
+        ...(_historicoCache || []).map(h => `hist_${h.id_log}`)
+    ].filter(id => !getReadAlertIds().includes(id)).length;
     atualizarBadgeSino(unread);
     if (document.getElementById('notif-dropdown') && _dropdownAberto) {
-        // Recria e fecha para refletir que não há novos
         criarDropdownNotificacoes();
         fecharDropdown();
     }
 
     if (document.getElementById('alertas-lista')) carregarAlertas();
+}
+
+async function fetchHistoricoRecentes() {
+    try {
+        const dados = await api.get('/historico?limite=12');
+        _historicoCache = dados.dados || [];
+    } catch (_) {
+        _historicoCache = [];
+    }
 }
 
 // ── Cria o dropdown de notificações (injetado uma vez no DOM) ─
@@ -198,13 +213,37 @@ function criarDropdownNotificacoes() {
 }
 
 // ── Renderiza o conteúdo do dropdown ─────────────────────────
-function renderizarDropdown(alertas, isNovo = false) {
+function renderizarDropdown(dados, isNovo = false) {
     const dropdown = document.getElementById('notif-dropdown');
     if (!dropdown) return;
-    // Mostrar apenas alertas não-lidos no dropdown (lidos são mantidos na aba 'Alertas')
-    const readIds = new Set(getReadAlertIds().map(String));
-    const unread = (alertas || []).filter(a => !readIds.has(String(a.id_produto)));
 
+    const alertas = dados?.alertas || [];
+    const historico = dados?.historico || [];
+    const readIds = new Set(getReadAlertIds().map(String));
+
+    const unreadStock = (alertas || []).filter(a => !readIds.has(String(a.id_produto))).map(a => ({
+        ...a,
+        type: 'stock',
+        id: String(a.id_produto),
+        title: a.nome,
+        subtitle: a.nome_categoria ? `Categoria: ${a.nome_categoria}` : '',
+        detail: a.quantidade_estoque === 0
+            ? 'Sem estoque — reposição urgente!'
+            : `Estoque: ${a.quantidade_estoque} un. (mín: ${a.estoque_minimo})`,
+        targetPage: 'alertas.html',
+    }));
+
+    const unreadHistory = (historico || []).filter(h => !readIds.has(`hist_${h.id_log}`)).map(h => ({
+        ...h,
+        type: 'history',
+        id: `hist_${h.id_log}`,
+        title: `${h.acao} em ${h.nome_tabela}`,
+        subtitle: `Registro #${h.id_registro_afetado}`,
+        detail: `${h.usuario_exibicao} em ${h.data_formatada} ${h.hora_formatada}`,
+        targetPage: 'historico.html',
+    }));
+
+    const unread = [...unreadHistory, ...unreadStock];
     if (!unread.length) {
         dropdown.innerHTML = `
             <div style="padding:20px;text-align:center;color:#64748b;">
@@ -216,14 +255,14 @@ function renderizarDropdown(alertas, isNovo = false) {
         return;
     }
 
-    const top5 = unread.slice(0,5);
+    const top5 = unread.slice(0, 5);
     const resto = unread.length - top5.length;
 
     dropdown.innerHTML = `
         <div style="padding:14px 16px;border-bottom:1px solid #f1f5f9;display:flex;justify-content:space-between;align-items:center;background:${isNovo ? '#fff7ed' : '#f8fafc'};">
             <div>
                 <strong style="font-size:14px;color:#1e293b;">
-                    ${isNovo ? '🔔 Novos alertas de estoque' : '⚠️ Alertas de estoque'}
+                    ${isNovo ? '🔔 Novas notificações' : '🔔 Notificações recentes'}
                 </strong>
                 <p style="font-size:12px;color:#94a3b8;margin:2px 0 0;">${unread.length} notificação(ões) não-lida(s)</p>
             </div>
@@ -233,22 +272,20 @@ function renderizarDropdown(alertas, isNovo = false) {
             </div>
         </div>
 
-        ${top5.map(a => `
-            <div class="notif-item" onclick="window.location.href='alertas.html'">
-                <div class="notif-icone ${a.severidade}">
-                    <i class="fas ${a.severidade === 'critico' ? 'fa-times-circle' : 'fa-exclamation-triangle'}"></i>
+        ${top5.map(item => `
+            <div class="notif-item" onclick="window.location.href='${item.targetPage}'">
+                <div class="notif-icone ${item.type === 'stock' ? item.severidade : 'atencao'}">
+                    <i class="fas ${item.type === 'stock'
+                        ? item.severidade === 'critico' ? 'fa-times-circle' : 'fa-exclamation-triangle'
+                        : 'fa-history'}"></i>
                 </div>
                 <div class="notif-corpo">
-                    <strong>${a.nome}</strong>
-                    <small>
-                        ${a.quantidade_estoque === 0
-                            ? 'Sem estoque — reposição urgente!'
-                            : `Estoque: ${a.quantidade_estoque} un. (mín: ${a.estoque_minimo})`}
-                        ${a.nome_categoria ? ` · ${a.nome_categoria}` : ''}
-                    </small>
+                    <strong>${item.title}</strong>
+                    <small>${item.subtitle}</small>
+                    <small>${item.detail}</small>
                 </div>
                 <div class="notif-action">
-                    <button class="notif-mark-read" title="Marcar como lido" onclick="(function(e){e.stopPropagation(); marcarAlertaComoLido(${a.id_produto});})(event)">✓ Marcar</button>
+                    <button class="notif-mark-read" title="Marcar como lido" onclick="(function(e){e.stopPropagation(); marcarAlertaComoLido('${item.id}');})(event)">✓ Marcar</button>
                     <span style="color:#2563eb;font-size:18px;align-self:center;">›</span>
                 </div>
             </div>
@@ -271,7 +308,7 @@ function renderizarDropdown(alertas, isNovo = false) {
 function abrirDropdown(isNovo = false) {
     const dropdown = document.getElementById('notif-dropdown');
     if (!dropdown) return;
-    renderizarDropdown(_alertasCache, isNovo);
+    renderizarDropdown({ alertas: _alertasCache, historico: _historicoCache }, isNovo);
     dropdown.style.display = 'block';
     dropdown.style.animation = 'none';
     dropdown.offsetHeight; // reflow
@@ -319,22 +356,28 @@ function atualizarBadgeSino(total) {
 // ── Polling principal ─────────────────────────────────────────
 async function verificarAlertasEstoque() {
     try {
-        const dados = await api.get('/alertas');
+        const [dados, historicoDados] = await Promise.all([
+            api.get('/alertas'),
+            api.get('/historico?limite=12').catch(() => ({ dados: [] }))
+        ]);
+
         _alertasCache = dados.alertas || [];
+        _historicoCache = historicoDados.dados || [];
 
-        // calcula quantos ainda não foram marcados como lidos localmente
         const lidas = new Set(getReadAlertIds().map(String));
-        const unread = _alertasCache.filter(a => !lidas.has(String(a.id_produto))).length;
+        const unreadStock = _alertasCache.filter(a => !lidas.has(String(a.id_produto))).length;
+        const unreadHistory = _historicoCache.filter(h => !lidas.has(`hist_${h.id_log}`)).length;
+        const unread = unreadStock + unreadHistory;
 
-        const isNovo = _alertaCountAnterior >= 0 && unread > _alertaCountAnterior;
+        const isNovo = _notificacaoCountAnterior >= 0 && unread > _notificacaoCountAnterior;
         if (isNovo) {
-            const novos = unread - _alertaCountAnterior;
+            const novos = unread - _notificacaoCountAnterior;
             criarDropdownNotificacoes();
             abrirDropdown(true);
-            toast(`⚠️ ${novos} produto(s) atingiram o estoque mínimo!`, 'warning');
+            toast(`🔔 ${novos} nova(s) notificação(ões) de alteração`, 'warning');
         }
 
-        _alertaCountAnterior = unread;
+        _notificacaoCountAnterior = unread;
         atualizarBadgeSino(unread);
         criarDropdownNotificacoes();
 
@@ -344,7 +387,7 @@ async function verificarAlertasEstoque() {
 function iniciarPollingAlertas() {
     verificarAlertasEstoque();
     if (_pollingInterval) return;
-    _pollingInterval = setInterval(verificarAlertasEstoque, 60_000);
+    _pollingInterval = setInterval(verificarAlertasEstoque, 15_000);
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
