@@ -453,17 +453,17 @@ function confirmarExclusao(nomeProduto, callback) {
     }
     document.getElementById('excluir-mensagem').textContent =
         `Tem certeza que deseja excluir "${nomeProduto}"? Esta ação é irreversível.`;
-    modal.style.display = 'flex';
+    modal.classList.add('show');
     _onConfirmarExclusao = callback;
 }
 
 document.addEventListener('click', (e) => {
     if (e.target.id === 'btn-modal-excluir-confirmar' || e.target.closest('#btn-modal-excluir-confirmar')) {
-        document.getElementById('modal-aviso-exclusao').style.display = 'none';
+        document.getElementById('modal-aviso-exclusao').classList.remove('show');
         if (_onConfirmarExclusao) { _onConfirmarExclusao(); _onConfirmarExclusao = null; }
     }
     if (e.target.id === 'btn-modal-excluir-cancelar' || e.target.closest('#btn-modal-excluir-cancelar')) {
-        document.getElementById('modal-aviso-exclusao').style.display = 'none';
+        document.getElementById('modal-aviso-exclusao').classList.remove('show');
         _onConfirmarExclusao = null;
     }
 });
@@ -1340,11 +1340,11 @@ async function initEntradas() {
 
     document.querySelector('.btn-primary')?.addEventListener('click', () => {
         document.getElementById('form-entrada')?.reset();
-        document.getElementById('modal-entrada').style.display = 'flex';
+        document.getElementById('modal-entrada').classList.add('show');
     });
 
     document.getElementById('btn-fechar-modal-entrada')?.addEventListener('click', () => {
-        document.getElementById('modal-entrada').style.display = 'none';
+        document.getElementById('modal-entrada').classList.remove('show');
     });
 
     document.getElementById('form-entrada')?.addEventListener('submit', async (e) => {
@@ -1358,11 +1358,12 @@ async function initEntradas() {
             quantidade_compra: qtd,
             valor_unitario:   unit,
             valor_compra:     (qtd * unit).toFixed(2),
+            num_nf:           parseInt(document.getElementById('entrada-nf').value),
         };
         try {
             await api.post('/entradas', payload);
             toast('Entrada registrada! Estoque atualizado.');
-            document.getElementById('modal-entrada').style.display = 'none';
+            document.getElementById('modal-entrada').classList.remove('show');
             // Volta para página 1 para mostrar a nova entrada no topo
             _pag.entradas = 1;
             // Invalida cache de produtos (estoque foi atualizado pelo trigger)
@@ -1396,6 +1397,7 @@ async function carregarEntradas() {
                 <td>${formatarData(e.data_compra)}</td>
                 <td>${e.nome_produto}</td>
                 <td>${e.nome_fornecedor}</td>
+                <td>${e.num_nf}</td>
                 <td>${e.quantidade_compra}</td>
                 <td>${formatarMoeda(e.valor_unitario)}</td>
                 <td>${formatarMoeda(e.valor_compra)}</td>
@@ -1403,7 +1405,7 @@ async function carregarEntradas() {
                 <td class="acoes">
                     <button class="btn-acao deletar" data-id="${e.id_entrada}" data-nome="entrada #${e.id_entrada}" title="Excluir"><i class="fas fa-trash"></i></button>
                 </td>
-            </tr>`).join('') || `<tr><td colspan="8" style="text-align:center;padding:20px">Nenhuma entrada.</td></tr>`;
+            </tr>`).join('') || `<tr><td colspan="9" style="text-align:center;padding:20px">Nenhuma entrada.</td></tr>`;
 
         tbody.querySelectorAll('.btn-acao.deletar').forEach(btn => {
             btn.addEventListener('click', () => {
