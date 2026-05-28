@@ -68,6 +68,26 @@
     border-color: #93c5fd;
 }
 
+/* Banner quando notificações estiverem off */
+.banner-notif-off {
+    display: none; /* visibilidade controlada pelo JS */
+    background: #fef3c7;
+    border: 1px solid #f59e0b;
+    border-radius: 10px;
+    padding: 14px 20px;
+    margin-bottom: 24px;
+    align-items: center;
+    gap: 12px;
+    display: flex;
+}
+.banner-notif-off .banner-icon { color: #d97706; font-size: 18px; margin-right:8px; }
+.banner-notif-off .banner-title { color: #92400e; font-weight:700; }
+.banner-notif-off .banner-desc { margin:2px 0 0; font-size:13px; color:#92400e; }
+.banner-notif-off .banner-link { color:#2563eb; font-weight:600; text-decoration:none; }
+
+/* Header actions container */
+.header-actions { display:flex; gap:10px; align-items:center; }
+
 /* Filtros */
 .filtros-container {
     display: flex;
@@ -230,6 +250,11 @@
 
 .btn-acao.editar:hover  { background: #d1fae5; color: #059669; }
 .btn-acao.deletar:hover { background: #fee2e2; color: #dc2626; }
+
+/* Botão marcar como lido */
+.btn-acao.marcar-lido { background:#e6f9f0; color:#059669; }
+.btn-acao.marcar-lido:hover { background:#d1fae5; }
+.btn-acao.marcar-lido.lido { background:#f1f5f9; color:#94a3b8; }
 
 /* Paginação */
 .paginacao {
