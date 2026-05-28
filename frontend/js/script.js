@@ -1457,13 +1457,13 @@ async function initEntradas() {
         const qtd   = parseInt(document.getElementById('entrada-qtd').value);
         const unit  = parseFloat(document.getElementById('entrada-unitario').value);
         const payload = {
-            fkproduto:        parseInt(document.getElementById('entrada-produto').value),
-            fkfornecedor:     parseInt(document.getElementById('entrada-fornecedor').value),
-            data_compra:      document.getElementById('entrada-data').value,
+            fkproduto: parseInt(document.getElementById('entrada-produto').value),
+            fkfornecedor: parseInt(document.getElementById('entrada-fornecedor').value),
+            data_compra: document.getElementById('entrada-data').value,
             quantidade_compra: qtd,
-            valor_unitario:   unit,
-            valor_compra:     (qtd * unit).toFixed(2),
-            num_nf:           parseInt(document.getElementById('entrada-nf').value),
+            valor_unitario: unit,
+            valor_compra: (qtd * unit).toFixed(2),
+            num_nf: parseFloat(document.getElementById('entrada-nf').value),
         };
         try {
             await api.post('/entradas', payload);
