@@ -92,6 +92,32 @@ let _alertasCache        = [];
 let _pollingInterval     = null;
 let _dropdownAberto      = false;
 
+// Gerencia lista local de alertas marcadas como lidas (persistida no localStorage)
+function getReadAlertIds() {
+    try {
+        const raw = localStorage.getItem('cac_alertas_lidas');
+        return raw ? JSON.parse(raw) : [];
+    } catch (_){ return []; }
+}
+
+function marcarAlertaComoLido(id) {
+    try {
+        const ids = new Set(getReadAlertIds().map(String));
+        ids.add(String(id));
+        localStorage.setItem('cac_alertas_lidas', JSON.stringify(Array.from(ids)));
+    } catch (_) {}
+    // Atualiza badge e UI localmente
+    const unread = (_alertasCache || []).filter(a => !getReadAlertIds().includes(String(a.id_produto))).length;
+    atualizarBadgeSino(unread);
+    // Re-renderiza dropdown se aberto
+    if (document.getElementById('notif-dropdown') && _dropdownAberto) {
+        criarDropdownNotificacoes();
+        abrirDropdown();
+    }
+    // Recarrega a página de alertas se estiver presente
+    if (document.getElementById('alertas-lista')) carregarAlertas();
+}
+
 // ── Cria o dropdown de notificações (injetado uma vez no DOM) ─
 function criarDropdownNotificacoes() {
     if (document.getElementById('notif-dropdown')) return;
@@ -259,21 +285,22 @@ function atualizarBadgeSino(total) {
 async function verificarAlertasEstoque() {
     try {
         const dados = await api.get('/alertas');
-        const total = dados.totais?.total || 0;
         _alertasCache = dados.alertas || [];
 
-        const isNovo = _alertaCountAnterior >= 0 && total > _alertaCountAnterior;
+        // calcula quantos ainda não foram marcados como lidos localmente
+        const lidas = new Set(getReadAlertIds().map(String));
+        const unread = _alertasCache.filter(a => !lidas.has(String(a.id_produto))).length;
 
+        const isNovo = _alertaCountAnterior >= 0 && unread > _alertaCountAnterior;
         if (isNovo) {
-            const novos = total - _alertaCountAnterior;
-            // Abre o dropdown automaticamente mostrando os novos alertas
+            const novos = unread - _alertaCountAnterior;
             criarDropdownNotificacoes();
             abrirDropdown(true);
             toast(`⚠️ ${novos} produto(s) atingiram o estoque mínimo!`, 'warning');
         }
 
-        _alertaCountAnterior = total;
-        atualizarBadgeSino(total);
+        _alertaCountAnterior = unread;
+        atualizarBadgeSino(unread);
         criarDropdownNotificacoes();
 
     } catch (e) { /* falha silenciosa */ }
