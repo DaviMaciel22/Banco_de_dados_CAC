@@ -89,7 +89,6 @@ async function carregarConfigGlobal() {
 
 let _notificacaoCountAnterior = -1;
 let _alertasCache           = [];
-let _historicoCache         = [];
 let _pollingInterval        = null;
 let _dropdownAberto         = false;
 
@@ -109,10 +108,9 @@ function marcarAlertaComoLido(id) {
     } catch (_) {}
 
     const readIds = getReadAlertIds();
-    const unread = [
-        ...(_alertasCache || []).map(a => String(a.id_produto)),
-        ...(_historicoCache || []).map(h => `hist_${h.id_log}`)
-    ].filter(itemId => !readIds.includes(itemId)).length;
+    const unread = (_alertasCache || [])
+        .map(a => String(a.id_produto))
+        .filter(id => !readIds.includes(id)).length;
     atualizarBadgeSino(unread);
 
     if (document.getElementById('notif-dropdown') && _dropdownAberto) {
@@ -126,15 +124,14 @@ function marcarAlertaComoLido(id) {
 function marcarTodosComoLidos() {    try {
         const ids = new Set(getReadAlertIds().map(String));
         (_alertasCache || []).forEach(a => ids.add(String(a.id_produto)));
-        (_historicoCache || []).forEach(h => ids.add(`hist_${h.id_log}`));
+
         localStorage.setItem('cac_alertas_lidas', JSON.stringify(Array.from(ids)));
     } catch (_) {}
 
     // Atualiza badge e fecha dropdown
-    const unread = [
-        ...(_alertasCache || []).map(a => String(a.id_produto)),
-        ...(_historicoCache || []).map(h => `hist_${h.id_log}`)
-    ].filter(id => !getReadAlertIds().includes(id)).length;
+    const unread = (_alertasCache || [])
+        .map(a => String(a.id_produto))
+        .filter(id => !getReadAlertIds().includes(id)).length;
     atualizarBadgeSino(unread);
     if (document.getElementById('notif-dropdown') && _dropdownAberto) {
         criarDropdownNotificacoes();
@@ -142,15 +139,6 @@ function marcarTodosComoLidos() {    try {
     }
 
     if (document.getElementById('alertas-lista')) carregarAlertas();
-}
-
-async function fetchHistoricoRecentes() {
-    try {
-        const dados = await api.get('/historico?limite=12');
-        _historicoCache = dados.dados || [];
-    } catch (_) {
-        _historicoCache = [];
-    }
 }
 
 // ── Cria o dropdown de notificações (injetado uma vez no DOM) ─
@@ -308,7 +296,7 @@ function renderizarDropdown(dados, isNovo = false) {
 function abrirDropdown(isNovo = false) {
     const dropdown = document.getElementById('notif-dropdown');
     if (!dropdown) return;
-    renderizarDropdown({ alertas: _alertasCache, historico: _historicoCache }, isNovo);
+    renderizarDropdown({ alertas: _alertasCache, historico: [] }, isNovo);
     dropdown.style.display = 'block';
     dropdown.style.animation = 'none';
     dropdown.offsetHeight; // reflow
@@ -356,25 +344,19 @@ function atualizarBadgeSino(total) {
 // ── Polling principal ─────────────────────────────────────────
 async function verificarAlertasEstoque() {
     try {
-        const [dados, historicoDados] = await Promise.all([
-            api.get('/alertas'),
-            api.get('/historico?limite=12').catch(() => ({ dados: [] }))
-        ]);
+        const dados = await api.get('/alertas');
 
         _alertasCache = dados.alertas || [];
-        _historicoCache = historicoDados.dados || [];
 
-        const lidas = new Set(getReadAlertIds().map(String));
-        const unreadStock = _alertasCache.filter(a => !lidas.has(String(a.id_produto))).length;
-        const unreadHistory = _historicoCache.filter(h => !lidas.has(`hist_${h.id_log}`)).length;
-        const unread = unreadStock + unreadHistory;
+        const lidas    = new Set(getReadAlertIds().map(String));
+        const unread   = _alertasCache.filter(a => !lidas.has(String(a.id_produto))).length;
+        const isNovo   = _notificacaoCountAnterior >= 0 && unread > _notificacaoCountAnterior;
 
-        const isNovo = _notificacaoCountAnterior >= 0 && unread > _notificacaoCountAnterior;
         if (isNovo) {
             const novos = unread - _notificacaoCountAnterior;
             criarDropdownNotificacoes();
             abrirDropdown(true);
-            toast(`🔔 ${novos} nova(s) notificação(ões) de alteração`, 'warning');
+            toast(`⚠️ ${novos} produto(s) atingiram o estoque mínimo!`, 'warning');
         }
 
         _notificacaoCountAnterior = unread;
