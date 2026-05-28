@@ -32,7 +32,7 @@ const create = async (req, res, next) => {
             .input('valor_compra',      sql.Numeric(18,2), valor_compra)
             .input('quantidade_compra', sql.BigInt,        quantidade_compra)
             .input('valor_unitario',    sql.Numeric(18,2), valor_unitario)
-            .input('num_nf',            sql.BigInt,   num_nf || null)
+            .input('num_nf',            sql.NUmeric(18,2),   num_nf || null)
             .query(`
                 INSERT INTO Entrada (fkproduto, fkfornecedor, data_compra, valor_compra,
                                      quantidade_compra, valor_unitario, num_nf)
