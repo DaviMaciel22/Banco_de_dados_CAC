@@ -118,6 +118,26 @@ function marcarAlertaComoLido(id) {
     if (document.getElementById('alertas-lista')) carregarAlertas();
 }
 
+// Marca todas as alertas atuais como lidas (cliente-local)
+function marcarTodosComoLidos() {
+    try {
+        const ids = new Set(getReadAlertIds().map(String));
+        (_alertasCache || []).forEach(a => ids.add(String(a.id_produto)));
+        localStorage.setItem('cac_alertas_lidas', JSON.stringify(Array.from(ids)));
+    } catch (_) {}
+
+    // Atualiza badge e fecha dropdown
+    const unread = (_alertasCache || []).filter(a => !getReadAlertIds().includes(String(a.id_produto))).length;
+    atualizarBadgeSino(unread);
+    if (document.getElementById('notif-dropdown') && _dropdownAberto) {
+        // Recria e fecha para refletir que não há novos
+        criarDropdownNotificacoes();
+        fecharDropdown();
+    }
+
+    if (document.getElementById('alertas-lista')) carregarAlertas();
+}
+
 // ── Cria o dropdown de notificações (injetado uma vez no DOM) ─
 function criarDropdownNotificacoes() {
     if (document.getElementById('notif-dropdown')) return;
@@ -158,6 +178,11 @@ function criarDropdownNotificacoes() {
             .notif-corpo { flex:1; min-width:0; }
             .notif-corpo strong { display:block; font-size:13px; color:#1e293b; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
             .notif-corpo small  { font-size:11px; color:#94a3b8; margin-top:2px; display:block; }
+            .notif-action { display:flex; flex-direction:column; align-items:center; gap:6px; margin-left:8px; }
+            .notif-mark-read { background:none; border:none; color:#10b981; cursor:pointer; font-size:13px; padding:6px 8px; border-radius:6px; }
+            .notif-mark-read:hover { background:#ecfdf5; }
+            .notif-mark-all { background:#2563eb; color:white; border:none; cursor:pointer; font-size:13px; padding:6px 10px; border-radius:8px; }
+            .notif-mark-all:hover { filter:brightness(.98); }
         `;
         document.head.appendChild(style);
     }
@@ -176,19 +201,23 @@ function criarDropdownNotificacoes() {
 function renderizarDropdown(alertas, isNovo = false) {
     const dropdown = document.getElementById('notif-dropdown');
     if (!dropdown) return;
+    // Mostrar apenas alertas não-lidos no dropdown (lidos são mantidos na aba 'Alertas')
+    const readIds = new Set(getReadAlertIds().map(String));
+    const unread = (alertas || []).filter(a => !readIds.has(String(a.id_produto)));
 
-    if (!alertas.length) {
+    if (!unread.length) {
         dropdown.innerHTML = `
             <div style="padding:20px;text-align:center;color:#64748b;">
                 <i class="fas fa-check-circle" style="font-size:28px;color:#10b981;display:block;margin-bottom:8px;"></i>
-                <strong style="font-size:14px;">Tudo certo!</strong>
-                <p style="font-size:12px;margin:4px 0 0;">Nenhum produto com estoque baixo.</p>
+                <strong style="font-size:14px;">Nenhuma notificação nova</strong>
+                <p style="font-size:12px;margin:4px 0 0;">Todas as notificações foram marcadas como lidas.</p>
+                <div style="margin-top:12px;"><a href="alertas.html" style="color:#2563eb;font-weight:600;text-decoration:none;">Ver todos os alertas</a></div>
             </div>`;
         return;
     }
 
-    const top5 = alertas.slice(0, 5);
-    const resto = alertas.length - top5.length;
+    const top5 = unread.slice(0,5);
+    const resto = unread.length - top5.length;
 
     dropdown.innerHTML = `
         <div style="padding:14px 16px;border-bottom:1px solid #f1f5f9;display:flex;justify-content:space-between;align-items:center;background:${isNovo ? '#fff7ed' : '#f8fafc'};">
@@ -196,9 +225,12 @@ function renderizarDropdown(alertas, isNovo = false) {
                 <strong style="font-size:14px;color:#1e293b;">
                     ${isNovo ? '🔔 Novos alertas de estoque' : '⚠️ Alertas de estoque'}
                 </strong>
-                <p style="font-size:12px;color:#94a3b8;margin:2px 0 0;">${alertas.length} produto(s) abaixo do mínimo</p>
+                <p style="font-size:12px;color:#94a3b8;margin:2px 0 0;">${unread.length} notificação(ões) não-lida(s)</p>
             </div>
-            <button onclick="fecharDropdown()" style="background:none;border:none;color:#94a3b8;cursor:pointer;font-size:16px;padding:4px;">✕</button>
+            <div style="display:flex;align-items:center;gap:8px;">
+                ${unread.length ? `<button class="notif-mark-all" onclick="(function(e){e.stopPropagation(); marcarTodosComoLidos();})(event)">Marcar todos</button>` : ''}
+                <button onclick="fecharDropdown()" style="background:none;border:none;color:#94a3b8;cursor:pointer;font-size:16px;padding:4px;">✕</button>
+            </div>
         </div>
 
         ${top5.map(a => `
@@ -215,13 +247,16 @@ function renderizarDropdown(alertas, isNovo = false) {
                         ${a.nome_categoria ? ` · ${a.nome_categoria}` : ''}
                     </small>
                 </div>
-                <span style="color:#2563eb;font-size:18px;align-self:center;">›</span>
+                <div class="notif-action">
+                    <button class="notif-mark-read" title="Marcar como lido" onclick="(function(e){e.stopPropagation(); marcarAlertaComoLido(${a.id_produto});})(event)">✓ Marcar</button>
+                    <span style="color:#2563eb;font-size:18px;align-self:center;">›</span>
+                </div>
             </div>
         `).join('')}
 
         ${resto > 0 ? `
             <div style="padding:10px 16px;text-align:center;background:#f8fafc;border-top:1px solid #f1f5f9;">
-                <span style="font-size:12px;color:#64748b;">+${resto} outros alertas</span>
+                <span style="font-size:12px;color:#64748b;">+${resto} outras notificações</span>
             </div>
         ` : ''}
 
