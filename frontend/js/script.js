@@ -558,13 +558,16 @@ function confirmarExclusao(nomeProduto, callback) {
     }
     document.getElementById('excluir-mensagem').textContent =
         `Tem certeza que deseja excluir "${nomeProduto}"? Esta ação é irreversível.`;
+    modal.style.display = 'flex';
     modal.classList.add('show');
     _onConfirmarExclusao = callback;
 }
 
 document.addEventListener('click', (e) => {
     if (e.target.id === 'btn-modal-excluir-confirmar' || e.target.closest('#btn-modal-excluir-confirmar')) {
-        document.getElementById('modal-aviso-exclusao').classList.remove('show');
+        const _m = document.getElementById('modal-aviso-exclusao');
+        _m.style.display = 'none';
+        _m.classList.remove('show');
         if (_onConfirmarExclusao) { _onConfirmarExclusao(); _onConfirmarExclusao = null; }
     }
     if (e.target.id === 'btn-modal-excluir-cancelar' || e.target.closest('#btn-modal-excluir-cancelar')) {
