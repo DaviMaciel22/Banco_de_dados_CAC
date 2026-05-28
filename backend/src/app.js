@@ -14,7 +14,7 @@ app.use(helmet());
 
 // ── CORS: só aceita requisições do seu front-end ─────────────
 app.use(cors({
-    origin: process.env.FRONTEND_ORIGIN || '*',
+    origin: '*',
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     allowedHeaders: ['Content-Type', 'Authorization'],
 }));
