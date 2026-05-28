@@ -12,7 +12,7 @@ const login = async (req, res, next) => {
         // Busca usuário pelo email (parametrizado — sem injeção SQL)
         const result = await pool.request()
             .input('email', sql.VarChar(100), email)
-            .query(`SELECT id_usuario, nome, email, senha_hash, perfil, ativo
+            .query(`SELECT id_usuario, nome, email, senha, perfil, ativo
                     FROM Usuarios WHERE email = @email`);
 
         const usuario = result.recordset[0];
@@ -23,7 +23,7 @@ const login = async (req, res, next) => {
         }
 
         // Compara a senha com o hash (seguro contra timing attacks)
-        const senhaCorreta = await bcrypt.compare(senha, usuario.senha_hash);
+        const senhaCorreta = await bcrypt.compare(senha, usuario.senha);
         if (!senhaCorreta) {
             return res.status(401).json({ error: 'Credenciais inválidas.' });
         }
@@ -81,10 +81,10 @@ const alterarSenha = async (req, res, next) => {
 
         const result = await pool.request()
             .input('id', sql.BigInt, req.usuario.id)
-            .query('SELECT senha_hash FROM Usuarios WHERE id_usuario = @id');
+            .query('SELECT senha FROM Usuarios WHERE id_usuario = @id');
 
         const usuario = result.recordset[0];
-        const senhaCorreta = await bcrypt.compare(senhaAtual, usuario.senha_hash);
+        const senhaCorreta = await bcrypt.compare(senhaAtual, usuario.senha);
 
         if (!senhaCorreta) {
             return res.status(400).json({ error: 'Senha atual incorreta.' });
@@ -94,7 +94,7 @@ const alterarSenha = async (req, res, next) => {
         await pool.request()
             .input('hash', sql.VarChar(255), novoHash)
             .input('id',   sql.BigInt,      req.usuario.id)
-            .query('UPDATE Usuarios SET senha_hash = @hash WHERE id_usuario = @id');
+            .query('UPDATE Usuarios SET senha = @hash WHERE id_usuario = @id');
 
         return res.json({ message: 'Senha alterada com sucesso!' });
     } catch (err) {
