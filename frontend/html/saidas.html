@@ -7,6 +7,67 @@
     <link rel="stylesheet" href="../css/style.css">
     <link rel="stylesheet" href="../css/saidas.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Busca de produto com autocomplete */
+        .produto-search-wrap {
+            position: relative;
+        }
+        .produto-search-wrap input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            box-sizing: border-box;
+            font-family: Poppins, sans-serif;
+            font-size: 14px;
+        }
+        .produto-search-wrap input:focus {
+            outline: none;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37,99,235,0.1);
+        }
+        #produto-dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-top: none;
+            border-radius: 0 0 8px 8px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+            max-height: 220px;
+            overflow-y: auto;
+            z-index: 9999;
+            display: none;
+        }
+        .produto-option {
+            padding: 10px 14px;
+            cursor: pointer;
+            font-size: 13px;
+            color: #334155;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #f1f5f9;
+        }
+        .produto-option:last-child { border-bottom: none; }
+        .produto-option:hover { background: #f1f5f9; }
+        .produto-option .estoque {
+            font-size: 11px;
+            color: #94a3b8;
+            background: #f8fafc;
+            padding: 2px 8px;
+            border-radius: 20px;
+        }
+        .produto-option .estoque.baixo { color: #ef4444; background: #fee2e2; }
+        .produto-option-vazio {
+            padding: 12px 14px;
+            font-size: 13px;
+            color: #94a3b8;
+            text-align: center;
+        }
+    </style>
 </head>
 <body>
     <div class="topbar">
@@ -62,10 +123,22 @@
         <div style="background:white;padding:30px;border-radius:12px;width:500px;box-shadow:0 10px 40px rgba(0,0,0,0.2);">
             <h3 style="margin:0 0 20px;color:#051d61;font-size:18px;border-bottom:2px solid #e2e8f0;padding-bottom:12px;">Registrar Nova Saída</h3>
             <form id="form-saida" style="display:flex;flex-direction:column;gap:14px;">
+
+                <!-- PRODUTO COM BUSCA -->
                 <div>
                     <label style="display:block;font-size:13px;font-weight:600;color:#374151;margin-bottom:5px;">Produto</label>
-                    <select id="saida-produto" required style="width:100%;padding:10px;border:1px solid #cbd5e1;border-radius:8px;box-sizing:border-box;font-family:Poppins,sans-serif;height:40px;background:white;"></select>
+                    <div class="produto-search-wrap">
+                        <input type="text" id="saida-produto-busca" placeholder="Digite para buscar o produto..." autocomplete="off">
+                        <div id="produto-dropdown"></div>
+                    </div>
+                    <!-- Campo oculto que guarda o id selecionado -->
+                    <input type="hidden" id="saida-produto">
+                    <!-- Mostra estoque disponível após seleção -->
+                    <p id="saida-estoque-info" style="margin:6px 0 0;font-size:12px;color:#64748b;display:none;">
+                        Estoque disponível: <strong id="saida-estoque-valor"></strong> unidades
+                    </p>
                 </div>
+
                 <div>
                     <label style="display:block;font-size:13px;font-weight:600;color:#374151;margin-bottom:5px;">Setor Destino</label>
                     <select id="saida-setor" required style="width:100%;padding:10px;border:1px solid #cbd5e1;border-radius:8px;box-sizing:border-box;font-family:Poppins,sans-serif;height:40px;background:white;"></select>
@@ -91,6 +164,7 @@
             </form>
         </div>
     </div>
+
     <!-- MODAL EXCLUSÃO -->
     <div id="modal-aviso-exclusao" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.6);justify-content:center;align-items:center;z-index:2000;">
         <div style="background:white;width:420px;border-radius:12px;overflow:hidden;box-shadow:0 10px 40px rgba(0,0,0,0.3);">
@@ -101,10 +175,89 @@
             </div>
         </div>
     </div>
-            <div class="paginacao" id="paginacao-saidas" style="margin-top:20px;"></div>
+
+    <div class="paginacao" id="paginacao-saidas" style="margin-top:20px;"></div>
 
     <script src="../js/api.js"></script>
     <script src="../js/auth.js"></script>
     <script src="../js/script.js"></script>
+    <script>
+        // ── Busca de produto com autocomplete ──────────────────
+        let _todosProdutos = [];
+
+        // Carrega produtos para o autocomplete ao abrir o modal
+        document.querySelector('.btn-danger')?.addEventListener('click', async () => {
+            if (!_todosProdutos.length) {
+                try {
+                    _todosProdutos = await api.get('/produtos');
+                } catch (e) { console.error(e); }
+            }
+        });
+
+        const inputBusca   = document.getElementById('saida-produto-busca');
+        const dropdown     = document.getElementById('produto-dropdown');
+        const hiddenProduto = document.getElementById('saida-produto');
+        const estoqueInfo  = document.getElementById('saida-estoque-info');
+        const estoqueValor = document.getElementById('saida-estoque-valor');
+
+        // Abre dropdown ao digitar
+        inputBusca?.addEventListener('input', () => {
+            const q = inputBusca.value.toLowerCase().trim();
+            hiddenProduto.value = ''; // limpa seleção ao digitar
+            estoqueInfo.style.display = 'none';
+
+            if (!q) { dropdown.style.display = 'none'; return; }
+
+            const filtrados = _todosProdutos.filter(p =>
+                p.nome.toLowerCase().includes(q) ||
+                (p.nome_categoria || '').toLowerCase().includes(q)
+            ).slice(0, 10);
+
+            if (!filtrados.length) {
+                dropdown.innerHTML = `<div class="produto-option-vazio">Nenhum produto encontrado</div>`;
+                dropdown.style.display = 'block';
+                return;
+            }
+
+            dropdown.innerHTML = filtrados.map(p => `
+                <div class="produto-option"
+                     data-id="${p.id_produto}"
+                     data-nome="${p.nome}"
+                     data-estoque="${p.quantidade_estoque}">
+                    <span>${p.nome} ${p.nome_categoria ? `<small style="color:#94a3b8;">· ${p.nome_categoria}</small>` : ''}</span>
+                    <span class="estoque ${p.quantidade_estoque <= (p.estoque_minimo || 20) ? 'baixo' : ''}">
+                        ${p.quantidade_estoque} un.
+                    </span>
+                </div>`).join('');
+
+            dropdown.style.display = 'block';
+
+            // Clique em uma opção
+            dropdown.querySelectorAll('.produto-option').forEach(opt => {
+                opt.addEventListener('click', () => {
+                    hiddenProduto.value    = opt.dataset.id;
+                    inputBusca.value       = opt.dataset.nome;
+                    estoqueValor.textContent = opt.dataset.estoque;
+                    estoqueInfo.style.display = 'block';
+                    dropdown.style.display = 'none';
+                });
+            });
+        });
+
+        // Fecha dropdown ao clicar fora
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.produto-search-wrap')) {
+                dropdown.style.display = 'none';
+            }
+        });
+
+        // Limpa busca ao fechar modal
+        document.getElementById('btn-fechar-modal-saida')?.addEventListener('click', () => {
+            inputBusca.value = '';
+            hiddenProduto.value = '';
+            estoqueInfo.style.display = 'none';
+            dropdown.style.display = 'none';
+        });
+    </script>
 </body>
 </html>
