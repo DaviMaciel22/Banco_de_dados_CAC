@@ -75,7 +75,14 @@ const menorPrecoFornecedor = async (req, res, next) => {
             .input('id_categoria', sql.BigInt, id_categoria ? parseInt(id_categoria) : null)
             .execute('sp_menor_preco_fornecedor');
 
-        return res.json(result.recordset);
+        // SP retorna 'menor_preco' e 'data_ultima_compra_preco'
+        // HTML espera 'menor_preco_unitario' e 'data_da_compra'
+        const mapped = result.recordset.map(r => ({
+            ...r,
+            menor_preco_unitario: r.menor_preco_unitario ?? r.menor_preco ?? 0,
+            data_da_compra:       r.data_da_compra       ?? r.data_ultima_compra_preco ?? null,
+        }));
+        return res.json(mapped);
     } catch (err) { next(err); }
 };
 
@@ -102,13 +109,7 @@ const setoresPorGrupo = async (req, res, next) => {
             .input('id_categoria', sql.BigInt, id_categoria ? parseInt(id_categoria) : null)
             .execute('sp_setores_por_grupo');
 
-        // Normaliza nomes de campo para compatibilidade com o frontend
-        const mapped = result.recordset.map(r => ({
-            ...r,
-            menor_preco_unitario: r.menor_preco_unitario ?? r.menor_preco ?? 0,
-            data_da_compra:       r.data_da_compra       ?? r.data_ultima_compra_preco ?? null,
-        }));
-        return res.json(mapped);
+        return res.json(result.recordset);
     } catch (err) { next(err); }
 };
 
