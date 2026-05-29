@@ -1,6 +1,3 @@
-// frontend/js/script.js — VERSÃO INTEGRADA COM A API
-
-// ── Configuração global (carregada uma vez do backend) ──────
 const _cfg = { itensPorPagina: 20 };
 
 // Estados de paginação por página
@@ -1450,11 +1447,11 @@ async function initEntradas() {
             await api.post('/entradas', payload);
             toast('Entrada registrada! Estoque atualizado.');
             document.getElementById('modal-entrada').classList.remove('show');
-            // Volta para página 1 para mostrar a nova entrada no topo
             _pag.entradas = 1;
-            // Invalida cache de produtos (estoque foi atualizado pelo trigger)
             _dados.produtos = null;
             await carregarEntradas();
+            // Atualiza badge do sino imediatamente após a entrada
+            verificarAlertasEstoque();
         } catch (err) { toast(err.message, 'error'); }
     });
 }
@@ -1564,11 +1561,11 @@ async function initSaidas() {
             await api.post('/saidas', payload);
             toast('Saída registrada! Estoque descontado.');
             document.getElementById('modal-saida').style.display = 'none';
-            // Volta para página 1 para mostrar a nova saída no topo
             _pag.saidas = 1;
-            // Invalida cache de produtos (estoque foi atualizado pelo trigger)
             _dados.produtos = null;
             await carregarSaidas();
+            // Atualiza badge do sino imediatamente após a saída
+            verificarAlertasEstoque();
         } catch (err) { toast(err.message, 'error'); }
     });
 }
