@@ -365,11 +365,16 @@ async function verificarAlertasEstoque() {
         atualizarBadgeSino(totalAlertas);
         criarDropdownNotificacoes();
 
-    } catch (e) { /* falha silenciosa */ }
+    } catch (e) {
+        console.warn('[Alertas] Falha ao verificar:', e.message);
+    }
 }
 
 function iniciarPollingAlertas() {
+    // Tenta imediatamente, e depois com delays crescentes como fallback
     verificarAlertasEstoque();
+    setTimeout(verificarAlertasEstoque, 1500);
+    setTimeout(verificarAlertasEstoque, 4000);
     if (_pollingInterval) return;
     _pollingInterval = setInterval(verificarAlertasEstoque, 15_000);
 }
