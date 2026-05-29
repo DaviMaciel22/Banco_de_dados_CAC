@@ -28,8 +28,11 @@ const fichaProduto = async (req, res, next) => {
             .execute('sp_ficha_produto');
 
         // sp_ficha_produto retorna 3 result sets: cabeçalho, entradas, saídas
+        const cab = result.recordsets[0]?.[0] || null;
+        // Normaliza campo nome → produto para o frontend
+        if (cab && cab.nome && !cab.produto) cab.produto = cab.nome;
         return res.json({
-            cabecalho: result.recordsets[0]?.[0] || null,
+            cabecalho: cab,
             entradas:  result.recordsets[1] || [],
             saidas:    result.recordsets[2] || [],
         });
