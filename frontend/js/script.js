@@ -206,10 +206,10 @@ function renderizarDropdown(dados, isNovo = false) {
     if (!dropdown) return;
 
     const alertas = dados?.alertas || [];
-    const historico = dados?.historico || [];
-    const readIds = new Set(getReadAlertIds().map(String));
 
-    const unreadStock = (alertas || []).filter(a => !readIds.has(String(a.id_produto))).map(a => ({
+    // Mostra TODOS os alertas ativos — sem filtro de lido
+    // Para estoque, sempre mostrar se o produto está abaixo do mínimo
+    const unread = (alertas || []).map(a => ({
         ...a,
         type: 'stock',
         id: String(a.id_produto),
@@ -221,17 +221,6 @@ function renderizarDropdown(dados, isNovo = false) {
         targetPage: 'alertas.html',
     }));
 
-    const unreadHistory = (historico || []).filter(h => !readIds.has(`hist_${h.id_log}`)).map(h => ({
-        ...h,
-        type: 'history',
-        id: `hist_${h.id_log}`,
-        title: `${h.acao} em ${h.nome_tabela}`,
-        subtitle: `Registro #${h.id_registro_afetado}`,
-        detail: `${h.usuario_exibicao} em ${h.data_formatada} ${h.hora_formatada}`,
-        targetPage: 'historico.html',
-    }));
-
-    const unread = [...unreadHistory, ...unreadStock];
     if (!unread.length) {
         dropdown.innerHTML = `
             <div style="padding:20px;text-align:center;color:#64748b;">
