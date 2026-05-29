@@ -1,3 +1,6 @@
+// src/controllers/entradasController.js
+// NOTA: Usa SQL direto pois a sp_inserir_atualizar_entrada
+// não possui o parâmetro @quantidade_compra (necessário para o trigger de estoque).
 const { getPool, sql } = require('../config/database');
 
 const getAll = async (req, res, next) => {
@@ -24,15 +27,15 @@ const create = async (req, res, next) => {
         const { fkproduto, fkfornecedor, data_compra, valor_compra,
                 quantidade_compra, valor_unitario, num_nf } = req.body;
         const pool = await getPool();
-        
+        // INSERT direto para incluir quantidade_compra (o trigger de estoque depende disso)
         await pool.request()
-            .input('fkproduto', sql.BigInt, fkproduto)
-            .input('fkfornecedor', sql.BigInt, fkfornecedor)
-            .input('data_compra', sql.DateTime, new Date(data_compra))
-            .input('valor_compra', sql.Numeric(18,2), valor_compra)
-            .input('quantidade_compra', sql.BigInt, quantidade_compra)
-            .input('valor_unitario', sql.Numeric(18,2), valor_unitario)
-            .input('num_nf', sql.Numeric(18,2), num_nf ? parseFloat(num_nf) : null)
+            .input('fkproduto',         sql.BigInt,        fkproduto)
+            .input('fkfornecedor',      sql.BigInt,        fkfornecedor)
+            .input('data_compra',       sql.DateTime,      new Date(data_compra + 'T12:00:00'))
+            .input('valor_compra',      sql.Numeric(18,2), valor_compra)
+            .input('quantidade_compra', sql.BigInt,        quantidade_compra)
+            .input('valor_unitario',    sql.Numeric(18,2), valor_unitario)
+            .input('num_nf',            sql.Numeric(18,2), num_nf ? parseFloat(num_nf) : null)
             .query(`
                 INSERT INTO Entrada (fkproduto, fkfornecedor, data_compra, valor_compra,
                                      quantidade_compra, valor_unitario, num_nf)
