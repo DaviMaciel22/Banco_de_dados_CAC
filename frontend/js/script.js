@@ -348,19 +348,21 @@ async function verificarAlertasEstoque() {
 
         _alertasCache = dados.alertas || [];
 
-        const lidas    = new Set(getReadAlertIds().map(String));
-        const unread   = _alertasCache.filter(a => !lidas.has(String(a.id_produto))).length;
-        const isNovo   = _notificacaoCountAnterior >= 0 && unread > _notificacaoCountAnterior;
+        // Badge usa o TOTAL real de produtos em alerta (independente de lidos)
+        const totalAlertas = _alertasCache.length;
+
+        // Popup só abre quando o número de alertas AUMENTA (novo produto entrou em alerta)
+        const isNovo = _notificacaoCountAnterior >= 0 && totalAlertas > _notificacaoCountAnterior;
 
         if (isNovo) {
-            const novos = unread - _notificacaoCountAnterior;
+            const novos = totalAlertas - _notificacaoCountAnterior;
             criarDropdownNotificacoes();
             abrirDropdown(true);
             toast(`⚠️ ${novos} produto(s) atingiram o estoque mínimo!`, 'warning');
         }
 
-        _notificacaoCountAnterior = unread;
-        atualizarBadgeSino(unread);
+        _notificacaoCountAnterior = totalAlertas;
+        atualizarBadgeSino(totalAlertas);
         criarDropdownNotificacoes();
 
     } catch (e) { /* falha silenciosa */ }
