@@ -19,7 +19,8 @@ const getAll = async (req, res, next) => {
 
 const create = async (req, res, next) => {
     try {
-        const { fkproduto, fksetor, data_saida, valor_saida, quantidade_venda } = req.body;
+        const { fkproduto, fksetor, data_saida, valor_saida, quantidade_venda, quantidade_produto } = req.body;
+        const qtd = quantidade_venda || quantidade_produto; // aceita ambos os nomes
         const pool = await getPool();
 
         // Verifica estoque disponível antes de inserir
@@ -28,7 +29,7 @@ const create = async (req, res, next) => {
             .query('SELECT quantidade_estoque FROM Produto WHERE id_produto = @fkproduto');
 
         const saldo = estoqueResult.recordset[0]?.quantidade_estoque ?? 0;
-        if (saldo < quantidade_venda) {
+        if (saldo < qtd) {
             return res.status(400).json({
                 error: `Estoque insuficiente. Saldo disponível: ${saldo} unidade(s).`
             });
@@ -40,7 +41,7 @@ const create = async (req, res, next) => {
             .input('fksetor',         sql.BigInt,        fksetor)
             .input('data_saida',      sql.DateTime,      new Date(data_saida + 'T12:00:00'))
             .input('valor_saida',     sql.Numeric(18,2), valor_saida)
-            .input('quantidade_venda',sql.Int,           quantidade_venda)
+            .input('quantidade_venda',sql.Int,           qtd)
             .query(`
                 INSERT INTO Saida (fkproduto, fksetor, data_saida, valor_saida, quantidade_venda)
                 VALUES (@fkproduto, @fksetor, @data_saida, @valor_saida, @quantidade_venda)
