@@ -99,7 +99,13 @@ const setoresPorGrupo = async (req, res, next) => {
             .input('id_categoria', sql.BigInt, id_categoria ? parseInt(id_categoria) : null)
             .execute('sp_setores_por_grupo');
 
-        return res.json(result.recordset);
+        // Normaliza nomes de campo para compatibilidade com o frontend
+        const mapped = result.recordset.map(r => ({
+            ...r,
+            menor_preco_unitario: r.menor_preco_unitario ?? r.menor_preco ?? 0,
+            data_da_compra:       r.data_da_compra       ?? r.data_ultima_compra_preco ?? null,
+        }));
+        return res.json(mapped);
     } catch (err) { next(err); }
 };
 
